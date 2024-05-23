@@ -1,48 +1,35 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { MdDelete } from "react-icons/md";
-function Users() {
- const [data,setData] = useState([])
-  useEffect(() =>{
-    const getAlluser = async() =>{
-      try {
-        const response = await axios.get('http://localhost:8080/all')
-        console.log(response.data.users)
 
-        setData(response.data.users)
+function Users() {
+  const [data, setData] = useState([
+    { id: 1, Name: "John Doe", Role: "Doctor", email: "john.doe@example.com" },
+    { id: 2, Name: "Jane Smith", Role: "Nurse", email: "jane.smith@example.com" },
+    { id: 3, Name: "Bob Johnson", Role: "Reception", email: "bob.johnson@example.com" },
+  ]);
+
+  useEffect(() => {
+    const getAllUsers = async () => {
+      try {
+        const response = await axios.get('http://localhost:8080/all');
+        console.log(response.data.users);
+        setData(response.data.users);
       } catch (error) {
         console.error(error);
       }
-    }
-    getAlluser()
-  },[])
+    };
+    getAllUsers();
+  }, []);
 
-  const [LabExams] = useState([
-    {
-      Name: "John Doe",
-      Role: "Doctor",
-      email: "email@gmail.com",
-    },
-    {
-      Name: "John Doe",
-      Role: "Doctor",
-      email: "email@gmail.com",
-    },
-    {
-      Name: "John Doe",
-      Role: "Doctor",
-      email: "email@gmail.com",
-    },
-  ]);
-
-  const handleDelete = (appointmentId) => {
-    if (window.confirm("Are you sure you want to delete this appointment?")) {
-      setAppointments(appointments.filter((app) => app.id !== appointmentId));
+  const handleDelete = (userId) => {
+    if (window.confirm("Are you sure you want to delete this user?")) {
+      setData(data.filter((user) => user.id !== userId));
     }
   };
 
   return (
-    <div className="w-[970px] bg-white px-5 pb-5 shadow-xl rounded-lg mt-5">
+    <div className="w-[970px] bg-white ml-20 px-5 pb-5 shadow-xl rounded-lg mt-5">
       <div className="flex justify-between items-center pt-3 pb-3"></div>
       <table className="min-w-full">
         <thead>
@@ -55,21 +42,19 @@ function Users() {
           </tr>
         </thead>
         <tbody>
-          {data.map((exam, index) => (
+          {data.map((user, index) => (
             <tr
-              key={index}
-              className={`text-[11px]  h-[34px] ${
-                index % 2 === 0 ? "bg-[#ddf4fc]  " : ""
-              }`}
+              key={user.id}
+              className={`text-[11px] h-[34px] ${index % 2 === 0 ? "bg-[#ddf4fc]" : ""}`}
             >
               <td>{index + 1}</td> {/* Display index starting from 1 */}
-              <td>{exam.fullName}</td>
-              <td>{exam.role}</td>
-              <td>{exam.email}</td>
+              <td>{user.Name}</td>
+              <td>{user.Role}</td>
+              <td>{user.email}</td>
               <td>
                 <button
-                  className="text-[20px] "
-                  onClick={() => handleDelete(appointment.id)}
+                  className="text-[20px]"
+                  onClick={() => handleDelete(user.id)}
                 >
                   <MdDelete className="" />
                 </button>
@@ -83,4 +68,3 @@ function Users() {
 }
 
 export default Users;
-

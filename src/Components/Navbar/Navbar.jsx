@@ -62,7 +62,7 @@ export default function Navbar() {
               <a
                 key={item.name}
                 href={item.href} // Links to sections with IDs
-                className="text-lg font-semibold leading-6 text-gray-50 "
+                className="text-lg font-semibold leading-6 text-gray-50 hover:text-gray-950 duration-100 "
               >
                 {item.name}
               </a>

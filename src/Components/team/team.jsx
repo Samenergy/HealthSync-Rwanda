@@ -1,51 +1,10 @@
 const people = [
-    {
-        name: 'Bavukile Birthwell Vilane',
-        role: 'Project manager',
-        imageUrl:
-          '',
-    },
+    
      {
       name: 'Samuel Dushime',
-      role: 'Front-end Developer',
+      role: 'Developer',
       imageUrl:
-        './src/assets/IMG_2768.JPG',
-    },
-    {
-        name: 'Serge Kamanzi',
-        role: 'Database Developer',
-        imageUrl:
-          '',
-    },
-    {
-        name: 'Josiane Ishimwe',
-        role: 'Back-end Developer',
-        imageUrl:
-          '',
-    },
-    {
-        name: 'Jules Gatete',
-        role: 'Deployment and DevOps Engineer',
-        imageUrl:
-          '',
-    },
-    {
-        name: 'Bosco Ishimwe',
-        role: 'Quality assurance',
-        imageUrl:
-          '',
-    },
-    {
-        name: 'Pascal Mugisha',
-        role: 'Ui/UX Designer',
-        imageUrl:
-          '',
-    },
-    {
-        name: 'Geofrey Tumwesigye',
-        role: 'Security specialist',
-        imageUrl:
-          '',
+        './src/assets/IMG_2755.jpeg',
     },
     
     
@@ -67,10 +26,10 @@ const people = [
             {people.map((person) => (
               <li key={person.name}>
                 <div className="flex items-center gap-x-6">
-                  <img className="h-16 w-16 rounded-full" src={person.imageUrl} alt="" />
+                  <img className="h-40 w-40 rounded-full" src={person.imageUrl} alt="" />
                   <div>
-                    <h3 className="text-base font-semibold leading-7 tracking-tight text-gray-900">{person.name}</h3>
-                    <p className="text-sm font-semibold leading-6 text-[#00afee]">{person.role}</p>
+                    <h3 className="text-xl font-bold leading-7 tracking-tight text-gray-900">{person.name}</h3>
+                    <p className="text-lg font-semibold leading-6 text-[#00afee]">{person.role}</p>
                   </div>
                 </div>
               </li>
