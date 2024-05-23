@@ -1,0 +1,177 @@
+// Import necessary modules
+import axios from "axios";
+import { useState } from "react";
+import { Link } from "react-router-dom";
+
+// Define the Login component
+export default function Login() {
+  // State variables for role, email, and password
+  const [role, setRole] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  // Function to handle role change
+  const handleRoleChange = (e) => {
+    setRole(e.target.value);
+  };
+
+  // Function to handle sign in
+  const handleSignIn = async () => {
+    // Prepare data object with email and password
+    const data = {
+      email: email,
+      password: password,
+    };
+    try {
+      // Send POST request to login endpoint
+      const response = await axios.post("http://localhost:8080/login", data);
+      console.log(response.data);
+      if (response.status === 200) {
+        // Extract user role from response
+        const userRole = response.data.user.role.toLowerCase();
+        // Redirect based on user role
+        switch (userRole) {
+          case "administrator":
+            window.location.href = "/admin";
+            break;
+          case "doctor":
+            window.location.href = "/Dashboard";
+            break;
+          case "receptionist":
+            window.location.href = "/Reception";
+            break;
+          default:
+            // Default redirect if role is not specified
+            window.location.href = "/"; // Change the default redirect URL if needed
+            break;
+        }
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  // Return JSX for Login component
+  return (
+    <div className="flex min-h-full flex-1 flex-col justify-start px-6 py-56 lg:py-24 lg:px-8 bg-[#011c36]">
+      <div className="sm:mx-auto sm:w-full sm:max-w-sm">
+        <Link to="/">
+          <img
+            className="mx-auto h-auto w-auto"
+            src="./src/assets/logo.png"
+            alt="Logo"
+          />
+        </Link>
+        <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-50">
+          Log in
+        </h2>
+      </div>
+
+      <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
+        <form className="space-y-6" action="#" method="POST">
+          <div>
+            <label
+              htmlFor="email"
+              className="block text-sm font-medium leading-6 text-gray-50"
+            >
+              Email address
+            </label>
+            <div className="mt-2">
+              <input
+                id="email"
+                name="email"
+                type="email"
+                autoComplete="email"
+                placeholder="Email"
+                value={email}
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                }}
+                required
+                className="block w-full px-4 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+              />
+            </div>
+          </div>
+
+          <div>
+            <div className="flex items-center justify-between">
+              <label
+                htmlFor="password"
+                className="block text-sm font-medium leading-6 text-gray-50"
+              >
+                Password
+              </label>
+              <div className="text-sm">
+                <Link
+                  to="#"
+                  className="font-semibold text-[#36799e] transition-opacity hover:text-gray-400"
+                >
+                  Forgot password?
+                </Link>
+              </div>
+            </div>
+            <div className="mt-2">
+              <input
+                id="password"
+                name="password"
+                type="password"
+                autoComplete="current-password"
+                placeholder="Password"
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                }}
+                required
+                className="block w-full px-4 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+              />
+            </div>
+          </div>
+
+          <div>
+            <div>
+              <label
+                htmlFor="role"
+                className="block text-sm font-medium leading-6 text-gray-50"
+              >
+                Role
+              </label>
+              <select
+                id="role"
+                name="role"
+                value={role}
+                onChange={handleRoleChange}
+                className="block w-full px-4 py-1.5 rounded-md border-0 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+              >
+                <option value="">Select your role</option>
+                <option value="administrator">Administrator</option>
+                <option value="doctor">Doctor</option>
+                <option value="receptionist">Receptionist</option>
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <Link to="#">
+              <button
+                type="button"
+                onClick={handleSignIn}
+                className="flex w-full justify-center rounded-md bg-[#00aeef] px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-[#36799e] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+              >
+                Sign in
+              </button>
+            </Link>
+          </div>
+        </form>
+
+        <p className="mt-2 text-center text-sm text-gray-500">
+          Not a member?{" "}
+          <Link
+            to="/signup"
+            className="font-semibold leading-6 text-[#00aeef] hover:text-[#36799e]"
+          >
+            Create an account
+          </Link>
+        </p>
+      </div>
+    </div>
+  );
+}
