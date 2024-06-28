@@ -11,6 +11,9 @@ import LandingRecdash from "./LandingDash/LandingRecDash/LandingRecdash";
 import LandingPatientlistRec from "./LandingPatientList/LandingPatientlistRec";
 import AdminDashboard from "./Admin/LandingpageAdmin/AdminDashboard";
 import Userpage from "./Admin/Users/LandingUsers/Userpage";
+import SignupAdmin from "./pages/AdminSignup";
+import SignupHospital from "./pages/HospitalSignup";
+import SignupAdminAndHospital from "./pages/SignupAdminAndHospital";
 
 const App = () => {
   return (
@@ -18,16 +21,21 @@ const App = () => {
       <Routes>
         <Route path="/" element={<Landingpage />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/Signup" element={<HospitalSignup />} />
+        <Route path="/Signup" element={<SignupAdminAndHospital />} />
+
+
+
         <Route path="/Dashboard" element={<LandingDashboard />} />
         <Route path="/Scheduling" element={<Schedulingpage />} />
         <Route path="PatientList" element={<LandingPatientlist />} />
         <Route path="Reception" element={<LandingRecdash />} />
-        <Route path="PatientlistReception" element={<LandingPatientlistRec />} />
+        <Route
+          path="PatientlistReception"
+          element={<LandingPatientlistRec />}
+        />
         <Route path="Admin" element={<AdminDashboard />} />
         <Route path="Users" element={<Userpage />} />
       </Routes>
-
     </div>
   );
 };

@@ -1,154 +1,208 @@
 import React, { useState } from "react";
-import axios from "axios";
-import { Link } from "react-router-dom";
 
-const HospitalSignup = () => {
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [hospitalName, setHospitalName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
-  const [agreed, setAgreed] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
+const SignupHospital = ({ prevStep, adminData, submitData }) => {
+  const [formData, setFormData] = useState({
+    hospitalName: "",
+    address: "",
+    facilityType: "",
+    phoneNumber: "",
+    taxIdNumber: "",
+    businessRegistrationNumber: "",
+    country: "",
+    province: "",
+    district: "",
+    sector: "",
+  });
 
-  const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword);
+  const [logo, setLogo] = useState(null);
+  const [error, setError] = useState("");
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async (e) => {
+  const handleFileChange = (e) => {
+    setLogo(e.target.files[0]);
+  };
+
+  const handleSubmit = (e) => {
     e.preventDefault();
-
-    if (password !== confirmPassword) {
-      alert("Passwords do not match");
-      return false;
-    }
-
-    try {
-      const response = await axios.post('http://localhost:8080/signup', {
-        firstName,
-        lastName,
-        hospitalName,
-        email,
-        password,
-        confirmPassword,
-      });
-
-      console.log('Signup successful:', response.data);
-      alert('Signup successful!');
-    } catch (error) {
-      console.error('Signup failed:', error.response?.data?.message || 'Unknown error');
-      setErrorMessage(error.response?.data?.message || 'Signup failed: Unknown error');
-    }
+    submitData({ ...adminData, ...formData, logo }); // Combine admin and hospital data
   };
+
+  const facilityTypes = [
+    "General Hospitals",
+    "Specialty Hospitals",
+    "Teaching Hospitals",
+    "Children's Hospitals",
+    "Psychiatric Hospitals",
+    "Rehabilitation Hospitals",
+    "Trauma Centers",
+    "Military Hospitals",
+    "Government Hospitals",
+    "Community Hospitals",
+    "Rural Hospitals",
+    "Academic Medical Centers",
+    "Critical Access Hospitals",
+    "Long-Term Acute Care Hospitals (LTACHs)",
+    "Hospice and Palliative Care Hospitals",
+    "Outpatient Clinics",
+  ];
 
   return (
-    <div className="flex min-h-full flex-1 flex-col justify-start px-6 py-56 lg:py-24 lg:px-8 bg-[#011c36]">
-      <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-        <a href="/">
-          <img
-            className="mx-auto h-auto w-auto"
-            src="./src/assets/logo.png"
-            alt="Logo"
-          />
-        </a>
-        <h2 className="mt-10 text-center text-3xl font-bold leading-9 tracking-tight text-white">
-          Create an account
-        </h2>
-      </div>
-      {errorMessage && <p className="text-red-500 mb-4">{errorMessage}</p>}
+    <div className="bg-[#011e3c] ">
       <form
-        className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm text-black" 
         onSubmit={handleSubmit}
+        className="max-w-xl mx-auto px-20 p-8 bg-[#011e3c] shadow-lg shadow-[#00aeee] rounded-lg text-white"
       >
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label htmlFor="firstName" className="block mb-1 text-white">
-              First Name
-            </label>
-            <input
-              type="text"
-              id="firstName"
-              value={firstName}
-              onChange={(e) => setFirstName(e.target.value)}
-              className="w-full px-3 py-2 border rounded-md"
-            />
-          </div>
-          <div>
-            <label htmlFor="lastName" className="block mb-1 text-white">
-              Last Name
-            </label>
-            <input
-              type="text"
-              id="lastName"
-              value={lastName}
-              onChange={(e) => setLastName(e.target.value)}
-              className="w-full px-3 py-2 border rounded-md"
-            />
-          </div>
+        <h2 className="text-xl font-light mb-4 text-center">
+          Please provide hospital information
+        </h2>
+        {error && <p className="text-red-500 mb-4">{error}</p>}
+
+        <div className="mb-4">
+          <label className="block text-gray-50">Hospital Name</label>
+          <input
+            type="text"
+            name="hospitalName"
+            value={formData.hospitalName}
+            onChange={handleChange}
+            className="w-full px-3 py-2 border rounded text-black"
+            required
+          />
         </div>
-        <div className="mb-4 mt-4">
-          <label htmlFor="hospitalName" className="block mb-1 text-white">
-            Hospital Name
+        <div className="mb-4">
+          <label className="block text-gray-50">Address</label>
+          <input
+            type="text"
+            name="address"
+            value={formData.address}
+            onChange={handleChange}
+            className="w-full px-3 py-2 border rounded text-black"
+            required
+          />
+        </div>
+        <div className="mb-4">
+          <label className="block text-gray-50">Facility Type</label>
+          <select
+            name="facilityType"
+            value={formData.facilityType}
+            onChange={handleChange}
+            className="w-full px-3 py-2 border rounded text-black"
+            required
+          >
+            <option value="">Select Facility Type</option>
+            {facilityTypes.map((type) => (
+              <option key={type} value={type.toLowerCase().replace(/ /g, "-")}>
+                {type}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div className="mb-4">
+          <label className="block text-gray-50">Phone Number</label>
+          <input
+            type="text"
+            name="phoneNumber"
+            value={formData.phoneNumber}
+            onChange={handleChange}
+            className="w-full px-3 py-2 border rounded text-black"
+            required
+          />
+        </div>
+        <div className="mb-4">
+          <label className="block text-gray-50">Tax ID Number</label>
+          <input
+            type="text"
+            name="taxIdNumber"
+            value={formData.taxIdNumber}
+            onChange={handleChange}
+            className="w-full px-3 py-2 border rounded text-black"
+            required
+          />
+        </div>
+        <div className="mb-4">
+          <label className="block text-gray-50">
+            Business Registration Number
           </label>
           <input
             type="text"
-            id="hospitalName"
-            value={hospitalName}
-            onChange={(e) => setHospitalName(e.target.value)}
-            className="w-full px-3 py-2 border rounded-md"
+            name="businessRegistrationNumber"
+            value={formData.businessRegistrationNumber}
+            onChange={handleChange}
+            className="w-full px-3 py-2 border rounded text-black"
+            required
           />
         </div>
         <div className="mb-4">
-          <label htmlFor="email" className="block mb-1 text-white">
-            Email
-          </label>
+          <label className="block text-gray-50">Country</label>
           <input
-            type="email"
-            id="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="w-full px-3 py-2 border rounded-md"
+            type="text"
+            name="country"
+            value={formData.country}
+            onChange={handleChange}
+            className="w-full px-3 py-2 border rounded text-black"
+            required
           />
         </div>
         <div className="mb-4">
-          <label htmlFor="password" className="block mb-1 text-white">
-            Password
-          </label>
+          <label className="block text-gray-50">Province</label>
           <input
-            type={showPassword ? "text" : "password"}
-            id="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="w-full px-3 py-2 border rounded-md"
+            type="text"
+            name="province"
+            value={formData.province}
+            onChange={handleChange}
+            className="w-full px-3 py-2 border rounded text-black"
+            required
           />
         </div>
         <div className="mb-4">
-          <label htmlFor="confirmPassword" className="block mb-1 text-white">
-            Confirm Password
-          </label>
+          <label className="block text-gray-50">District</label>
           <input
-            type={showPassword ? "text" : "password"}
-            id="confirmPassword"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            className="w-full px-3 py-2 border rounded-md"
+            type="text"
+            name="district"
+            value={formData.district}
+            onChange={handleChange}
+            className="w-full px-3 py-2 border rounded text-black"
+            required
           />
         </div>
-
-        <Link to="/login">
+        <div className="mb-4">
+          <label className="block text-gray-50">Sector</label>
+          <input
+            type="text"
+            name="sector"
+            value={formData.sector}
+            onChange={handleChange}
+            className="w-full px-3 py-2 border rounded text-black"
+            required
+          />
+        </div>
+        <div className="mb-4">
+          <label className="block text-gray-50">Health Facility Logo</label>
+          <input
+            type="file"
+            name="logo"
+            onChange={handleFileChange}
+            className="w-full px-3 py-2 border rounded text-black"
+          />
+        </div>
         <button
-          onClick={handleSubmit}
-          type="submit"
-          className="bg-[#00aeef] font-bold px-4 py-2 rounded-md mt-5 sm:mx-auto sm:w-full sm:max-w-sm text-white transition hover:bg-blue-500"
+          type="button"
+          onClick={prevStep}
+          className="w-full bg-gray-500 text-white py-2 rounded mb-4"
         >
-          Create Account
+          Previous
         </button>
-        </Link>
+        <button
+          type="submit"
+          className="w-full bg-blue-500 text-white py-2 rounded"
+        >
+          Sign Up
+        </button>
       </form>
     </div>
   );
 };
 
-export default HospitalSignup;
+export default SignupHospital;
