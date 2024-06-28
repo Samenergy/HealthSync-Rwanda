@@ -1,35 +1,21 @@
-// Import necessary modules
 import axios from "axios";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
-// Define the Login component
 export default function Login() {
-  // State variables for role, email, and password
-  const [role, setRole] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [role, setRole] = useState("");
 
-  // Function to handle role change
-  const handleRoleChange = (e) => {
-    setRole(e.target.value);
-  };
-
-  // Function to handle sign in
   const handleSignIn = async () => {
-    // Prepare data object with email and password
-    const data = {
-      email: email,
-      password: password,
-    };
+    const data = { email, password };
+
     try {
-      // Send POST request to login endpoint
-      const response = await axios.post("http://localhost:8080/login", data);
+      const response = await axios.post("http://localhost:5000/api/login", data);
       console.log(response.data);
+
       if (response.status === 200) {
-        // Extract user role from response
         const userRole = response.data.user.role.toLowerCase();
-        // Redirect based on user role
         switch (userRole) {
           case "administrator":
             window.location.href = "/admin";
@@ -41,19 +27,21 @@ export default function Login() {
             window.location.href = "/Reception";
             break;
           default:
-            // Default redirect if role is not specified
-            window.location.href = "/"; // Change the default redirect URL if needed
+            window.location.href = "/";
             break;
         }
       }
     } catch (error) {
-      console.error(error);
+      console.error("Login error:", error);
     }
   };
 
-  // Return JSX for Login component
+  const handleRoleChange = (e) => {
+    setRole(e.target.value);
+  };
+
   return (
-    <div className="flex min-h-full flex-1 flex-col justify-start px-6 py-56 lg:py-24 lg:px-8 bg-[#011c36]">
+    <div className="flex min-h-screen flex-col justify-start px-6 py-12 lg:py-24 lg:px-8 bg-[#011c36]">
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
         <Link to="/">
           <img
@@ -62,7 +50,7 @@ export default function Login() {
             alt="Logo"
           />
         </Link>
-        <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-50">
+        <h2 className="mt-10 text-center text-2xl font-bold leading-9 text-gray-50">
           Log in
         </h2>
       </div>
@@ -84,9 +72,7 @@ export default function Login() {
                 autoComplete="email"
                 placeholder="Email"
                 value={email}
-                onChange={(e) => {
-                  setEmail(e.target.value);
-                }}
+                onChange={(e) => setEmail(e.target.value)}
                 required
                 className="block w-full px-4 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
               />
@@ -117,9 +103,8 @@ export default function Login() {
                 type="password"
                 autoComplete="current-password"
                 placeholder="Password"
-                onChange={(e) => {
-                  setPassword(e.target.value);
-                }}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 required
                 className="block w-full px-4 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
               />
@@ -127,38 +112,34 @@ export default function Login() {
           </div>
 
           <div>
-            <div>
-              <label
-                htmlFor="role"
-                className="block text-sm font-medium leading-6 text-gray-50"
-              >
-                Role
-              </label>
-              <select
-                id="role"
-                name="role"
-                value={role}
-                onChange={handleRoleChange}
-                className="block w-full px-4 py-1.5 rounded-md border-0 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-              >
-                <option value="">Select your role</option>
-                <option value="administrator">Administrator</option>
-                <option value="doctor">Doctor</option>
-                <option value="receptionist">Receptionist</option>
-              </select>
-            </div>
+            <label
+              htmlFor="role"
+              className="block text-sm font-medium leading-6 text-gray-50"
+            >
+              Role
+            </label>
+            <select
+              id="role"
+              name="role"
+              value={role}
+              onChange={handleRoleChange}
+              className="block w-full px-4 py-1.5 rounded-md border-0 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+            >
+              <option value="">Select your role</option>
+              <option value="administrator">Administrator</option>
+              <option value="doctor">Doctor</option>
+              <option value="receptionist">Receptionist</option>
+            </select>
           </div>
 
           <div>
-            <Link to="#">
-              <button
-                type="button"
-                onClick={handleSignIn}
-                className="flex w-full justify-center rounded-md bg-[#00aeef] px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-[#36799e] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-              >
-                Sign in
-              </button>
-            </Link>
+            <button
+              type="button"
+              onClick={handleSignIn}
+              className="flex w-full justify-center rounded-md bg-[#00aeef] px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-[#36799e] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+            >
+              Sign in
+            </button>
           </div>
         </form>
 

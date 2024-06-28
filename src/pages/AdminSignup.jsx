@@ -31,16 +31,23 @@ const SignupAdmin = ({ nextStep, setAdminData }) => {
     if (!validatePassword()) {
       return;
     }
-    setAdminData(formData); // Pass admin data to parent component
-    nextStep(); // Move to the next step
+    setAdminData(formData); 
+    nextStep(); 
   };
 
   return (
     <div className="bg-[#011e3c] ">
       <form
         onSubmit={handleSubmit}
-        className="max-w-xl mx-auto px-20 p-8 bg-[#011e3c] shadow-lg shadow-[#00aeee] rounded-lg text-white"
+        className="max-w-xl mx-auto px-20 p-8 bg-[#011e3c] mt-0 pb-20 shadow-lg shadow-[#00aeee] rounded-lg text-white"
       >
+        <a href="/" className=" ">
+          <img
+            className="mx-auto py-5 h-auto w-auto"
+            src="./src/assets/logo.png"
+            alt="Logo"
+          />
+        </a>
         <h2 className="text-2xl font-bold mb-4 text-center">
           Create your account
         </h2>

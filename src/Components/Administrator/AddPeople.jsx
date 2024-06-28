@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { FaRegUser } from "react-icons/fa";
-import GeneralForm from "./GeneralForm"; 
+import AddUserForm  from "./GeneralForm"; 
 
 export default function Doctorform() {
   const [showModal, setShowModal] = useState(false);
@@ -57,7 +57,7 @@ export default function Doctorform() {
                 Close
               </button>
 
-              <GeneralForm userType="doctor" onSubmit={handleSubmit} />
+              <AddUserForm onSubmit={handleSubmit} />
             </div>
           </div>
         </div>

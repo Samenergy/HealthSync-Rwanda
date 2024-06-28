@@ -1,42 +1,67 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { FaSearch } from "react-icons/fa";
-import { Disclosure, Menu, Transition } from '@headlessui/react';
-import { BellIcon } from '@heroicons/react/24/outline';
+import { Disclosure, Menu, Transition } from "@headlessui/react";
+import { BellIcon } from "@heroicons/react/24/outline";
 
 const user = {
-  name: 'Medical center Clinic',
-  email: 'medicalcenter@gmail.com',
-  imageUrl: './src/assets/download.png',
+  name: "Medical center Clinic",
+  email: "medicalcenter@gmail.com",
+  imageUrl: "./src/assets/download.png",
 };
 
 const userNavigation = [
-  { name: 'Your Profile', href: '#' },
-  { name: 'Settings', href: '#' },
-  { name: 'Sign out', href: '/login' },
+  { name: "Your Profile", href: "#" },
+  { name: "Settings", href: "#" },
+  { name: "Sign out", href: "/login" },
 ];
 
 function classNames(...classes) {
-  return classes.filter(Boolean).join(' ');
+  return classes.filter(Boolean).join(" ");
 }
 
 function AdminDashbarHor() {
+  const [currentDateTime, setCurrentDateTime] = useState(new Date());
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentDateTime(new Date());
+    }, 1000); // Update every second
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, []);
+
+  const formattedDateTime = currentDateTime.toLocaleString(undefined, {
+    weekday: "long",
+    month: "long",
+    day: "numeric",
+    hour: "numeric",
+    minute: "numeric",
+    second: "numeric",
+  });
+
   return (
-    <div className="flex  bg-[#DDF4FC]  lg:w-[1300px]">
-      <div className="px-20  py-6 flex items-center">
-        <input type="text" placeholder="Search..." className="px-2" />
-        <a href="">
-          <div className="bg-[#00AFEE] px-2 h-7 border rounded">
-            <FaSearch className="text-white mt-1" />
-          </div>
-        </a>
+    <div className="flex bg-[#DDF4FC] lg:w-[1300px]">
+      <div className="px-20 py-6 flex items-center gap-28">
+        <div className="flex">
+          <input type="text" placeholder="Search..." className="px-2  " />
+          <a href="">
+            <div className="bg-[#00AFEE] py-2 px-2 border rounded">
+              <FaSearch className="text-white  mt-1" />
+            </div>
+          </a>
+        </div>
+        <div className="ml-4 text-gray-800">{formattedDateTime}</div>
       </div>
+
       <Disclosure as="nav" className="bg-[#DDF4FC]">
         {({ open }) => (
-          <div className="mt-[16px]  flex items-center fixed right-20"> 
+          <div className="mt-[16px] flex items-center fixed right-20">
             {/* Profile dropdown */}
             <button
               type="button"
-              className="relative rounded-full bg-white p-1 mr-5  text-[#00afee] hover:text-black focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-[#00afee]"
+              className="relative rounded-full bg-white p-1 mr-5 text-[#00afee] hover:text-black focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-[#00afee]"
             >
               <span className="sr-only">View notifications</span>
               <BellIcon className="h-10 w-10" aria-hidden="true" />
@@ -44,7 +69,11 @@ function AdminDashbarHor() {
             <Menu as="div" className="relative ml-3">
               <div>
                 <Menu.Button className="relative flex max-w-xs items-center rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
-                  <img className="h-10 w-10 rounded-full" src={user.imageUrl} alt="" />
+                  <img
+                    className="h-10 w-10 rounded-full"
+                    src={user.imageUrl}
+                    alt=""
+                  />
                 </Menu.Button>
               </div>
               <Transition
@@ -63,8 +92,8 @@ function AdminDashbarHor() {
                         <a
                           href={item.href}
                           className={classNames(
-                            active ? 'bg-gray-100' : '',
-                            'block px-4 py-2 text-sm text-gray-950'
+                            active ? "bg-gray-100" : "",
+                            "block px-4 py-2 text-sm text-gray-950"
                           )}
                         >
                           {item.name}
@@ -75,12 +104,9 @@ function AdminDashbarHor() {
                 </Menu.Items>
               </Transition>
             </Menu>
-
-            
           </div>
         )}
       </Disclosure>
-
     </div>
   );
 }

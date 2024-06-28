@@ -1,129 +1,130 @@
 import React, { useState } from "react";
-import axios from "axios";
 
-export default function GeneralForm({ userType }) {
-  const [fullName, setFullName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+const AddUserForm = () => {
   const [role, setRole] = useState("");
-  const [loginInfo, setLoginInfo] = useState({
-    username: "",
-    password: "",
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    phoneNumber: "",
+    specialization: "", // For Doctor
+    // Add other role-specific fields here if needed
   });
+
+  const handleRoleChange = (e) => {
+    setRole(e.target.value);
+    setFormData({ ...formData, specialization: "" }); // Reset role-specific fields
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    if (name === "fullName") setFullName(value);
-    else if (name === "emailAddress") setEmail(value);
-    else if (name === "password") setPassword(value);
-    else if (name === "role") setRole(value);
-  };
-
-  const generateLoginInfo = () => {
-    const username = fullName.replace(/\s+/g, "").toLowerCase();
-    const newPassword = Math.random().toString(36).slice(2);
-    setLoginInfo({ username, password: newPassword });
+    setFormData({ ...formData, [name]: value });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      const response = await axios.post("http://localhost:8080/user", {
-        fullName,
-        email,
-        role,
-        password,
-      });
-      console.log("Response:", response.data); // Log the API response
 
-      // Reset form data after successful submission
-      setFullName("");
-      setEmail("");
-      setPassword("");
-      setRole("");
-      setLoginInfo({
-        username: "",
-        password: "",
+    try {
+      const response = await fetch("http://localhost:5000/api/users", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ ...formData, role }),
       });
+
+      const data = await response.json();
+      console.log(data);
     } catch (error) {
-      console.error("Error submitting form:", error);
-      // Handle errors here, such as displaying an error message to the user
+      console.error("Error adding user:", error);
     }
   };
 
   return (
-    <div className="max-w-md mx-auto bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
-      <form onSubmit={handleSubmit}>
-        <label htmlFor="fullName" className="block text-gray-700 font-bold mb-2">
-          Full Name
-        </label>
-        <input
-          type="text"
-          id="fullName"
-          name="fullName"
-          value={fullName}
-          onChange={handleChange}
-          placeholder="Full Name"
-          className="border border-gray-300 rounded-md px-3 py-2 mb-3"
-        />
-
-        <label htmlFor="emailAddress" className="block text-gray-700 font-bold mb-2">
-          Email
-        </label>
-        <input
-          type="email"
-          id="emailAddress"
-          name="emailAddress"
-          value={email}
-          onChange={handleChange}
-          placeholder="Email Address"
-          className="border border-gray-300 rounded-md px-3 py-2 mb-3"
-        />
-        
-        <label htmlFor="password" className="block text-gray-700 font-bold mb-2">
-          Password
-        </label>
-        <input
-          type="password"
-          id="password"
-          name="password"
-          value={password}
-          onChange={handleChange}
-          placeholder="Password"
-          className="border border-gray-300 rounded-md px-3 py-2 mb-3"
-        />
-
-        <label htmlFor="role" className="block text-gray-700 font-bold mb-2">
-          Role
-        </label>
+    <form
+      onSubmit={handleSubmit}
+      className="max-w-md mx-auto mt-8 p-4 bg-white shadow-lg rounded-lg"
+    >
+      <h2 className="text-2xl font-bold mb-4">Add User</h2>
+      <div className="mb-4">
+        <label className="block text-gray-700">Role</label>
         <select
-          id="role"
           name="role"
           value={role}
-          onChange={handleChange}
-          className="border border-gray-300 rounded-md px-3 py-2 mb-3"
+          onChange={handleRoleChange}
+          className="w-full px-3 py-2 border rounded"
         >
           <option value="">Select Role</option>
           <option value="Doctor">Doctor</option>
+          <option value="Nurse">Nurse</option>
           <option value="Receptionist">Receptionist</option>
-          <option value="Other">Other</option>
+          <option value="Cashier">Cashier</option>
         </select>
+      </div>
+      <div className="mb-4">
+        <label className="block text-gray-700">Name</label>
+        <input
+          type="text"
+          name="name"
+          value={formData.name}
+          onChange={handleChange}
+          className="w-full px-3 py-2 border rounded"
+        />
+      </div>
+      <div className="mb-4">
+        <label className="block text-gray-700">Email</label>
+        <input
+          type="email"
+          name="email"
+          value={formData.email}
+          onChange={handleChange}
+          className="w-full px-3 py-2 border rounded"
+        />
+      </div>
+      <div className="mb-4">
+        <label className="block text-gray-700">Phone Number</label>
+        <input
+          type="text"
+          name="phoneNumber"
+          value={formData.phoneNumber}
+          onChange={handleChange}
+          className="w-full px-3 py-2 border rounded"
+        />
+      </div>
 
-        <button
-          type="button"
-          onClick={generateLoginInfo}
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4"
-        >
-          Generate Login Info
-        </button>
+      {role === "Doctor" && (
+        <div className="mb-4">
+          <label className="block text-gray-700">Specialization</label>
+          <input
+            type="text"
+            name="specialization"
+            value={formData.specialization}
+            onChange={handleChange}
+            className="w-full px-3 py-2 border rounded"
+          />
+        </div>
+      )}
 
-        <button
-          type="submit"
-          className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded ml-4 mt-4"
-        >
-          Submit
-        </button>
-      </form>
-    </div>
+      {role === "Nurse" && (
+        <div className="mb-4">
+          <label className="block text-gray-700">Field</label>
+          <input
+            type="text"
+            name="field"
+            value={formData.field}
+            onChange={handleChange}
+            className="w-full px-3 py-2 border rounded"
+          />
+        </div>
+      )}
+
+      <button
+        type="submit"
+        className="w-full bg-blue-500 text-white py-2 rounded"
+      >
+        Add User
+      </button>
+    </form>
   );
-}
+};
+
+export default AddUserForm;

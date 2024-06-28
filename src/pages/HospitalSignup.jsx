@@ -179,26 +179,27 @@ const SignupHospital = ({ prevStep, adminData, submitData }) => {
           />
         </div>
         <div className="mb-4">
-          <label className="block text-gray-50">Health Facility Logo</label>
+          <label className="block text-gray-50">Logo</label>
           <input
             type="file"
             name="logo"
             onChange={handleFileChange}
             className="w-full px-3 py-2 border rounded text-black"
+            required
           />
         </div>
-        <button
-          type="button"
-          onClick={prevStep}
-          className="w-full bg-gray-500 text-white py-2 rounded mb-4"
-        >
-          Previous
-        </button>
         <button
           type="submit"
           className="w-full bg-blue-500 text-white py-2 rounded"
         >
-          Sign Up
+          Submit
+        </button>
+        <button
+          type="button"
+          onClick={prevStep}
+          className="w-full bg-gray-500 text-white py-2 rounded mt-2"
+        >
+          Previous
         </button>
       </form>
     </div>
