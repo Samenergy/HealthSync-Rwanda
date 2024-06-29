@@ -9,12 +9,15 @@ export default function Login() {
 
   const handleSignIn = async () => {
     const data = { email, password };
-
+  
     try {
       const response = await axios.post("http://localhost:5000/api/login", data);
       console.log(response.data);
-
+  
       if (response.status === 200) {
+        // Save the token to localStorage
+        localStorage.setItem("token", response.data.token);
+  
         const userRole = response.data.user.role.toLowerCase();
         switch (userRole) {
           case "administrator":
@@ -34,10 +37,6 @@ export default function Login() {
     } catch (error) {
       console.error("Login error:", error);
     }
-  };
-
-  const handleRoleChange = (e) => {
-    setRole(e.target.value);
   };
 
   return (
@@ -111,26 +110,7 @@ export default function Login() {
             </div>
           </div>
 
-          <div>
-            <label
-              htmlFor="role"
-              className="block text-sm font-medium leading-6 text-gray-50"
-            >
-              Role
-            </label>
-            <select
-              id="role"
-              name="role"
-              value={role}
-              onChange={handleRoleChange}
-              className="block w-full px-4 py-1.5 rounded-md border-0 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-            >
-              <option value="">Select your role</option>
-              <option value="administrator">Administrator</option>
-              <option value="doctor">Doctor</option>
-              <option value="receptionist">Receptionist</option>
-            </select>
-          </div>
+          
 
           <div>
             <button
