@@ -9,11 +9,11 @@ function DocDashboard() {
     <div className="bg-[#DDF4FC] py-5 px-20 min-h-screen">
       <h1 className="font-bold text-4xl">Dashboard</h1>
       <div>
-        <div className="flex gap-20">
+        <div className="flex gap-10">
           <AppointmentTable />
           <Graphtable />
         </div>
-        <div className="flex gap-20">
+        <div className="flex gap-10">
           <Labtable />
           <Billing />
         </div>

@@ -12,6 +12,7 @@ import LandingPatientlistRec from "./LandingPatientList/LandingPatientlistRec";
 import AdminDashboard from "./Admin/LandingpageAdmin/AdminDashboard";
 import Userpage from "./Admin/Users/LandingUsers/Userpage";
 import SignupProcess from "./pages/SignupAdminAndHospital";
+import Patientinfo from "./LandingDash/Dashboard/Patientdata";
 
 const App = () => {
   return (
@@ -21,16 +22,18 @@ const App = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignupProcess />} />
 
+
         <Route path="/Dashboard" element={<LandingDashboard />} />
         <Route path="/Scheduling" element={<Schedulingpage />} />
-        <Route path="PatientList" element={<LandingPatientlist />} />
-        <Route path="Reception" element={<LandingRecdash />} />
+        <Route path="/Patientlist" element={<LandingPatientlist />} />
+        <Route path="/Reception" element={<LandingRecdash />} />
         <Route
-          path="PatientlistReception"
+          path="/PatientlistReception"
           element={<LandingPatientlistRec />}
         />
-        <Route path="Admin" element={<AdminDashboard />} />
-        <Route path="Users" element={<Userpage />} />
+        <Route path="/Admin" element={<AdminDashboard />} />
+        <Route path="/Users" element={<Userpage />} />
+        <Route path="/Patientinfo" element={<Patientinfo />} />
       </Routes>
     </div>
   );

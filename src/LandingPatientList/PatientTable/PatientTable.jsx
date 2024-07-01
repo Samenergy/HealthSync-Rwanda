@@ -53,7 +53,7 @@ function PatientTable() {
               <td>{exam.DateofBirth}</td>
               <td>{exam.PhoneNumber}</td>
               <td>
-                <a href="">
+                <a href="/patientinfo">
                   <button className="text-center pl-2 text-lg hover:text-[#00afee] ">
                     <FaEye />
                   </button>
