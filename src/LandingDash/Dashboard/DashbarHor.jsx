@@ -42,7 +42,7 @@ function DashbarHor() {
   });
 
   return (
-    <div className="flex bg-[#DDF4FC] lg:w-[1300px]">
+    <div className="flex bg-[#DDF4FC] lg:w-[1300px]  ">
       <div className="px-20 py-6 flex items-center gap-28">
         <div className="flex">
           <input type="text" placeholder="Search..." className="px-2  " />

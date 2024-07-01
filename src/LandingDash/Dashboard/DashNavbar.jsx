@@ -11,7 +11,7 @@ function DashNavbar() {
   const [open, setOpen] = useState(true);
 
   return (
-    <div className="flex border border-[#00AFEE]  shadow-xl rounded-lg ">
+    <div className="flex border border-[#00AFEE]  shadow-xl rounded-lg  ">
       <div
         className={`bg-[#F9F8F4] h-screen p-5 pt-8 ${
           open ? "w-[220px]" : "w-[70px]"
