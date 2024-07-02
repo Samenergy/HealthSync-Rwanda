@@ -1,5 +1,4 @@
 import React from "react";
-
 const PatientInfo = ({ patient }) => {
   return (
     <div className="max-w-md  bg-white shadow-lg rounded-lg overflow-hidden">
@@ -9,7 +8,7 @@ const PatientInfo = ({ patient }) => {
             <img
               src={patient.image}
               alt={`${patient.name}'s profile`}
-              className="w-32 h-auto rounded-full mx-auto"
+              className="w-24 h-auto rounded-full "
             />
           </div>
           <div>
@@ -21,54 +20,55 @@ const PatientInfo = ({ patient }) => {
         </div>
         <table className="text-gray-700 text-base">
           <tr>
-            <td>Date of Birth:</td>
-            <td>{patient.dob}</td>
+            <td className="font-bold">Gender</td>
+            <td className="font-semibold pl-10 ">{patient.gender}</td>
           </tr>
           <tr>
-            <td>Age:</td>
-            <td>{patient.age}</td>
+            <td className="font-bold">Date of Birth</td>
+            <td className="font-semibold pl-10 ">{patient.dob}</td>
           </tr>
           <tr>
-            <td>Gender:</td>
-            <td>{patient.gender}</td>
-          </tr>
-          <tr>
-            <td>Height:</td>
-            <td>{patient.height}</td>
-          </tr>
-          <tr>
-            <td>Weight:</td>
-            <td>{patient.weight}</td>
-          </tr>
-          <tr>
-            <td>BMI:</td>
-            <td>{patient.bmi}</td>
-          </tr>
-          <tr>
-            <td>Blood Pressure:</td>
-            <td>{patient.bloodPressure}</td>
-          </tr>
-          <tr>
-            <td>Contact:</td>
-            <td>{patient.contact}</td>
+            <td className="font-bold">Age</td>
+            <td  className="font-semibold pl-10 ">{patient.age}</td>
           </tr>
 
           <tr>
-            <td>Allergies:</td>
-            <td>{patient.allergies}</td>
+            <td className="font-bold">Height</td>
+            <td className="font-semibold pl-10 ">{patient.height}</td>
           </tr>
           <tr>
-            <td>Immunizations:</td>
-            <td>{patient.immunizations}</td>
+            <td className="font-bold">Weight</td>
+            <td className="font-semibold pl-10 ">{patient.weight}</td>
+          </tr>
+          <tr>
+            <td className="font-bold">BMI</td>
+            <td className="font-semibold pl-10 ">{patient.bmi}</td>
+          </tr>
+          <tr>
+            <td className="font-bold">Blood Pressure</td>
+            <td className="font-semibold pl-10 ">{patient.bloodPressure}</td>
+          </tr>
+          <tr>
+            <td className="font-bold">Contact</td>
+            <td className="font-semibold pl-10 ">{patient.contact}</td>
           </tr>
 
           <tr>
-            <td>Insurance:</td>
-            <td>{patient.insurance}</td>
+            <td className="font-bold">Allergies</td>
+            <td className="font-semibold pl-10 ">{patient.allergies}</td>
           </tr>
           <tr>
-            <td>Social History:</td>
-            <td>{patient.socialHistory}</td>
+            <td className="font-bold">Immunizations</td>
+            <td className="font-semibold pl-10 ">{patient.immunizations}</td>
+          </tr>
+
+          <tr>
+            <td className="font-bold">Insurance</td>
+            <td className="font-semibold pl-10 ">{patient.insurance}</td>
+          </tr>
+          <tr>
+            <td className="font-bold">Social History</td>
+            <td className="font-semibold pl-10 ">{patient.socialHistory}</td>
           </tr>
         </table>
       </div>

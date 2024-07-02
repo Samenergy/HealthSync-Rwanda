@@ -6,7 +6,7 @@ import { PiTestTubeFill } from "react-icons/pi";
 
 const testCategories = {
   "Blood Tests": {
-    icon: <PiTestTubeFill className="text-red-600 bg-red-200  " />, 
+    icon: <PiTestTubeFill className="text-red-600 " />, 
     tests: [
       "Complete Blood Count (CBC)",
       "Basic Metabolic Panel (BMP)",
@@ -23,11 +23,11 @@ const testCategories = {
     ],
   },
   "Imaging Tests": {
-    icon: <FaRadiation className="text-yellow-600 bg-yellow-200" />, 
+    icon: <FaRadiation className="text-yellow-600 " />, 
     tests: ["X-rays", "CT Scans", "MRI", "Ultrasound", "Mammography"],
   },
   "Cardiovascular Tests": {
-    icon: <FaHeartbeat className="text-red-600 bg-red-200" />, 
+    icon: <FaHeartbeat className="text-red-600 " />, 
     tests: [
       "Electrocardiogram (ECG or EKG)",
       "Echocardiogram",
@@ -35,13 +35,10 @@ const testCategories = {
     ],
   },
   "Endoscopic Procedures": {
-    icon: <FaMicroscope className="text-green-600 bg-green-200 " />, 
+    icon: <FaMicroscope className="text-green-600 " />, 
     tests: ["Colonoscopy", "Endoscopy", "Bronchoscopy"],
   },
-  Others: {
-    icon: <FaCogs className="text-blue-600 bg-blue-200" />, 
-    tests: ["Hearing tests", "Laryngoscopy", "Vestibular tests"],
-  },
+  
 };
 
 const Quickaction = () => {
@@ -83,7 +80,7 @@ const Quickaction = () => {
   return (
     <div className=" max-w-screen-lg mx-auto -ml-20">
       <h1 className="text-2xl font-bold mb-6 text-left">Quick Actions</h1>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 gap-4">
         {Object.keys(testCategories).map((category, index) => (
           <button
             key={index}
