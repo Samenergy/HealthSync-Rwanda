@@ -2,6 +2,7 @@ import React from "react";
 import DashNavbar from "./DashNavbar";
 import DashbarHor from "./DashbarHor";
 import PatientInfo from "./Patientinfo";
+import Quickaction from "./Quickaction";
 const patient = {
   name: "John Doe",
   dob: "01/10/1980",
@@ -33,8 +34,9 @@ const Patientdata = () => {
       <DashNavbar />
       <div>
         <DashbarHor />
-        <div className="bg-[#DDF4FC] py-5 px-20 min-h-screen">
+        <div className="bg-[#DDF4FC] py-5 px-20 min-h-screen grid grid-cols-2">
           <PatientInfo patient={patient} />
+          <Quickaction/>
         </div>
       </div>
     </div>
