@@ -1,7 +1,7 @@
 import React from "react";
 const PatientInfo = ({ patient }) => {
   return (
-    <div className="max-w-md  bg-white shadow-lg rounded-lg overflow-hidden">
+    <div className="max-w-md h-fit  bg-white shadow-lg rounded-lg overflow-hidden">
       <div className="px-6 py-4">
         <div className="flex items-center gap-5">
           <div className="mb-4">
