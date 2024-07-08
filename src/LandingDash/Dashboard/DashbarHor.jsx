@@ -57,7 +57,7 @@ function DashbarHor() {
 
       <Disclosure as="nav" className="bg-[#DDF4FC]">
         {({ open }) => (
-          <div className="mt-[16px] flex items-center fixed right-20">
+          <div className="mt-[16px] flex items-center  ml-52">
             {/* Profile dropdown */}
             <button
               type="button"

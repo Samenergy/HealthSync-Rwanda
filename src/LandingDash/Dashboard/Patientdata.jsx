@@ -4,6 +4,7 @@ import DashbarHor from "./DashbarHor";
 import PatientInfo from "./Patientinfo";
 import Quickaction from "./Quickaction";
 import VisitsSection from "./VisitCard";
+
 const patient = {
   name: "John Doe",
   dob: "01/10/1980",
@@ -38,9 +39,9 @@ const Patientdata = () => {
         <div className="bg-[#DDF4FC] py-5 px-20 min-h-screen grid grid-cols-2">
           <PatientInfo patient={patient} />
           <Quickaction/>
-          
+          <VisitsSection/>
         </div>
-        <VisitsSection/>
+        
       </div>
     </div>
   );

@@ -2,3 +2,20 @@ body{
     overflow-x: 0%;
 
 }
+/* index.css or App.css */
+.swiper-button-prev, .swiper-button-next {
+    background-color: #00afee;
+    color: white;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+  }
+  
+  .swiper-button-prev::after, .swiper-button-next::after {
+    font-size: 16px;
+  }
+  
