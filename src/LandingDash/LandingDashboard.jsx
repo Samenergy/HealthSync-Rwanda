@@ -9,8 +9,8 @@ const Landingpage = () => {
     <div className="flex h-screen bg-[#DDF4FC]">
       <DashNavbar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
       <div
-        className={`flex-1 ml-${
-          sidebarOpen ? "52" : "1/6"
+        className={`flex-1 ${
+          sidebarOpen ? "ml-52" : "-ml-5"
         } p-6 pt-20 transition-all duration-500`}
       >
         <DocDashboard />

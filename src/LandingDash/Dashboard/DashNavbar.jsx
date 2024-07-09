@@ -132,7 +132,7 @@ function DashNavbar({ sidebarOpen, setSidebarOpen }) {
           <div className="ml-4 text-gray-800">{formattedDateTime}</div>
           <Disclosure as="nav" className="bg-[#F9F8F4]">
             {({ open }) => (
-              <div className="flex items-center justify-end">
+              <div className="flex items-center justify-end px-10">
                 <button
                   type="button"
                   className="relative rounded-full bg-white p-1 mr-5 text-[#00afee] hover:text-black focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-[#00afee]"
