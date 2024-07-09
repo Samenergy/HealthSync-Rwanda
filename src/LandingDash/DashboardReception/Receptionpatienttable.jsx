@@ -11,6 +11,18 @@ function Receptionpatienttable() {
       DateofBirth: "04/05/2004",
       PhoneNumber: "0712312356",
     },
+    {
+      Name: "Jane Doe",
+      Gender: "Female",
+      DateofBirth: "8/29/2066",
+      PhoneNumber: "0712312356",
+    },
+    {
+      Name: "Amy Ward",
+      Gender: "Female",
+      DateofBirth: "8/29/2006",
+      PhoneNumber: "0712312356",
+    },
   ]);
 
   const [showPasswordModal, setShowPasswordModal] = useState(false);

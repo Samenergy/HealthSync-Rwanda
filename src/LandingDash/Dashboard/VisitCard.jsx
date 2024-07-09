@@ -68,7 +68,7 @@ const VisitsSection = () => {
       medication: ["Pain relievers", "Anti-inflammatory drugs"],
       images: [
         "https://images.pexels.com/photos/4225923/pexels-photo-4225923.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-      ],
+      "https://images.pexels.com/photos/7088828/pexels-photo-7088828.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"],
       details:
         "Patient reported severe arm pain. Diagnosed with possible fracture.",
       notes: "Follow up in 2 weeks.",
@@ -147,7 +147,7 @@ const VisitsSection = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-lg mt-10">
+    <div className="max-w-3xl  p-6 bg-white shadow-lg rounded-lg mt-10">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-xl font-bold">Visits</h2>
         <div className="flex gap-4 items-center">

@@ -16,7 +16,7 @@ import Patientinfo from "./LandingDash/Dashboard/Patientdata";
 
 const App = () => {
   return (
-    <div className="overflow-x-hidden">
+    <div className="overflow-x-hidden bg-[#DDF4FC]">
       <Routes>
         <Route path="/" element={<Landingpage />} />
         <Route path="/login" element={<Login />} />

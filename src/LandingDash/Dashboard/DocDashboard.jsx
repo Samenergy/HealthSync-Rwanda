@@ -6,7 +6,7 @@ import Billing from "./Billing";
 
 function DocDashboard() {
   return (
-    <div className="bg-[#DDF4FC] py-5 px-20 min-h-screen">
+    <div className="bg-[#DDF4FC] py-5 min-h-screen">
       <h1 className="font-bold text-4xl">Dashboard</h1>
       <div>
         <div className="flex gap-10">
