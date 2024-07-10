@@ -13,6 +13,7 @@ import AdminDashboard from "./Admin/LandingpageAdmin/AdminDashboard";
 import Userpage from "./Admin/Users/LandingUsers/Userpage";
 import SignupProcess from "./pages/SignupAdminAndHospital";
 import Patientinfo from "./LandingDash/Dashboard/Patientdata";
+import Profile from "./Admin/Dashboard/Profile";
 
 const App = () => {
   return (
@@ -21,7 +22,6 @@ const App = () => {
         <Route path="/" element={<Landingpage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignupProcess />} />
-
 
         <Route path="/Dashboard" element={<LandingDashboard />} />
         <Route path="/Scheduling" element={<Schedulingpage />} />
@@ -33,7 +33,9 @@ const App = () => {
         />
         <Route path="/Admin" element={<AdminDashboard />} />
         <Route path="/Users" element={<Userpage />} />
+        <Route path="/Profile" element={<Profile />} />
         <Route path="/Patientinfo" element={<Patientinfo />} />
+
       </Routes>
     </div>
   );

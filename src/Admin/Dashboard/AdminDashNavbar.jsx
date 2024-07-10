@@ -11,14 +11,9 @@ import { Disclosure, Menu, Transition } from "@headlessui/react";
 import { BellIcon } from "@heroicons/react/24/outline";
 import { format } from "date-fns";
 
-const user = {
-  name: "Medical center Clinic",
-  email: "medicalcenter@gmail.com",
-  imageUrl: "/assets/download.png",
-};
-
+// Admin profile
 const userNavigation = [
-  { name: "Your Profile", href: "#" },
+  { name: "Your Profile", href: "/profile" },
   { name: "Settings", href: "#" },
   { name: "Sign out", href: "/login" },
 ];
@@ -29,8 +24,35 @@ function classNames(...classes) {
 
 function AdminDashNavbar({ sidebarOpen, setSidebarOpen }) {
   const [currentDateTime, setCurrentDateTime] = useState(new Date());
+  const [adminProfile, setAdminProfile] = useState(null);
+  const [hospitalProfile, setHospitalProfile] = useState(null);
 
   useEffect(() => {
+    const fetchProfiles = async () => {
+      try {
+        const response = await fetch(
+          "http://localhost:5000/api/admin/admin-data",
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token}`, // Token handling
+            },
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`); // Handle HTTP errors
+        }
+
+        const data = await response.json();
+        setAdminProfile(data.admin);
+        setHospitalProfile(data.hospital);
+      } catch (error) {
+        setError(error.message); // Set error message
+      } finally {
+        setLoading(false); // Set loading to false after fetch
+      }
+    };
     const interval = setInterval(() => {
       setCurrentDateTime(new Date());
     }, 1000); // Update every second
@@ -38,6 +60,26 @@ function AdminDashNavbar({ sidebarOpen, setSidebarOpen }) {
     return () => {
       clearInterval(interval);
     };
+  }, []);
+
+  useEffect(() => {
+    // Fetch both profiles
+    const fetchProfiles = async () => {
+      try {
+        const response = await fetch("/api/admin-data", {
+          headers: {
+            Authorization: `Bearer ${token}`, // Replace with your token handling logic
+          },
+        });
+        const data = await response.json();
+        setAdminProfile(data.admin);
+        setHospitalProfile(data.hospital);
+      } catch (error) {
+        console.error("Failed to fetch profiles:", error);
+      }
+    };
+
+    fetchProfiles();
   }, []);
 
   const formattedDateTime = format(
@@ -64,6 +106,7 @@ function AdminDashNavbar({ sidebarOpen, setSidebarOpen }) {
             alt="Medical Center Clinic Logo"
           />
         </div>
+        <div>{/* hospital profile */}</div>
         <div
           className={`pt-[50px] px-2 font-bold text-md flex flex-col  justify-between ${
             !sidebarOpen ? "items-center" : "items-left"
@@ -136,13 +179,16 @@ function AdminDashNavbar({ sidebarOpen, setSidebarOpen }) {
                   <span className="sr-only">View notifications</span>
                   <BellIcon className="h-8 w-8" aria-hidden="true" />
                 </button>
+
                 <Menu as="div" className="relative">
                   <div>
                     <Menu.Button className="relative flex max-w-xs items-center rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
                       <img
                         className="h-10 w-10 rounded-full"
-                        src={user.imageUrl}
-                        alt={`${user.name}'s profile picture`}
+                        src={adminProfile?.imageUrl || "/assets/default.png"}
+                        alt={`${
+                          adminProfile?.name || "Admin"
+                        }'s profile picture`}
                       />
                     </Menu.Button>
                   </div>
@@ -179,7 +225,6 @@ function AdminDashNavbar({ sidebarOpen, setSidebarOpen }) {
           </Disclosure>
         </header>
         <main className="flex-1 pt-16 pb-6 px-4 bg-[#DDF4FC]">
-          {/* Placeholder for main content */}
         </main>
       </div>
     </div>
