@@ -1,3 +1,4 @@
+// App.js
 import React from "react";
 import { Route, Routes } from "react-router-dom";
 import Login from "./pages/Login";
@@ -14,6 +15,7 @@ import Userpage from "./Admin/Users/LandingUsers/Userpage";
 import SignupProcess from "./pages/SignupAdminAndHospital";
 import Patientinfo from "./LandingDash/Dashboard/Patientdata";
 import Profile from "./Admin/Dashboard/Profile";
+import PrivateRoute from "./PrivateRoute";
 
 const App = () => {
   return (
@@ -23,19 +25,15 @@ const App = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignupProcess />} />
 
-        <Route path="/Dashboard" element={<LandingDashboard />} />
-        <Route path="/Scheduling" element={<Schedulingpage />} />
-        <Route path="/Patientlist" element={<LandingPatientlist />} />
-        <Route path="/Reception" element={<LandingRecdash />} />
-        <Route
-          path="/PatientlistReception"
-          element={<LandingPatientlistRec />}
-        />
-        <Route path="/Admin" element={<AdminDashboard />} />
-        <Route path="/Users" element={<Userpage />} />
-        <Route path="/Profile" element={<Profile />} />
-        <Route path="/Patientinfo" element={<Patientinfo />} />
-
+        <Route path="/Dashboard" element={<PrivateRoute element={LandingDashboard} />} />
+        <Route path="/Scheduling" element={<PrivateRoute element={Schedulingpage} />} />
+        <Route path="/Patientlist" element={<PrivateRoute element={LandingPatientlist} />} />
+        <Route path="/Reception" element={<PrivateRoute element={LandingRecdash} />} />
+        <Route path="/PatientlistReception" element={<PrivateRoute element={LandingPatientlistRec} />} />
+        <Route path="/Admin" element={<PrivateRoute element={AdminDashboard} />} />
+        <Route path="/Users" element={<PrivateRoute element={Userpage} />} />
+        <Route path="/Profile" element={<PrivateRoute element={Profile} />} />
+        <Route path="/Patientinfo" element={<PrivateRoute element={Patientinfo} />} />
       </Routes>
     </div>
   );
