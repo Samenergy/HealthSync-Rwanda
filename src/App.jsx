@@ -1,4 +1,3 @@
-// App.js
 import React from "react";
 import { Route, Routes } from "react-router-dom";
 import Login from "./pages/Login";
@@ -25,15 +24,36 @@ const App = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignupProcess />} />
 
-        <Route path="/Dashboard" element={<PrivateRoute element={LandingDashboard} />} />
-        <Route path="/Scheduling" element={<PrivateRoute element={Schedulingpage} />} />
-        <Route path="/Patientlist" element={<PrivateRoute element={LandingPatientlist} />} />
-        <Route path="/Reception" element={<PrivateRoute element={LandingRecdash} />} />
-        <Route path="/PatientlistReception" element={<PrivateRoute element={LandingPatientlistRec} />} />
-        <Route path="/Admin" element={<PrivateRoute element={AdminDashboard} />} />
-        <Route path="/Users" element={<PrivateRoute element={Userpage} />} />
-        <Route path="/Profile" element={<PrivateRoute element={Profile} />} />
-        <Route path="/Patientinfo" element={<PrivateRoute element={Patientinfo} />} />
+        <Route
+          path="/Dashboard"
+          element={<PrivateRoute component={LandingDashboard} />}
+        />
+        <Route
+          path="/Scheduling"
+          element={<PrivateRoute component={Schedulingpage} />}
+        />
+        <Route
+          path="/Patientlist"
+          element={<PrivateRoute component={LandingPatientlist} />}
+        />
+        <Route
+          path="/Reception"
+          element={<PrivateRoute component={LandingRecdash} />}
+        />
+        <Route
+          path="/PatientlistReception"
+          element={<PrivateRoute component={LandingPatientlistRec} />}
+        />
+        <Route
+          path="/Admin"
+          element={<PrivateRoute component={AdminDashboard} />}
+        />
+        <Route path="/Users" element={<PrivateRoute component={Userpage} />} />
+        <Route path="/Profile" element={<PrivateRoute component={Profile} />} />
+        <Route
+          path="/Patientinfo"
+          element={<PrivateRoute component={Patientinfo} />}
+        />
       </Routes>
     </div>
   );

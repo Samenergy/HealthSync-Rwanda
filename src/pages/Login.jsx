@@ -17,6 +17,7 @@ export default function Login() {
       if (response.status === 200) {
         // Save the token to localStorage
         localStorage.setItem("token", response.data.token);
+        
   
         const userRole = response.data.user.role.toLowerCase();
         switch (userRole) {

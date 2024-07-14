@@ -3,7 +3,7 @@ import Swal from "sweetalert2";
 
 const AddUserForm = () => {
   const [role, setRole] = useState("");
-  const [hospitalId, setHospitalId] = useState(""); // New state for hospitalId
+  const [hospitalId, setHospitalId] = useState("");
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -14,7 +14,6 @@ const AddUserForm = () => {
     password: "",
   });
 
-  // List of fields and responsibilities for dropdowns
   const fields = [
     "Cardiology",
     "Neurology",
@@ -58,7 +57,7 @@ const AddUserForm = () => {
       specialization: "",
       field: "",
       responsibilities: "",
-    }); // Reset role-specific fields
+    });
   };
 
   const handleChange = (e) => {
@@ -81,7 +80,6 @@ const AddUserForm = () => {
         return;
       }
 
-      // Check if user already exists
       const userCheckResponse = await fetch(
         "http://localhost:5000/api/admin/check-user",
         {
@@ -108,7 +106,6 @@ const AddUserForm = () => {
         return;
       }
 
-      // Proceed to add the user
       const response = await fetch("http://localhost:5000/api/admin/add-user", {
         method: "POST",
         headers: {
@@ -129,7 +126,6 @@ const AddUserForm = () => {
         text: `User ${formData.name} was added successfully.`,
       });
 
-      // Clear the form
       setFormData({
         name: "",
         email: "",
@@ -153,8 +149,12 @@ const AddUserForm = () => {
     const fetchHospitalId = () => {
       const token = localStorage.getItem("token");
       if (token) {
-        const decodedToken = JSON.parse(atob(token.split(".")[1]));
-        setHospitalId(decodedToken.hospitalId); // Set hospitalId from token payload
+        try {
+          const decodedToken = JSON.parse(atob(token.split(".")[1]));
+          setHospitalId(decodedToken.hospitalId);
+        } catch (error) {
+          console.error("Invalid token", error);
+        }
       }
     };
     fetchHospitalId();
@@ -163,7 +163,7 @@ const AddUserForm = () => {
   return (
     <form
       onSubmit={handleSubmit}
-      className="max-w-md mx-auto mt-8 p-4 bg-white shadow-lg rounded-lg  "
+      className="max-w-md mx-auto mt-8 p-4 bg-white shadow-lg rounded-lg"
     >
       <h2 className="text-2xl font-bold mb-4">Add User</h2>
       <div className="flex gap-5">
@@ -225,7 +225,7 @@ const AddUserForm = () => {
             <option value="Nurse">Nurse</option>
             <option value="Receptionist">Receptionist</option>
             <option value="Cashier">Cashier</option>
-            <option value="Patient">Patient</option> {/* Added Patient role */}
+            <option value="Patient">Patient</option>
           </select>
         </div>
         {role === "Doctor" && (
@@ -283,12 +283,8 @@ const AddUserForm = () => {
           </div>
         )}
       </div>
-      <input type="hidden" name="hospitalId" value={hospitalId} />{" "}
-      {/* Hidden field for hospitalId */}
-      <button
-        type="submit"
-        className="w-full bg-blue-500 text-white py-2 rounded"
-      >
+      <input type="hidden" name="hospitalId" value={hospitalId} />
+      <button type="submit" className="w-full bg-blue-500 text-white py-2 rounded">
         Add User
       </button>
     </form>

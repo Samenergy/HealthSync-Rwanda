@@ -24,35 +24,12 @@ function classNames(...classes) {
 
 function AdminDashNavbar({ sidebarOpen, setSidebarOpen }) {
   const [currentDateTime, setCurrentDateTime] = useState(new Date());
-  const [adminProfile, setAdminProfile] = useState(null);
-  const [hospitalProfile, setHospitalProfile] = useState(null);
+  const adminProfile = {
+    name: "Admin",
+    imageUrl: "/assets/default.png", // Default image URL
+  };
 
   useEffect(() => {
-    const fetchProfiles = async () => {
-      try {
-        const response = await fetch(
-          "http://localhost:5000/api/admin/admin-data",
-          {
-            method: "GET",
-            headers: {
-              Authorization: `Bearer ${token}`, // Token handling
-            },
-          }
-        );
-
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`); // Handle HTTP errors
-        }
-
-        const data = await response.json();
-        setAdminProfile(data.admin);
-        setHospitalProfile(data.hospital);
-      } catch (error) {
-        setError(error.message); // Set error message
-      } finally {
-        setLoading(false); // Set loading to false after fetch
-      }
-    };
     const interval = setInterval(() => {
       setCurrentDateTime(new Date());
     }, 1000); // Update every second
@@ -62,33 +39,13 @@ function AdminDashNavbar({ sidebarOpen, setSidebarOpen }) {
     };
   }, []);
 
-  useEffect(() => {
-    // Fetch both profiles
-    const fetchProfiles = async () => {
-      try {
-        const response = await fetch("/api/admin-data", {
-          headers: {
-            Authorization: `Bearer ${token}`, // Replace with your token handling logic
-          },
-        });
-        const data = await response.json();
-        setAdminProfile(data.admin);
-        setHospitalProfile(data.hospital);
-      } catch (error) {
-        console.error("Failed to fetch profiles:", error);
-      }
-    };
-
-    fetchProfiles();
-  }, []);
-
   const formattedDateTime = format(
     currentDateTime,
     "EEEE, MMMM d, yyyy h:mm:ss a"
   );
 
   return (
-    <div className="flex h-screen bg-[#DDF4FC]">
+    <div className="flex h-screen bg-[#DDF4FC] ">
       {/* Sidebar */}
       <div
         className={`fixed top-0 left-0 h-screen border border-[#ffffff] shadow-xl rounded-lg transition-all duration-500 ease-in-out ${
@@ -96,17 +53,34 @@ function AdminDashNavbar({ sidebarOpen, setSidebarOpen }) {
         } bg-[#F9F8F4] p-5 pt-8`}
       >
         <div>
-          <img
-            src={
-              sidebarOpen
-                ? "./src/assets/logo.JPG"
-                : "./src/assets/logo (2).JPG"
-            }
-            className="w-[170px]"
-            alt="Medical Center Clinic Logo"
-          />
+          <a href="">
+            <img
+              src={
+                sidebarOpen
+                  ? "./src/assets/logo.JPG"
+                  : "./src/assets/logo (2).JPG"
+              }
+              className="w-[170px]"
+              alt="HealthSync RwandaLogo"
+            />
+          </a>
         </div>
-        <div>{/* hospital profile */}</div>
+        <div className="flex flex-col items-center justify-center mt-6">
+          <div className="relative bg-[#ddf4fc] p-2 shadow-2xl ">
+            <img
+              src="./src/assets/saaamu.PNG"
+              alt="Hospital Logo"
+              className="w-[100px] h-auto rounded-lg "
+            />
+          </div>
+          <div className="flex flex-col items-center justify-center mt-5">
+            <h1 className="text-xl font-bold">King Faisal Hospital</h1>
+            <h2 className="text-sm font-medium">Medical Center</h2>
+          </div>
+        </div>
+        <h1 className="mt-5 text-center uppercase font-semibold text-xs underline -mb-10 ">
+          Main
+        </h1>
         <div
           className={`pt-[50px] px-2 font-bold text-md flex flex-col  justify-between ${
             !sidebarOpen ? "items-center" : "items-left"
@@ -183,13 +157,13 @@ function AdminDashNavbar({ sidebarOpen, setSidebarOpen }) {
                 <Menu as="div" className="relative">
                   <div>
                     <Menu.Button className="relative flex max-w-xs items-center rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
-                      <img
-                        className="h-10 w-10 rounded-full"
-                        src={adminProfile?.imageUrl || "/assets/default.png"}
-                        alt={`${
-                          adminProfile?.name || "Admin"
-                        }'s profile picture`}
-                      />
+                      {adminProfile && (
+                        <img
+                          className="h-10 w-10 rounded-full"
+                          src={adminProfile.imageUrl}
+                          alt={`${adminProfile.name}'s profile picture`}
+                        />
+                      )}
                     </Menu.Button>
                   </div>
                   <Transition
@@ -225,6 +199,7 @@ function AdminDashNavbar({ sidebarOpen, setSidebarOpen }) {
           </Disclosure>
         </header>
         <main className="flex-1 pt-16 pb-6 px-4 bg-[#DDF4FC]">
+          {/* Content goes here */}
         </main>
       </div>
     </div>

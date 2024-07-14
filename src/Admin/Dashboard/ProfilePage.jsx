@@ -1,43 +1,43 @@
 import React, { useState, useEffect } from "react";
 
 function ProfilePage() {
-  const [adminProfile, setAdminProfile] = useState(null);
+  const [userProfile, setUserProfile] = useState(null);
   const [hospitalProfile, setHospitalProfile] = useState(null);
-  const [loading, setLoading] = useState(true);  // Added loading state
-  const [error, setError] = useState(null);  // Added error state
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const token = localStorage.getItem("token");
 
   useEffect(() => {
     const fetchProfiles = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/admin/admin-data", {
+        const response = await fetch("http://localhost:5000/api/user/data", {
           method: "GET",
           headers: {
-            Authorization: `Bearer ${token}`,  // Token handling
+            Authorization: `Bearer ${token}`,
           },
         });
 
         if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);  // Handle HTTP errors
+          throw new Error(`HTTP error! status: ${response.status}`);
         }
 
         const data = await response.json();
-        setAdminProfile(data.admin);
+        setUserProfile(data.user);
         setHospitalProfile(data.hospital);
       } catch (error) {
-        setError(error.message);  // Set error message
+        setError(error.message);
       } finally {
-        setLoading(false);  
+        setLoading(false);
       }
     };
 
     fetchProfiles();
-  }, [token]);  
+  }, [token]);
 
   if (loading) {
     return (
       <div className="p-6 bg-[#DDF4FC] min-h-screen flex items-center justify-center">
-        <p>Loading...</p>  {/* Loading indicator */}
+        <p>Loading...</p>
       </div>
     );
   }
@@ -45,7 +45,7 @@ function ProfilePage() {
   if (error) {
     return (
       <div className="p-6 bg-[#DDF4FC] min-h-screen flex items-center justify-center">
-        <p className="text-red-500">{error}</p>  {/* Display error message */}
+        <p className="text-red-500">{error}</p>
       </div>
     );
   }
@@ -53,30 +53,30 @@ function ProfilePage() {
   return (
     <div className="p-6 bg-[#DDF4FC] min-h-screen ml-16">
       <div className="bg-white p-6 rounded-lg shadow-md">
-        <h2 className="text-xl font-semibold mb-4">Admin Profile</h2>
-        {adminProfile ? (
+        <h2 className="text-xl font-semibold mb-4">User Profile</h2>
+        {userProfile ? (
           <div>
             <div className="flex items-center mb-4">
               <img
-                src={adminProfile.picture || "/default-avatar.png"}
-                alt="Admin Avatar"
+                src={userProfile.picture || "/default-avatar.png"}
+                alt="User Avatar"
                 className="w-16 h-16 rounded-full mr-4"
               />
               <div>
                 <p>
-                  <strong>Name:</strong> {adminProfile.name}
+                  <strong>Name:</strong> {userProfile.name}
                 </p>
                 <p>
-                  <strong>Email:</strong> {adminProfile.email}
+                  <strong>Email:</strong> {userProfile.email}
                 </p>
                 <p>
-                  <strong>Role:</strong> {adminProfile.role || "N/A"}
+                  
                 </p>
               </div>
             </div>
           </div>
         ) : (
-          <p>Loading admin profile...</p>
+          <p>Loading user profile...</p>
         )}
       </div>
       <div className="mt-6 bg-white p-6 rounded-lg shadow-md">

@@ -1,82 +1,84 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { MdDelete } from "react-icons/md";
 import { FaEye } from "react-icons/fa";
-import { FaSort } from "react-icons/fa";
+import axios from "axios";
 
 function Patientlist() {
-  const [LabExams] = useState([
-    {
-      patientName: "John Doe",
-      Gender: "Male",
-      DateofBirth: "04/05/2004",
-      PhoneNumber: "0712312356",
-      DoctorType: "Neurology",
-    },
-    {
-      patientName: "Jane Smith",
-      Gender: "Female",
-      DateofBirth: "02/15/2002",
-      PhoneNumber: "0723456789",
-      DoctorType: "Pediatrician",
-    },
-    {
-      patientName: "Alice Johnson",
-      Gender: "Female",
-      DateofBirth: "11/25/1998",
-      PhoneNumber: "0734567890",
-      DoctorType: "Cardiologist",
-    },
-  ]);
-
-  const [sortConfig, setSortConfig] = useState({
-    key: null,
-    direction: "ascending",
-  });
+  const [queue, setQueue] = useState([]);
   const [filterDoctorType, setFilterDoctorType] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [selectedPatient, setSelectedPatient] = useState(null);
+  const [token, setToken] = useState(localStorage.getItem("token") || "");
 
-  const doctorTypes = Array.from(
-    new Set(LabExams.map((exam) => exam.DoctorType))
-  );
+  // Fetch queue data from the backend
+  useEffect(() => {
+    const fetchQueue = async () => {
+      try {
+        const response = await axios.get("http://localhost:5000/api/queue", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        setQueue(response.data);
+        setLoading(false);
+      } catch (error) {
+        setError("Failed to fetch queue data");
+        setLoading(false);
+        console.error("Failed to fetch queue data:", error);
+      }
+    };
 
-  const sortedAndFilteredLabExams = React.useMemo(() => {
-    let sortableItems = [...LabExams];
-    if (filterDoctorType) {
-      sortableItems = sortableItems.filter(
-        (item) => item.DoctorType === filterDoctorType
-      );
+    if (token) {
+      fetchQueue();
+    } else {
+      setError("No token found");
+      setLoading(false);
     }
-    if (sortConfig.key !== null) {
-      sortableItems.sort((a, b) => {
-        if (a[sortConfig.key] < b[sortConfig.key]) {
-          return sortConfig.direction === "ascending" ? -1 : 1;
-        }
-        if (a[sortConfig.key] > b[sortConfig.key]) {
-          return sortConfig.direction === "ascending" ? 1 : -1;
-        }
-        return 0;
-      });
-    }
-    return sortableItems;
-  }, [LabExams, sortConfig, filterDoctorType]);
+  }, [token]);
 
-  const requestSort = (key) => {
-    let direction = "ascending";
-    if (sortConfig.key === key && sortConfig.direction === "ascending") {
-      direction = "descending";
+  // Define doctor types from the fetched queue data
+  const doctorTypes = Array.from(new Set(queue.map((entry) => entry.doctor)));
+
+  // Filter the queue data
+  const filteredQueue = filterDoctorType
+    ? queue.filter((item) => item.doctor === filterDoctorType)
+    : queue;
+
+  const handleDelete = async (id) => {
+    if (window.confirm("Are you sure you want to remove this patient from the queue?")) {
+      try {
+        await axios.delete(`http://localhost:5000/api/queue/${id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        setQueue(queue.filter((entry) => entry.id !== id));
+      } catch (error) {
+        setError("Failed to delete queue entry");
+        console.error("Failed to delete queue entry:", error);
+      }
     }
-    setSortConfig({ key, direction });
   };
 
-  const handleDelete = (appointmentId) => {
-    if (window.confirm("Are you sure you want to delete this appointment?")) {
-      setAppointments(appointments.filter((app) => app.id !== appointmentId));
-    }
+  const openModal = (patient) => {
+    setSelectedPatient(patient);
+  };
+
+  const closeModal = () => {
+    setSelectedPatient(null);
+  };
+
+  // Handle token change, e.g., during login
+  const handleTokenChange = (newToken) => {
+    setToken(newToken);
+    localStorage.setItem("token", newToken); // Save token in localStorage
   };
 
   return (
     <div className="w-[970px] bg-white px-5 pb-5 shadow-xl rounded-lg mt-5">
       <div className="flex justify-between items-center pt-3 pb-3">
-        <h2 className="text-xl font-bold">Patient List</h2>
+        <h2 className="text-xl font-bold">Patient Queue</h2>
         <div className="flex items-center space-x-2">
           <span>Filter by Doctor:</span>
           <select
@@ -93,36 +95,44 @@ function Patientlist() {
           </select>
         </div>
       </div>
+      {loading && <p>Loading...</p>}
+      {error && <p className="text-red-500">{error}</p>}
       <table className="min-w-full">
         <thead>
           <tr className="text-left text-[11px] font-sans">
             <th>No</th>
-            <th>Patient Name </th>
-            <th>Gender </th>
-            <th>Date of Birth </th>
-            <th>Phone Number </th>
-            <th>Doctor Type </th>
+            <th>Patient Name</th>
+            <th>Gender</th>
+            <th>Date of Birth</th>
+            <th>Phone Number</th>
+            <th>Doctor Type</th>
             <th>Actions</th>
           </tr>
         </thead>
         <tbody>
-          {sortedAndFilteredLabExams.map((exam, index) => (
+          {filteredQueue.map((entry, index) => (
             <tr
-              key={index}
+              key={entry.id}
               className={`text-[11px] h-[34px] ${
                 index % 2 === 0 ? "bg-[#ddf4fc]" : ""
               }`}
             >
               <td>{index + 1}</td>
-              <td>{exam.patientName}</td>
-              <td>{exam.Gender}</td>
-              <td>{exam.DateofBirth}</td>
-              <td>{exam.PhoneNumber}</td>
-              <td>{exam.DoctorType}</td>
+              <td>{entry.Patient.name}</td>
+              <td>{entry.Patient.gender}</td>
+              <td>{new Date(entry.Patient.dob).toLocaleDateString()}</td>
+              <td>{entry.Patient.contact}</td>
+              <td>{entry.doctor}</td>
               <td>
                 <button
+                  className="text-[20px] mr-2"
+                  onClick={() => openModal(entry.Patient)}
+                >
+                  <FaEye />
+                </button>
+                <button
                   className="text-[20px]"
-                  onClick={() => handleDelete(index)}
+                  onClick={() => handleDelete(entry.id)}
                 >
                   <MdDelete />
                 </button>
@@ -131,6 +141,25 @@ function Patientlist() {
           ))}
         </tbody>
       </table>
+      {selectedPatient && (
+        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-5 rounded-lg shadow-lg w-[500px]">
+            <h3 className="text-xl font-bold mb-3">Patient Details</h3>
+            <p><strong>Name:</strong> {selectedPatient.name}</p>
+            <p><strong>Gender:</strong> {selectedPatient.gender}</p>
+            <p><strong>Date of Birth:</strong> {new Date(selectedPatient.dob).toLocaleDateString()}</p>
+            <p><strong>Phone Number:</strong> {selectedPatient.contact}</p>
+            <p><strong>Address:</strong> {selectedPatient.address || "N/A"}</p>
+            <p><strong>Medical History:</strong> {selectedPatient.medicalHistory || "N/A"}</p>
+            <button
+              className="mt-4 bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
+              onClick={closeModal}
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
