@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from "react";
-import { FaEye } from "react-icons/fa";
 import { IoSearch } from "react-icons/io5";
 import Swal from "sweetalert2";
 
@@ -76,7 +75,7 @@ function Receptionpatienttable() {
           },
         });
         const data = await response.json();
-        setHospitalId(data.hospitalId); // Set the hospitalId from the response
+        setHospitalId(data.hospital.id); // Set the hospitalId from the response
       } catch (error) {
         showErrorAlert("Failed to fetch hospital details");
       }

@@ -2,7 +2,7 @@ import React, { useState, useEffect, Fragment } from "react";
 import {
   FaBars,
   FaRegUser,
-  FaRegCalendarAlt,
+  FaRegCreditCard,
   FaRegEnvelope,
 } from "react-icons/fa";
 import { RiDashboard3Line, RiBarChartFill } from "react-icons/ri";
@@ -17,15 +17,33 @@ const user = {
 };
 
 const userNavigation = [
-  { name: "Your Profile", href: "/profile" },
-  { name: "Settings", href: "#" },
-  { name: "Sign out", href: "/login" },
+  { name: "Your Profile", href: "/Reception/info" },
+  { name: "Settings", href: "/settings" },
+  { name: "Sign out", href: "/logout" },
 ];
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
+const handleSignOut = async () => {
+  try {
+    // Make a POST request to the logout route
+    await fetch("http://localhost:5000/api/users/logout", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
 
+    // Clear the token from local storage
+    localStorage.removeItem("token");
+
+    // Redirect to the login page
+    window.location.href = "/login";
+  } catch (error) {
+    console.error("Logout error:", error);
+  }
+};
 function ReceptionDashNavbar() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [currentDateTime, setCurrentDateTime] = useState(new Date());
@@ -88,7 +106,7 @@ function ReceptionDashNavbar() {
           <a href="">
             <div className="pb-[20px] flex items-center -ml-5 hover:text-[#00AFEE] ">
               <div className={`${!open && "-ml-4"}`}>
-                <RiBarChartFill className="text-3xl w-auto mr-4" />
+                <FaRegCreditCard className="text-3xl w-auto mr-4" />
               </div>
               <h1 className={` ${!sidebarOpen && "hidden"} `}>Billing</h1>
             </div>
@@ -106,8 +124,8 @@ function ReceptionDashNavbar() {
 
       {/* Main content */}
       <div
-        className={`flex-1 ml-${
-          sidebarOpen ? "52" : "1/6"
+        className={`flex-1 ${
+          sidebarOpen ? "ml-52" : "ml-10"
         } flex flex-col transition-all duration-500`}
       >
         {/* Top Navbar */}
@@ -154,17 +172,29 @@ function ReceptionDashNavbar() {
                     <Menu.Items className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-[#00afee] ring-opacity-5 focus:outline-none">
                       {userNavigation.map((item) => (
                         <Menu.Item key={item.name}>
-                          {({ active }) => (
-                            <a
-                              href={item.href}
-                              className={classNames(
-                                active ? "bg-gray-100" : "",
-                                "block px-4 py-2 text-sm text-gray-950"
-                              )}
-                            >
-                              {item.name}
-                            </a>
-                          )}
+                          {({ active }) =>
+                            item.name === "Sign out" ? (
+                              <button
+                                onClick={handleSignOut}
+                                className={classNames(
+                                  active ? "bg-gray-100" : "",
+                                  "block px-4 py-2 text-sm text-gray-950 w-full text-left"
+                                )}
+                              >
+                                {item.name}
+                              </button>
+                            ) : (
+                              <a
+                                href={item.href}
+                                className={classNames(
+                                  active ? "bg-gray-100" : "",
+                                  "block px-4 py-2 text-sm text-gray-950"
+                                )}
+                              >
+                                {item.name}
+                              </a>
+                            )
+                          }
                         </Menu.Item>
                       ))}
                     </Menu.Items>

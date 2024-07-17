@@ -15,6 +15,8 @@ import SignupProcess from "./pages/SignupAdminAndHospital";
 import Patientinfo from "./LandingDash/Dashboard/Patientdata";
 import Profile from "./Admin/Dashboard/Profile";
 import PrivateRoute from "./PrivateRoute";
+import ProfileDoctor from "./LandingDash/Dashboard/ProfileDoctor";
+import ProfileReception from "./LandingDash/DashboardReception/Profilereceptionist";
 
 const App = () => {
   return (
@@ -50,6 +52,8 @@ const App = () => {
         />
         <Route path="/Users" element={<PrivateRoute component={Userpage} />} />
         <Route path="/Profile" element={<PrivateRoute component={Profile} />} />
+        <Route path="/doctor/info" element={<PrivateRoute component={ProfileDoctor} />} />
+        <Route path="/reception/info" element={<PrivateRoute component={ProfileReception } />} />
         <Route
           path="/Patientinfo"
           element={<PrivateRoute component={Patientinfo} />}

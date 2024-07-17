@@ -50,6 +50,7 @@ const AddUserForm = () => {
     "Emergency Medicine",
   ];
 
+  // Handle role change and reset dependent fields
   const handleRoleChange = (e) => {
     setRole(e.target.value);
     setFormData({
@@ -60,11 +61,13 @@ const AddUserForm = () => {
     });
   };
 
+  // Handle form field changes
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
+  // Check if the email already exists and then add the user
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -80,6 +83,7 @@ const AddUserForm = () => {
         return;
       }
 
+      // Check if the email already exists
       const userCheckResponse = await fetch(
         "http://localhost:5000/api/admin/check-user",
         {
@@ -106,6 +110,7 @@ const AddUserForm = () => {
         return;
       }
 
+      // Add the new user
       const response = await fetch("http://localhost:5000/api/admin/add-user", {
         method: "POST",
         headers: {
@@ -126,6 +131,7 @@ const AddUserForm = () => {
         text: `User ${formData.name} was added successfully.`,
       });
 
+      // Reset form data and role
       setFormData({
         name: "",
         email: "",
@@ -145,6 +151,7 @@ const AddUserForm = () => {
     }
   };
 
+  // Fetch hospitalId from token
   useEffect(() => {
     const fetchHospitalId = () => {
       const token = localStorage.getItem("token");

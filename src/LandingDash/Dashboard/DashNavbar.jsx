@@ -16,15 +16,36 @@ const user = {
   imageUrl: "/assets/download.png",
 };
 
+// Define userNavigation array
 const userNavigation = [
-  { name: "Your Profile", href: "/profile" },
-  { name: "Settings", href: "#" },
-  { name: "Sign out", href: "/login" },
+  { name: "Your Profile", href: "/doctor/info" },
+  { name: "Settings", href: "/settings" },
+  { name: "Sign out", href: "/logout" },
 ];
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
+
+const handleSignOut = async () => {
+  try {
+    // Make a POST request to the logout route
+    await fetch("http://localhost:5000/api/users/logout", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    // Clear the token from local storage
+    localStorage.removeItem("token");
+
+    // Redirect to the login page
+    window.location.href = "/login";
+  } catch (error) {
+    console.error("Logout error:", error);
+  }
+};
 
 function DashNavbar({ sidebarOpen, setSidebarOpen }) {
   const [currentDateTime, setCurrentDateTime] = useState(new Date());
@@ -57,7 +78,7 @@ function DashNavbar({ sidebarOpen, setSidebarOpen }) {
             src={
               sidebarOpen
                 ? "./src/assets/logo.JPG"
-                : "./src//assets/logo (2).JPG"
+                : "./src/assets/logo (2).JPG"
             }
             className="w-[170px]"
             alt="Medical Center Clinic Logo"
@@ -162,17 +183,29 @@ function DashNavbar({ sidebarOpen, setSidebarOpen }) {
                     <Menu.Items className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-[#00afee] ring-opacity-5 focus:outline-none">
                       {userNavigation.map((item) => (
                         <Menu.Item key={item.name}>
-                          {({ active }) => (
-                            <a
-                              href={item.href}
-                              className={classNames(
-                                active ? "bg-gray-100" : "",
-                                "block px-4 py-2 text-sm text-gray-950"
-                              )}
-                            >
-                              {item.name}
-                            </a>
-                          )}
+                          {({ active }) =>
+                            item.name === "Sign out" ? (
+                              <button
+                                onClick={handleSignOut}
+                                className={classNames(
+                                  active ? "bg-gray-100" : "",
+                                  "block px-4 py-2 text-sm text-gray-950 w-full text-left"
+                                )}
+                              >
+                                {item.name}
+                              </button>
+                            ) : (
+                              <a
+                                href={item.href}
+                                className={classNames(
+                                  active ? "bg-gray-100" : "",
+                                  "block px-4 py-2 text-sm text-gray-950"
+                                )}
+                              >
+                                {item.name}
+                              </a>
+                            )
+                          }
                         </Menu.Item>
                       ))}
                     </Menu.Items>
