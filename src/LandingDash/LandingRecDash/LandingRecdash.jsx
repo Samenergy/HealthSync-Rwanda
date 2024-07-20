@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import ReceptionDashNavbar from "../DashboardReception/ReceptionDashNavbar";
 import Receptionpatienttable from "../DashboardReception/Receptionpatienttable";
+import AddPatient from "../DashboardReception/AddPatient";
 
 const LandingRecdash = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -18,6 +19,7 @@ const LandingRecdash = () => {
       >
         <h1 className="font-bold text-4xl mb-4">All Patients</h1>
         <Receptionpatienttable />
+        <AddPatient/>
       </div>
     </div>
   );

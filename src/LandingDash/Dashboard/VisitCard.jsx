@@ -93,6 +93,7 @@ const VisitsSection = () => {
       details:
         "Patient diagnosed with hypertension. Advised lifestyle changes.",
       notes: "Monitor blood pressure regularly.",
+      
     },
     // Add more visits as needed
   ];

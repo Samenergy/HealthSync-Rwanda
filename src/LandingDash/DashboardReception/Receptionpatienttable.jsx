@@ -13,7 +13,7 @@ function Receptionpatienttable() {
   const [selectedAssurance, setSelectedAssurance] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [filterGender, setFilterGender] = useState("");
-  const [hospitalId, setHospitalId] = useState(""); // Added state for hospitalId
+  const [hospitalId, setHospitalId] = useState("");
   const modalRef = useRef(null);
   const [token, setToken] = useState(localStorage.getItem("token") || "");
 
@@ -51,7 +51,7 @@ function Receptionpatienttable() {
         const response = await fetch("http://localhost:5000/api/user/patients", {
           method: "GET",
           headers: {
-            Authorization: `Bearer ${token}`, // Include token in the request headers
+            Authorization: `Bearer ${token}`,
           },
         });
         const data = await response.json();
@@ -62,27 +62,27 @@ function Receptionpatienttable() {
       }
     };
     fetchPatients();
-  }, [token]); // Token as dependency to handle token change
+  }, [token]);
 
   // Fetch hospital ID when the component mounts
   useEffect(() => {
     const fetchHospitalId = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/user/data", { // Updated endpoint for fetching hospital ID
+        const response = await fetch("http://localhost:5000/api/user/data", {
           method: "GET",
           headers: {
-            Authorization: `Bearer ${token}`, // Include token in the request headers
+            Authorization: `Bearer ${token}`,
           },
         });
         const data = await response.json();
-        setHospitalId(data.hospital.id); // Set the hospitalId from the response
+        setHospitalId(data.hospital.id);
       } catch (error) {
         showErrorAlert("Failed to fetch hospital details");
       }
     };
 
     fetchHospitalId();
-  }, [token]); // Token as dependency to handle token change
+  }, [token]);
 
   // Filter patients based on search term and gender
   useEffect(() => {
@@ -106,7 +106,7 @@ function Receptionpatienttable() {
         const response = await fetch(`http://localhost:5000/api/user/patients/${id}`, {
           method: "GET",
           headers: {
-            Authorization: `Bearer ${token}`, // Include token in the request headers
+            Authorization: `Bearer ${token}`,
           },
         });
         const data = await response.json();
@@ -119,7 +119,7 @@ function Receptionpatienttable() {
     if (selectedPatient?.id) {
       fetchPatientById(selectedPatient.id);
     }
-  }, [selectedPatient, token]); // Correctly depend on selectedPatient
+  }, [selectedPatient, token]);
 
   const handleChange = (e) => {
     setSearchTerm(e.target.value);
@@ -130,7 +130,7 @@ function Receptionpatienttable() {
   };
 
   const handleAddAppointmentClick = (patient) => {
-    setSelectedPatient(patient); // Set the selected patient
+    setSelectedPatient(patient);
     showInfoAlert(
       `You are about to add ${patient.name} to the queue. Please enter your password.`
     );
@@ -158,7 +158,7 @@ function Receptionpatienttable() {
       patientId: selectedPatient.id,
       doctor: selectedDoctor,
       assurance: selectedAssurance,
-      hospitalId: hospitalId, // Use the fetched hospitalId
+      hospitalId: hospitalId,
     };
 
     try {
@@ -166,7 +166,7 @@ function Receptionpatienttable() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`, // Include token in the request headers
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(queueData),
       });
@@ -202,6 +202,11 @@ function Receptionpatienttable() {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [showAppointmentModal]);
+
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toISOString().split("T")[0]; // Extract the date part
+  };
 
   return (
     <div className="w-[970px] bg-white px-5 pb-5 shadow-xl rounded-lg mt-6 py-5 relative">
@@ -317,7 +322,7 @@ function Receptionpatienttable() {
         <tbody>
           {filteredPatients.map((patient, index) => (
             <tr
-              key={patient.id} // Use patient.id as the key
+              key={patient.id}
               className={`text-[11px]  h-[34px] ${
                 index % 2 === 0 ? "bg-[#ddf4fc]  " : ""
               }`}
@@ -325,7 +330,7 @@ function Receptionpatienttable() {
               <td>{index + 1}</td>
               <td>{patient.name}</td>
               <td>{patient.gender}</td>
-              <td>{patient.dob}</td>
+              <td>{formatDate(patient.dob)}</td> {/* Use formatDate to display date */}
               <td>{patient.contact}</td>
               <td>
                 <button
