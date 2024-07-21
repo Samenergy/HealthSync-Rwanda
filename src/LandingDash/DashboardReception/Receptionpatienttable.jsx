@@ -48,12 +48,15 @@ function Receptionpatienttable() {
   useEffect(() => {
     const fetchPatients = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/user/patients", {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const response = await fetch(
+          "http://localhost:5000/api/user/patients",
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
         const data = await response.json();
         setPatients(data);
         setFilteredPatients(data);
@@ -103,12 +106,15 @@ function Receptionpatienttable() {
   useEffect(() => {
     const fetchPatientById = async (id) => {
       try {
-        const response = await fetch(`http://localhost:5000/api/user/patients/${id}`, {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const response = await fetch(
+          `http://localhost:5000/api/user/patients/${id}`,
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
         const data = await response.json();
         setSelectedPatient(data);
       } catch (error) {
@@ -147,9 +153,9 @@ function Receptionpatienttable() {
   };
 
   const handleAddToQueue = async () => {
-    if (!selectedDoctor || !selectedAssurance || !selectedPatient?.hospitalId) {
+    if (!selectedDoctor || !selectedAssurance || !selectedPatient?.id) {
       showErrorAlert(
-        "Please select doctor, assurance, and ensure the patient has a hospital ID"
+        "Please select doctor, assurance, and ensure the patient is selected"
       );
       return;
     }
@@ -207,7 +213,6 @@ function Receptionpatienttable() {
     const date = new Date(dateString);
     return date.toISOString().split("T")[0]; // Extract the date part
   };
-
   return (
     <div className="w-[970px] bg-white px-5 pb-5 shadow-xl rounded-lg mt-6 py-5 relative">
       {showPasswordModal && (
@@ -253,10 +258,16 @@ function Receptionpatienttable() {
                 className="border border-red-950 rounded-md p-2 mt-1 w-full"
               >
                 <option value="">Select Doctor</option>
-                <option value="Neurologist">Neurologist</option>
-                <option value="Pediatrician">Pediatrician</option>
-                <option value="Dermatologist">Dermatologist</option>
-                <option value="Cardiologist">Cardiologist</option>
+                <option value="General Medicine">General Medicine</option>
+                <option value="Internal Medicine">Internal Medicine</option>
+                <option value="Surgery">Surgery</option>
+                <option value="Pediatrics">Pediatrics</option>
+                <option value="Gynecology">Gynecology</option>
+                <option value="Orthopedics">Orthopedics</option>
+                <option value="Neurology">Neurology</option>
+                <option value="Cardiology">Cardiology</option>
+                <option value="Oncology">Oncology</option>
+                <option value="Emergency Medicine">Emergency Medicine</option>
               </select>
             </label>
 
@@ -295,6 +306,7 @@ function Receptionpatienttable() {
             <option value="">All Genders</option>
             <option value="Male">Male</option>
             <option value="Female">Female</option>
+            <option value="Other">Other</option>
           </select>
           <input
             type="text"
@@ -330,7 +342,8 @@ function Receptionpatienttable() {
               <td>{index + 1}</td>
               <td>{patient.name}</td>
               <td>{patient.gender}</td>
-              <td>{formatDate(patient.dob)}</td> {/* Use formatDate to display date */}
+              <td>{formatDate(patient.dob)}</td>{" "}
+              {/* Use formatDate to display date */}
               <td>{patient.contact}</td>
               <td>
                 <button

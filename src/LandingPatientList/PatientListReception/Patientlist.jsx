@@ -20,7 +20,10 @@ function Patientlist() {
             Authorization: `Bearer ${token}`,
           },
         });
-        setQueue(response.data);
+        const sortedQueue = response.data.sort(
+          (a, b) => new Date(a.createdAt) - new Date(b.createdAt)
+        );
+        setQueue(sortedQueue);
         setLoading(false);
       } catch (error) {
         setError("Failed to fetch queue data");
@@ -124,14 +127,9 @@ function Patientlist() {
               <td>{entry.Patient.contact}</td>
               <td>{entry.doctor}</td>
               <td>
+                
                 <button
-                  className="text-[20px] mr-2"
-                  onClick={() => openModal(entry.Patient)}
-                >
-                  <FaEye />
-                </button>
-                <button
-                  className="text-[20px]"
+                  className="text-[20px] ml-2 "
                   onClick={() => handleDelete(entry.id)}
                 >
                   <MdDelete />
@@ -141,25 +139,7 @@ function Patientlist() {
           ))}
         </tbody>
       </table>
-      {selectedPatient && (
-        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white p-5 rounded-lg shadow-lg w-[500px]">
-            <h3 className="text-xl font-bold mb-3">Patient Details</h3>
-            <p><strong>Name:</strong> {selectedPatient.name}</p>
-            <p><strong>Gender:</strong> {selectedPatient.gender}</p>
-            <p><strong>Date of Birth:</strong> {new Date(selectedPatient.dob).toLocaleDateString()}</p>
-            <p><strong>Phone Number:</strong> {selectedPatient.contact}</p>
-            <p><strong>Address:</strong> {selectedPatient.address || "N/A"}</p>
-            <p><strong>Medical History:</strong> {selectedPatient.medicalHistory || "N/A"}</p>
-            <button
-              className="mt-4 bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
-              onClick={closeModal}
-            >
-              Close
-            </button>
-          </div>
-        </div>
-      )}
+      
     </div>
   );
 }

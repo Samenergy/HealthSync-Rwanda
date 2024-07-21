@@ -128,7 +128,7 @@ const AddUserForm = () => {
       Swal.fire({
         icon: "success",
         title: "User Added",
-        text: `User ${formData.name} was added successfully.`,
+        text: `${formData.name} was added successfully.`,
       });
 
       // Reset form data and role

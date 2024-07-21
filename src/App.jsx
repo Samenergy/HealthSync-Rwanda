@@ -17,6 +17,7 @@ import Profile from "./Admin/Dashboard/Profile";
 import PrivateRoute from "./PrivateRoute";
 import ProfileDoctor from "./LandingDash/Dashboard/ProfileDoctor";
 import ProfileReception from "./LandingDash/DashboardReception/Profilereceptionist";
+import Patientdata from "./LandingDash/Dashboard/Patientdata";
 
 const App = () => {
   return (
@@ -52,11 +53,17 @@ const App = () => {
         />
         <Route path="/Users" element={<PrivateRoute component={Userpage} />} />
         <Route path="/Profile" element={<PrivateRoute component={Profile} />} />
-        <Route path="/doctor/info" element={<PrivateRoute component={ProfileDoctor} />} />
-        <Route path="/reception/info" element={<PrivateRoute component={ProfileReception } />} />
         <Route
-          path="/Patientinfo"
-          element={<PrivateRoute component={Patientinfo} />}
+          path="/doctor/info"
+          element={<PrivateRoute component={ProfileDoctor} />}
+        />
+        <Route
+          path="/reception/info"
+          element={<PrivateRoute component={ProfileReception} />}
+        />
+        <Route
+          path="/patientinfo/:patientId"
+          element={<PrivateRoute component={Patientdata} />}
         />
       </Routes>
     </div>
