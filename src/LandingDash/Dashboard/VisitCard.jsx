@@ -1,56 +1,4 @@
 import React, { useRef, useEffect, useState } from "react";
-import "@react-pdf-viewer/core/lib/styles/index.css";
-import "@react-pdf-viewer/default-layout/lib/styles/index.css";
-import { defaultLayoutPlugin } from "@react-pdf-viewer/default-layout";
-
-const VisitCard = ({ date, description, status, onClick }) => {
-  const defaultLayoutPluginInstance = defaultLayoutPlugin();
-
-  return (
-    <div
-      className="bg-[#DDF4FC] p-6 rounded-lg shadow-md text-center cursor-pointer hover:bg-[#ccefff]"
-      onClick={onClick}
-    >
-      <p className="text-gray-600">{date}</p>
-      <p className="text-gray-800 font-semibold mt-2">{description}</p>
-      <div className="flex justify-center mt-4">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          className="h-12 w-12 text-[#00afee]"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M12 11c0 .6-.4 1-1 1H6a1 1 0 01-1-1V6a1 1 0 011-1h5c.6 0 1 .4 1 1v5z"
-          />
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M6 19h5c.6 0 1-.4 1-1v-5c0-.6-.4-1-1-1H6c-.6 0-1 .4-1 1v5c0 .6.4 1 1 1z"
-          />
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M18 11c0 .6-.4 1-1 1h-5c-.6 0-1-.4-1-1V6c0-.6.4-1 1-1h5c.6 0 1 .4 1 1v5z"
-          />
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M12 19h5c.6 0 1-.4 1-1v-5c0-.6-.4-1-1-1h-5c-.6 0-1 .4-1 1v5c0 .6.4 1 1 1z"
-          />
-        </svg>
-      </div>
-      <p className="text-teal-700 mt-2">{status}</p>
-    </div>
-  );
-};
 
 const VisitsSection = () => {
   const scrollContainerRef = useRef(null);
@@ -68,7 +16,8 @@ const VisitsSection = () => {
       medication: ["Pain relievers", "Anti-inflammatory drugs"],
       images: [
         "https://images.pexels.com/photos/4225923/pexels-photo-4225923.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-      "https://images.pexels.com/photos/7088828/pexels-photo-7088828.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"],
+        "https://images.pexels.com/photos/7088828/pexels-photo-7088828.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+      ],
       details:
         "Patient reported severe arm pain. Diagnosed with possible fracture.",
       notes: "Follow up in 2 weeks.",
@@ -93,21 +42,20 @@ const VisitsSection = () => {
       details:
         "Patient diagnosed with hypertension. Advised lifestyle changes.",
       notes: "Monitor blood pressure regularly.",
-      
     },
     // Add more visits as needed
   ];
 
   const sortedVisits = [...visits].sort((a, b) => {
     switch (sortOrder) {
-      case "date-asc":
-        return new Date(a.date) - new Date(b.date);
-      case "date-desc":
-        return new Date(b.date) - new Date(a.date);
       case "status-asc":
         return a.status.localeCompare(b.status);
       case "status-desc":
         return b.status.localeCompare(a.status);
+      case "date-asc":
+        return new Date(a.date) - new Date(b.date);
+      case "date-desc":
+        return new Date(b.date) - new Date(a.date);
       default:
         return 0;
     }
@@ -121,14 +69,18 @@ const VisitsSection = () => {
     };
 
     const container = scrollContainerRef.current;
-    container.addEventListener("wheel", handleScroll);
+    if (container) {
+      container.addEventListener("wheel", handleScroll);
+    }
 
     return () => {
-      container.removeEventListener("wheel", handleScroll);
+      if (container) {
+        container.removeEventListener("wheel", handleScroll);
+      }
     };
   }, []);
 
-  const handleCardClick = (visit) => {
+  const handleRowClick = (visit) => {
     setSelectedVisit(visit);
     setShowDetails(true);
   };
@@ -148,7 +100,7 @@ const VisitsSection = () => {
   };
 
   return (
-    <div className="max-w-3xl  p-6 bg-white shadow-lg rounded-lg mt-10">
+    <div className="max-w-3xl p-6 bg-white shadow-lg rounded-lg mt-10">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-xl font-bold">Visits</h2>
         <div className="flex gap-4 items-center">
@@ -167,19 +119,76 @@ const VisitsSection = () => {
           </select>
         </div>
       </div>
-      <div
-        ref={scrollContainerRef}
-        className="flex gap-6 overflow-x-auto scroll-smooth"
-      >
-        {sortedVisits.map((visit, index) => (
-          <VisitCard
-            key={index}
-            date={visit.date}
-            description={visit.description}
-            status={visit.status}
-            onClick={() => handleCardClick(visit)}
-          />
-        ))}
+      <div ref={scrollContainerRef} className="overflow-x-auto scroll-smooth">
+        <table className="min-w-full bg-white">
+          <thead>
+            <tr className="border-b">
+              <th className="py-2 px-4 text-left">Date</th>
+              <th className="py-2 px-4 text-left">Description</th>
+              <th className="py-2 px-4 text-left">Status</th>
+              <th className="py-2 px-4 text-left">Details</th>
+            </tr>
+          </thead>
+          <tbody>
+            {sortedVisits.map((visit, index) => (
+              <tr
+                key={index}
+                className="border-b hover:bg-gray-100 cursor-pointer"
+                onClick={() => handleRowClick(visit)}
+              >
+                <td className="py-2 px-4">{visit.date}</td>
+                <td className="py-2 px-4">{visit.description}</td>
+                <td className="py-2 px-4">
+                  <span
+                    className={`inline-block px-2 py-1 text-sm  rounded-full text-white ${
+                      visit.status === "IN PROGRESS"
+                        ? "bg-green-600"
+                        : "bg-red-600"
+                    }`}
+                  >
+                    {visit.status}
+                  </span>
+                </td>
+                <td className="py-2 px-4 text-center">
+                  <button
+                    className="text-blue-500 hover:text-blue-700"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleRowClick(visit);
+                    }}
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-5 w-5"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M12 11c0 .6-.4 1-1 1H6a1 1 0 01-1-1V6a1 1 0 011-1h5c.6 0 1 .4 1 1v5z"
+                      />
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M6 19h5c.6 0 1-.4 1-1v-5a1 1 0 00-1-1H6a1 1 0 00-1 1v5c0 .6.4 1 1 1z"
+                      />
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M15 12h6a1 1 0 001-1v-5a1 1 0 00-1-1h-6a1 1 0 00-1 1v5a1 1 0 001 1z"
+                      />
+                    </svg>
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
       {showDetails && selectedVisit && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 overflow-auto">
@@ -219,8 +228,8 @@ const VisitsSection = () => {
                     <img
                       key={index}
                       src={img}
-                      alt={`Scan ${index + 1}`}
-                      className="h-24 w-24 object-cover rounded-lg shadow-md cursor-pointer"
+                      alt={`Visit image ${index + 1}`}
+                      className="w-32 h-32 object-cover cursor-pointer"
                       onClick={() => handleImageClick(img)}
                     />
                   ))}
@@ -228,8 +237,8 @@ const VisitsSection = () => {
               </div>
             )}
             <button
-              onClick={handleCloseDetails}
               className="mt-4 bg-red-500 text-white px-4 py-2 rounded-lg"
+              onClick={handleCloseDetails}
             >
               Close
             </button>
@@ -237,15 +246,33 @@ const VisitsSection = () => {
         </div>
       )}
       {fullScreenImage && (
-        <div
-          className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-75 z-50"
-          onClick={handleCloseFullScreenImage}
-        >
-          <img
-            src={fullScreenImage}
-            alt="Full Screen"
-            className="max-w-full max-h-full object-contain"
-          />
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-75 z-50">
+          <div className="relative">
+            <img
+              src={fullScreenImage}
+              alt="Full screen"
+              className="max-w-full max-h-full"
+            />
+            <button
+              className="absolute top-4 right-4 bg-white text-black rounded-full p-2"
+              onClick={handleCloseFullScreenImage}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+            </button>
+          </div>
         </div>
       )}
     </div>
