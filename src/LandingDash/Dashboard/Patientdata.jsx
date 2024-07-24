@@ -58,7 +58,8 @@ const Patientdata = () => {
           <Quickaction />
         </div>
         <div>
-          <VisitsSection />
+          {/* Pass patientId to VisitsSection */}
+          <VisitsSection patientId={patientId} />
         </div>
       </div>
     </div>

@@ -78,7 +78,7 @@ const Quickaction = () => {
   };
 
   return (
-    <div className=" max-w-screen-lg mx-auto -ml-20">
+    <div className=" max-w-screen-lg mx-auto -ml-20 -mt-9">
       <h1 className="text-2xl font-bold mb-6 text-left">Quick Actions</h1>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 gap-4">
         {Object.keys(testCategories).map((category, index) => (

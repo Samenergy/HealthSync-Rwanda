@@ -1,5 +1,20 @@
 import React from "react";
 
+// Helper function to calculate age from date of birth
+const calculateAge = (dob) => {
+  const birthDate = new Date(dob);
+  const today = new Date();
+  let age = today.getFullYear() - birthDate.getFullYear();
+  const monthDifference = today.getMonth() - birthDate.getMonth();
+  
+  // If the birth date hasn't occurred yet this year, subtract one year
+  if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < birthDate.getDate())) {
+    age--;
+  }
+  
+  return age;
+};
+
 const PatientInfo = ({ patient }) => {
   if (!patient) return <p>Loading...</p>;
 
@@ -32,6 +47,10 @@ const PatientInfo = ({ patient }) => {
               <td className="font-semibold pl-10">
                 {new Date(patient.dob).toLocaleDateString()}
               </td>
+            </tr>
+            <tr>
+              <td className="font-bold">Age</td>
+              <td className="font-semibold pl-10">{calculateAge(patient.dob)}</td>
             </tr>
             <tr>
               <td className="font-bold">Blood Type</td>

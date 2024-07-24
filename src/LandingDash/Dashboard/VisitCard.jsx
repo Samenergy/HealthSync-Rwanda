@@ -1,67 +1,43 @@
 import React, { useRef, useEffect, useState } from "react";
+import axios from "axios";
+import PropTypes from "prop-types";
+import { FaEye, FaEdit } from "react-icons/fa";
+import NewVisitForm from "./NewVisitForm";
+import EditVisitForm from "./EditVisitForm";
 
-const VisitsSection = () => {
+const VisitsSection = ({ patientId }) => {
   const scrollContainerRef = useRef(null);
   const [sortOrder, setSortOrder] = useState("date-asc");
   const [selectedVisit, setSelectedVisit] = useState(null);
   const [showDetails, setShowDetails] = useState(false);
   const [fullScreenImage, setFullScreenImage] = useState("");
+  const [visits, setVisits] = useState([]);
+  const [isFormVisible, setFormVisible] = useState(false);
+  const [isEditFormVisible, setEditFormVisible] = useState(false);
+  const [visitToEdit, setVisitToEdit] = useState(null);
 
-  const visits = [
-    {
-      date: "Wednesday, 04/06/2020",
-      description: "Arm pain",
-      status: "IN PROGRESS",
-      disease: "Fracture",
-      medication: ["Pain relievers", "Anti-inflammatory drugs"],
-      images: [
-        "https://images.pexels.com/photos/4225923/pexels-photo-4225923.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-        "https://images.pexels.com/photos/7088828/pexels-photo-7088828.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-      ],
-      details:
-        "Patient reported severe arm pain. Diagnosed with possible fracture.",
-      notes: "Follow up in 2 weeks.",
-    },
-    {
-      date: "Monday, 03/22/2020",
-      description: "Headache",
-      status: "SIGNED OFF",
-      disease: "Migraine",
-      medication: ["Migraine medication"],
-      images: ["/path/to/scan3.jpg"],
-      details: "Patient reported severe headache. Diagnosed with migraine.",
-      notes: "Recommended avoiding triggers.",
-    },
-    {
-      date: "Monday, 03/11/2020",
-      description: "Hypertension",
-      status: "SIGNED OFF",
-      disease: "Hypertension",
-      medication: ["Blood pressure medication"],
-      images: [],
-      details:
-        "Patient diagnosed with hypertension. Advised lifestyle changes.",
-      notes: "Monitor blood pressure regularly.",
-    },
-    // Add more visits as needed
-  ];
+  const token = localStorage.getItem("token");
 
-  const sortedVisits = [...visits].sort((a, b) => {
-    switch (sortOrder) {
-      case "status-asc":
-        return a.status.localeCompare(b.status);
-      case "status-desc":
-        return b.status.localeCompare(a.status);
-      case "date-asc":
-        return new Date(a.date) - new Date(b.date);
-      case "date-desc":
-        return new Date(b.date) - new Date(a.date);
-      default:
-        return 0;
+  // Fetch visits data from the backend
+  const fetchVisits = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:5000/api/user/records/${patientId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      setVisits(response.data);
+    } catch (error) {
+      console.error("Error fetching visits:", error);
     }
-  });
+  };
 
   useEffect(() => {
+    fetchVisits(); // Fetch data when the component mounts
+
     const handleScroll = (event) => {
       if (scrollContainerRef.current) {
         scrollContainerRef.current.scrollLeft += event.deltaY;
@@ -78,11 +54,43 @@ const VisitsSection = () => {
         container.removeEventListener("wheel", handleScroll);
       }
     };
-  }, []);
+  }, [patientId]);
+
+  const sortedVisits = [...visits].sort((a, b) => {
+    // Prioritize "IN PROGRESS" visits first
+    if (a.status === "IN PROGRESS" && b.status !== "IN PROGRESS") {
+      return -1;
+    }
+    if (a.status !== "IN PROGRESS" && b.status === "IN PROGRESS") {
+      return 1;
+    }
+
+    // Then sort by creation time within the same status group
+    const dateA = new Date(a.creationTime); // Assuming `creationTime` is a field
+    const dateB = new Date(b.creationTime); // Adjust as needed
+
+    switch (sortOrder) {
+      case "date-asc":
+        return dateA - dateB;
+      case "date-desc":
+        return dateB - dateA;
+      case "status-asc":
+        return a.status.localeCompare(b.status);
+      case "status-desc":
+        return b.status.localeCompare(a.status);
+      default:
+        return 0;
+    }
+  });
 
   const handleRowClick = (visit) => {
-    setSelectedVisit(visit);
-    setShowDetails(true);
+    if (visit.status !== "IN PROGRESS") {
+      setSelectedVisit(visit);
+      setShowDetails(true);
+    } else {
+      setVisitToEdit(visit);
+      setEditFormVisible(true);
+    }
   };
 
   const handleCloseDetails = () => {
@@ -99,14 +107,48 @@ const VisitsSection = () => {
     setFullScreenImage("");
   };
 
+  const handleAddVisit = (newVisit) => {
+    console.log("New Visit Added:", newVisit);
+  };
+
+  const handleToggleForm = () => {
+    setFormVisible((prev) => !prev);
+  };
+
+  const handleCloseForm = () => {
+    setFormVisible(false);
+  };
+
+  const handleSaveEdit = () => {
+    fetchVisits(); // Refresh the visit list after saving changes
+    setEditFormVisible(false);
+  };
+
+  const handleCloseEditForm = () => {
+    setEditFormVisible(false);
+    setVisitToEdit(null);
+  };
+
   return (
     <div className="max-w-3xl p-6 bg-white shadow-lg rounded-lg mt-10">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-xl font-bold">Visits</h2>
         <div className="flex gap-4 items-center">
-          <button className="bg-[#00afee] text-white px-4 py-2 rounded-lg">
+          <button
+            className="bg-[#00afee] text-white px-4 py-2 rounded-lg"
+            onClick={handleToggleForm}
+          >
             New Visit
           </button>
+
+          {isFormVisible && (
+            <NewVisitForm
+              patientId={patientId}
+              onAddVisit={handleAddVisit}
+              onClose={handleCloseForm}
+            />
+          )}
+
           <select
             value={sortOrder}
             onChange={(e) => setSortOrder(e.target.value)}
@@ -119,81 +161,69 @@ const VisitsSection = () => {
           </select>
         </div>
       </div>
+
       <div ref={scrollContainerRef} className="overflow-x-auto scroll-smooth">
         <table className="min-w-full bg-white">
           <thead>
-            <tr className="border-b">
-              <th className="py-2 px-4 text-left">Date</th>
-              <th className="py-2 px-4 text-left">Description</th>
-              <th className="py-2 px-4 text-left">Status</th>
-              <th className="py-2 px-4 text-left">Details</th>
+            <tr className="text-left text-[11px] font-sans border-b">
+              <th className="py-2 px-4">Date</th>
+              <th className="py-2 px-4">Description</th>
+              <th className="py-2 px-4">Disease</th>
+              <th className="py-2 px-4">Status</th>
+              <th className="py-2 px-4">Details</th>
             </tr>
           </thead>
           <tbody>
             {sortedVisits.map((visit, index) => (
               <tr
-                key={index}
-                className="border-b hover:bg-gray-100 cursor-pointer"
+                key={visit.id}
+                className={`text-[11px] h-[34px] ${
+                  index % 2 === 0 ? "bg-[#ddf4fc]" : ""
+                } border-b cursor-pointer`}
                 onClick={() => handleRowClick(visit)}
               >
                 <td className="py-2 px-4">{visit.date}</td>
                 <td className="py-2 px-4">{visit.description}</td>
+                <td className="py-2 px-4">{visit.disease}</td>
                 <td className="py-2 px-4">
                   <span
-                    className={`inline-block px-2 py-1 text-sm  rounded-full text-white ${
+                    className={`inline-block px-2 py-1 text-sm rounded-full text-white ${
                       visit.status === "IN PROGRESS"
                         ? "bg-green-600"
-                        : "bg-red-600"
+                        : "bg-red-400"
                     }`}
                   >
                     {visit.status}
                   </span>
                 </td>
-                <td className="py-2 px-4 text-center">
-                  <button
-                    className="text-blue-500 hover:text-blue-700"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleRowClick(visit);
-                    }}
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-5 w-5"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M12 11c0 .6-.4 1-1 1H6a1 1 0 01-1-1V6a1 1 0 011-1h5c.6 0 1 .4 1 1v5z"
-                      />
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M6 19h5c.6 0 1-.4 1-1v-5a1 1 0 00-1-1H6a1 1 0 00-1 1v5c0 .6.4 1 1 1z"
-                      />
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M15 12h6a1 1 0 001-1v-5a1 1 0 00-1-1h-6a1 1 0 00-1 1v5a1 1 0 001 1z"
-                      />
-                    </svg>
-                  </button>
+                <td className="px-4 py-2 flex items-center gap-5 text-lg">
+                  {visit.status !== "IN PROGRESS" && (
+                    <FaEye
+                      className="text-blue-500 cursor-pointer"
+                      onClick={() => handleRowClick(visit)}
+                    />
+                  )}
+                  {visit.status === "IN PROGRESS" && (
+                    <FaEdit
+                      className="text-yellow-500 cursor-pointer"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setVisitToEdit(visit);
+                        setEditFormVisible(true);
+                      }}
+                    />
+                  )}
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
+
       {showDetails && selectedVisit && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 overflow-auto">
-          <div className="bg-white p-6 rounded-lg shadow-lg w-11/12 md:w-1/2 lg:w-2/3">
-            <h3 className="text-2xl font-bold mb-4">Visit Details</h3>
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg max-w-lg w-full">
+            <h2 className="text-xl font-bold mb-4">Visit Details</h2>
             <p>
               <strong>Date:</strong> {selectedVisit.date}
             </p>
@@ -207,29 +237,59 @@ const VisitsSection = () => {
               <strong>Disease:</strong> {selectedVisit.disease}
             </p>
             <p>
-              <strong>Medication:</strong>
-            </p>
-            <ul className="list-disc ml-5">
-              {selectedVisit.medication.map((med, index) => (
-                <li key={index}>{med}</li>
-              ))}
-            </ul>
-            <p>
               <strong>Details:</strong> {selectedVisit.details}
             </p>
             <p>
               <strong>Notes:</strong> {selectedVisit.notes}
             </p>
-            {selectedVisit.images.length > 0 && (
+            <p>
+              <strong>Height:</strong> {selectedVisit.height} cm
+            </p>
+            <p>
+              <strong>Weight:</strong> {selectedVisit.weight} kg
+            </p>
+            <p>
+              <strong>BMI:</strong> {selectedVisit.bmi}
+            </p>
+            <p>
+              <strong>Blood Pressure:</strong> {selectedVisit.bloodPressure}
+            </p>
+            <p>
+              <strong>Immunizations:</strong> {selectedVisit.immunizations}
+            </p>
+            <p>
+              <strong>Insurance:</strong> {selectedVisit.insurance}
+            </p>
+            <p>
+              <strong>Social History:</strong> {selectedVisit.socialHistory}
+            </p>
+            <p>
+              <strong>Doctor's Name:</strong> {selectedVisit.doctorname}
+            </p>
+            <p>
+              <strong>Hospital Name:</strong> {selectedVisit.Hospitalname}
+            </p>
+            {selectedVisit.medication &&
+              selectedVisit.medication.length > 0 && (
+                <div>
+                  <h3 className="text-lg font-semibold">Medications:</h3>
+                  <ul className="list-disc list-inside">
+                    {selectedVisit.medication.map((med, idx) => (
+                      <li key={idx}>{med}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            {selectedVisit.images && selectedVisit.images.length > 0 && (
               <div className="mt-4">
-                <strong>Images:</strong>
-                <div className="flex flex-wrap gap-4 mt-2">
-                  {selectedVisit.images.map((img, index) => (
+                <h3 className="text-lg font-semibold">Images:</h3>
+                <div className="flex flex-wrap gap-2">
+                  {selectedVisit.images.map((img, idx) => (
                     <img
-                      key={index}
+                      key={idx}
                       src={img}
-                      alt={`Visit image ${index + 1}`}
-                      className="w-32 h-32 object-cover cursor-pointer"
+                      alt={`Visit Image ${idx + 1}`}
+                      className="w-24 h-24 object-cover cursor-pointer"
                       onClick={() => handleImageClick(img)}
                     />
                   ))}
@@ -237,7 +297,7 @@ const VisitsSection = () => {
               </div>
             )}
             <button
-              className="mt-4 bg-red-500 text-white px-4 py-2 rounded-lg"
+              className="mt-4 bg-gray-500 text-white px-4 py-2 rounded-lg"
               onClick={handleCloseDetails}
             >
               Close
@@ -245,38 +305,38 @@ const VisitsSection = () => {
           </div>
         </div>
       )}
+
       {fullScreenImage && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-75 z-50">
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-80 z-50">
           <div className="relative">
             <img
               src={fullScreenImage}
-              alt="Full screen"
-              className="max-w-full max-h-full"
+              alt="Full Screen"
+              className="max-w-full max-h-screen"
             />
             <button
-              className="absolute top-4 right-4 bg-white text-black rounded-full p-2"
+              className="absolute top-4 right-4 bg-gray-800 text-white p-2 rounded-full"
               onClick={handleCloseFullScreenImage}
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-6 w-6"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              </svg>
+              &times;
             </button>
           </div>
         </div>
       )}
+
+      {isEditFormVisible && visitToEdit && (
+        <EditVisitForm
+          visit={visitToEdit}
+          onSave={handleSaveEdit}
+          onClose={handleCloseEditForm}
+        />
+      )}
     </div>
   );
+};
+
+VisitsSection.propTypes = {
+  patientId: PropTypes.string.isRequired,
 };
 
 export default VisitsSection;
