@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { MdDelete } from "react-icons/md";
-import { FaEye } from "react-icons/fa";
 import axios from "axios";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function Patientlist() {
   const [queue, setQueue] = useState([]);
@@ -57,8 +58,10 @@ function Patientlist() {
           },
         });
         setQueue(queue.filter((entry) => entry.id !== id));
+        toast.success("Patient removed from the queue");
       } catch (error) {
         setError("Failed to delete queue entry");
+        toast.error("Failed to remove patient from the queue");
         console.error("Failed to delete queue entry:", error);
       }
     }
@@ -80,6 +83,7 @@ function Patientlist() {
 
   return (
     <div className="w-[970px] bg-white px-5 pb-5 shadow-xl rounded-lg mt-5">
+      <ToastContainer /> {/* Add ToastContainer to render toasts */}
       <div className="flex justify-between items-center pt-3 pb-3">
         <h2 className="text-xl font-bold">Patient Queue</h2>
         <div className="flex items-center space-x-2">
@@ -127,9 +131,8 @@ function Patientlist() {
               <td>{entry.Patient.contact}</td>
               <td>{entry.doctor}</td>
               <td>
-                
                 <button
-                  className="text-[20px] ml-2 "
+                  className="text-[20px] ml-2"
                   onClick={() => handleDelete(entry.id)}
                 >
                   <MdDelete />
@@ -139,7 +142,6 @@ function Patientlist() {
           ))}
         </tbody>
       </table>
-      
     </div>
   );
 }

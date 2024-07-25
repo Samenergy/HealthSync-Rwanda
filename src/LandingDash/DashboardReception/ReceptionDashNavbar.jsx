@@ -103,7 +103,7 @@ function ReceptionDashNavbar() {
               <h1 className={` ${!sidebarOpen && "hidden"} `}>Patient</h1>
             </div>
           </a>
-          <a href="">
+          <a href="/billing">
             <div className="pb-[20px] flex items-center -ml-5 hover:text-[#00AFEE] ">
               <div className={`${!open && "-ml-4"}`}>
                 <FaRegCreditCard className="text-3xl w-auto mr-4" />

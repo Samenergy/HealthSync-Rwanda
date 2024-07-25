@@ -14,7 +14,6 @@ function PatientTable() {
       const token = localStorage.getItem("token");
 
       try {
-        // Fetch user data to get user ID
         const userResponse = await fetch("http://localhost:5000/api/user/data", {
           method: "GET",
           headers: {

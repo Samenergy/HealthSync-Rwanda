@@ -18,6 +18,7 @@ import PrivateRoute from "./PrivateRoute";
 import ProfileDoctor from "./LandingDash/Dashboard/ProfileDoctor";
 import ProfileReception from "./LandingDash/DashboardReception/Profilereceptionist";
 import Patientdata from "./LandingDash/Dashboard/Patientdata";
+import Billing from "./Billing/Billing";
 
 const App = () => {
   return (
@@ -64,6 +65,10 @@ const App = () => {
         <Route
           path="/patientinfo/:patientId"
           element={<PrivateRoute component={Patientdata} />}
+        />
+        <Route
+          path="/billing"
+          element={<PrivateRoute component={Billing} />}
         />
       </Routes>
     </div>

@@ -89,33 +89,7 @@ function ProfilePage() {
             <p>
               <strong>Facility Type:</strong> {hospitalProfile.facilityType || "N/A"}
             </p>
-            <p>
-              <strong>Address:</strong> {hospitalProfile.address}
-            </p>
-            <p>
-              <strong>Phone:</strong> {hospitalProfile.phoneNumber}
-            </p>
-            <p>
-              <strong>Email:</strong> {hospitalProfile.email}
-            </p>
-            <p>
-              <strong>Tax ID Number:</strong> {hospitalProfile.taxIdNumber || "N/A"}
-            </p>
-            <p>
-              <strong>Business Registration Number:</strong> {hospitalProfile.businessRegistrationNumber || "N/A"}
-            </p>
-            <p>
-              <strong>Country:</strong> {hospitalProfile.country}
-            </p>
-            <p>
-              <strong>Province:</strong> {hospitalProfile.province}
-            </p>
-            <p>
-              <strong>District:</strong> {hospitalProfile.district}
-            </p>
-            <p>
-              <strong>Sector:</strong> {hospitalProfile.sector}
-            </p>
+            
             {hospitalProfile.logo ? (
               <img
                 src={hospitalProfile.logo}

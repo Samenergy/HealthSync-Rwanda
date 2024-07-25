@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
+import servicesList from "../../Billing/services";
 
 const NewVisitForm = ({ patientId, onAddVisit, onClose }) => {
   const token = localStorage.getItem("token");
@@ -15,12 +16,14 @@ const NewVisitForm = ({ patientId, onAddVisit, onClose }) => {
   const [bmi, setBmi] = useState();
   const [bloodPressure, setBloodPressure] = useState("");
   const [immunizations, setImmunizations] = useState("");
-  const [insurance, setInsurance] = useState("");
+  const [insurance, setInsurance] = useState(""); // This will be populated automatically
   const [socialHistory, setSocialHistory] = useState("");
   const [medication, setMedication] = useState("");
   const [images, setImages] = useState([]);
   const [doctorName, setDoctorName] = useState("");
   const [Hospitalname, setHospitalname] = useState("");
+  const [showServicePopup, setShowServicePopup] = useState(false); // State to handle service popup
+  const [selectedServices, setSelectedServices] = useState([]); // State to handle selected services
 
   useEffect(() => {
     setDate(new Date().toISOString().split("T")[0]);
@@ -47,61 +50,86 @@ const NewVisitForm = ({ patientId, onAddVisit, onClose }) => {
       }
     };
 
-    fetchDetails();
-  }, [token]);
-
-  const handleDone = async () => {
-    if (window.confirm("Are you sure you are done?")) {
-      const newVisit = {
-        patientId,
-        date,
-        description,
-        status: "Done",
-        disease,
-        details,
-        notes,
-        height,
-        weight,
-        bmi,
-        bloodPressure,
-        immunizations,
-        insurance,
-        socialHistory,
-        doctorname: doctorName,
-        Hospitalname: Hospitalname,
-        medications: medication
-          .split(",")
-          .map((med) => ({ medication: med.trim() })),
-        images: images.map((file) => ({ image: URL.createObjectURL(file) })),
-      };
-
-      console.log("Payload:", newVisit);
-
+    const fetchInsurance = async () => {
       try {
-        const response = await axios.post(
-          "http://localhost:5000/api/user/records",
-          newVisit,
+        const response = await axios.get(
+          `http://localhost:5000/api/queue/assurance/${patientId}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
             },
           }
         );
-        Swal.fire({
-          icon: "success",
-          title: "Success",
-          text: "Patient has been signed off successfully",
-        });
-        onAddVisit(response.data);
-        onClose();
+        setInsurance(response.data.assurance);
       } catch (error) {
-        console.error("Error posting visit data:", error);
+        console.error("Error fetching assurance:", error);
         Swal.fire({
           icon: "error",
           title: "Error",
-          text: "Failed to save visit data",
+          text: "Failed to fetch insurance",
         });
       }
+    };
+
+    fetchDetails();
+    fetchInsurance();
+  }, [token, patientId]);
+
+  const handleDone = async () => {
+    if (window.confirm("Are you sure you are done?")) {
+      setShowServicePopup(true); // Show service popup
+    }
+  };
+
+  const handleConfirmServices = async () => {
+    const newVisit = {
+      patientId,
+      date,
+      description,
+      status: "Done",
+      disease,
+      details,
+      notes,
+      height,
+      weight,
+      bmi,
+      bloodPressure,
+      immunizations,
+      insurance,
+      socialHistory,
+      doctorname: doctorName,
+      Hospitalname: Hospitalname,
+      medications: medication
+        .split(",")
+        .map((med) => ({ medication: med.trim() })),
+      images: images.map((file) => ({ image: URL.createObjectURL(file) })),
+      services: selectedServices, // Add selected services
+    };
+
+    try {
+      const response = await axios.post(
+        "http://localhost:5000/api/user/records",
+        newVisit,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      Swal.fire({
+        icon: "success",
+        title: "Success",
+        text: "Patient has been signed off successfully",
+      });
+      onAddVisit(response.data);
+      onClose();
+    } catch (error) {
+      console.error("Error posting visit data:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Failed to save visit data",
+      });
     }
   };
 
@@ -158,6 +186,18 @@ const NewVisitForm = ({ patientId, onAddVisit, onClose }) => {
   const handleImageChange = (e) => {
     const files = Array.from(e.target.files);
     setImages(files);
+  };
+
+  const handleServiceChange = (service) => {
+    setSelectedServices((prev) =>
+      prev.includes(service)
+        ? prev.filter((s) => s !== service)
+        : [...prev, service]
+    );
+  };
+
+  const handleServicePopupClose = () => {
+    setShowServicePopup(false);
   };
 
   return (
@@ -253,7 +293,6 @@ const NewVisitForm = ({ patientId, onAddVisit, onClose }) => {
               value={bmi}
               onChange={(e) => setBmi(e.target.value)}
               className="border border-gray-300 px-4 py-2 rounded-lg w-full"
-              required
             />
           </div>
           <div className="mb-4">
@@ -269,7 +308,6 @@ const NewVisitForm = ({ patientId, onAddVisit, onClose }) => {
               value={bloodPressure}
               onChange={(e) => setBloodPressure(e.target.value)}
               className="border border-gray-300 px-4 py-2 rounded-lg w-full"
-              required
             />
           </div>
           <div className="mb-4">
@@ -284,21 +322,6 @@ const NewVisitForm = ({ patientId, onAddVisit, onClose }) => {
               id="immunizations"
               value={immunizations}
               onChange={(e) => setImmunizations(e.target.value)}
-              className="border border-gray-300 px-4 py-2 rounded-lg w-full"
-            />
-          </div>
-          <div className="mb-4">
-            <label
-              className="block text-sm font-medium mb-2"
-              htmlFor="insurance"
-            >
-              Insurance
-            </label>
-            <input
-              type="text"
-              id="insurance"
-              value={insurance}
-              onChange={(e) => setInsurance(e.target.value)}
               className="border border-gray-300 px-4 py-2 rounded-lg w-full"
             />
           </div>
@@ -369,8 +392,46 @@ const NewVisitForm = ({ patientId, onAddVisit, onClose }) => {
           </div>
         </form>
       </div>
+      {showServicePopup && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-lg max-h-full overflow-y-auto">
+            <h3 className="text-2xl font-bold mb-4">Select Services</h3>
+            <div className="mb-4">
+              {servicesList.map((service) => (
+                <div key={service.name} className="flex items-center mb-2">
+                  <input
+                    type="checkbox"
+                    id={service.name}
+                    checked={selectedServices.includes(service.name)}
+                    onChange={() => handleServiceChange(service.name)}
+                    className="mr-2"
+                  />
+                  <label htmlFor={service.name} className="text-sm font-medium">
+                    {service.name} 
+                  </label>
+                </div>
+              ))}
+            </div>
+            <div className="flex justify-end space-x-2">
+              <button
+                type="button"
+                onClick={handleConfirmServices}
+                className="bg-green-500 text-white px-4 py-2 rounded-lg"
+              >
+                Confirm
+              </button>
+              <button
+                type="button"
+                onClick={handleServicePopupClose}
+                className="bg-gray-500 text-white px-4 py-2 rounded-lg"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
-
 export default NewVisitForm;
