@@ -24,6 +24,7 @@ const NewVisitForm = ({ patientId, onAddVisit, onClose }) => {
   const [Hospitalname, setHospitalname] = useState("");
   const [showServicePopup, setShowServicePopup] = useState(false); // State to handle service popup
   const [selectedServices, setSelectedServices] = useState([]); // State to handle selected services
+  const [queueId, setQueueId] = useState(null);
 
   useEffect(() => {
     setDate(new Date().toISOString().split("T")[0]);
@@ -71,8 +72,30 @@ const NewVisitForm = ({ patientId, onAddVisit, onClose }) => {
       }
     };
 
+    const fetchQueueId = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:5000/api/queue/patient/${patientId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        setQueueId(response.data.id);
+      } catch (error) {
+        console.error("Error fetching queue ID:", error);
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Failed to fetch queue ID",
+        });
+      }
+    };
+
     fetchDetails();
     fetchInsurance();
+    fetchQueueId();
   }, [token, patientId]);
 
   const handleDone = async () => {
@@ -82,6 +105,15 @@ const NewVisitForm = ({ patientId, onAddVisit, onClose }) => {
   };
 
   const handleConfirmServices = async () => {
+    if (!queueId) {
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Queue ID not found",
+      });
+      return;
+    }
+
     const newVisit = {
       patientId,
       date,
@@ -103,7 +135,7 @@ const NewVisitForm = ({ patientId, onAddVisit, onClose }) => {
         .split(",")
         .map((med) => ({ medication: med.trim() })),
       images: images.map((file) => ({ image: URL.createObjectURL(file) })),
-      services: selectedServices, // Add selected services
+      services: selectedServices,
     };
 
     try {
@@ -116,6 +148,17 @@ const NewVisitForm = ({ patientId, onAddVisit, onClose }) => {
           },
         }
       );
+
+      await axios.put(
+        `http://localhost:5000/api/queue/edit/${queueId}`,
+        { services: selectedServices },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
       Swal.fire({
         icon: "success",
         title: "Success",
@@ -138,7 +181,7 @@ const NewVisitForm = ({ patientId, onAddVisit, onClose }) => {
       patientId,
       date,
       description,
-      status: "IN PROGRESS",
+      status: "In Progress",
       disease,
       details,
       notes,
@@ -407,7 +450,7 @@ const NewVisitForm = ({ patientId, onAddVisit, onClose }) => {
                     className="mr-2"
                   />
                   <label htmlFor={service.name} className="text-sm font-medium">
-                    {service.name} 
+                    {service.name}
                   </label>
                 </div>
               ))}

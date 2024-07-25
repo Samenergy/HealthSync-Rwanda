@@ -5,12 +5,11 @@ function PatientTable() {
   const [patients, setPatients] = useState([]);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [doctorId, setDoctorId] = useState(null); // To store doctorId
 
   useEffect(() => {
     const fetchUserAndPatients = async () => {
       setLoading(true);
-      
+
       const token = localStorage.getItem("token");
 
       try {
@@ -28,7 +27,6 @@ function PatientTable() {
         const userData = await userResponse.json();
         const userId = userData.user.id;
 
-        
         const patientsResponse = await fetch(
           `http://localhost:5000/api/queue/doctor/${userId}`,
           {
@@ -57,6 +55,7 @@ function PatientTable() {
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error}</p>;
+  if (patients.length === 0) return <p>No patients found.</p>;
 
   return (
     <div className="w-[970px] bg-white px-5 pb-5 shadow-xl rounded-lg mt-5">
