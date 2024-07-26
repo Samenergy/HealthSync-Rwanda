@@ -1,169 +1,125 @@
-import React, { useState } from 'react';
-import servicesList from './services';
+import React, { useState, useEffect } from "react";
+import { FaEye } from "react-icons/fa";
+import ServiceDetailsModal from "./ServiceDetailsModal";
 
-const BillingSection = () => {
-  const [billDetails, setBillDetails] = useState({
-    patientName: '',
-    services: [],
-    totalAmount: 0,
-    status: 'Pending',
-  });
+function BillingSection() {
+  const [patients, setPatients] = useState([]);
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [selectedPatient, setSelectedPatient] = useState(null);
+  const [modalOpen, setModalOpen] = useState(false);
 
-  const [sampleData] = useState([
-    {
-      patientName: 'John Doe',
-      services: [
-        { name: 'Consultation', cost: 50 },
-        { name: 'X-Ray', cost: 200 },
-      ],
-      totalAmount: 250,
-      status: 'Paid',
-    },
-    {
-      patientName: 'Jane Smith',
-      services: [
-        { name: 'Blood Tests', cost: 100 },
-        { name: 'MRI', cost: 1000 },
-      ],
-      totalAmount: 1100,
-      status: 'Pending',
-    },
-  ]);
+  useEffect(() => {
+    const fetchUserAndPatients = async () => {
+      setLoading(true);
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setBillDetails({ ...billDetails, [name]: value });
-  };
+      const token = localStorage.getItem("token");
 
-  const addService = () => {
-    setBillDetails({
-      ...billDetails,
-      services: [...billDetails.services, { name: '', cost: 0 }],
-    });
-  };
+      try {
+        const userResponse = await fetch("http://localhost:5000/api/user/data", {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
 
-  const handleServiceChange = (index, e) => {
-    const { name, value } = e.target;
-    const newServices = billDetails.services.map((service, i) => {
-      if (i === index) {
-        return { ...service, [name]: value };
+        if (!userResponse.ok) {
+          throw new Error("Failed to fetch user data");
+        }
+
+        const userData = await userResponse.json();
+        const userId = userData.user.id;
+
+        const patientsResponse = await fetch(
+          `http://localhost:5000/api/queue/inprogress/`,
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        if (!patientsResponse.ok) {
+          throw new Error("Failed to fetch patients data");
+        }
+
+        const patientsData = await patientsResponse.json();
+        setPatients(patientsData);
+      } catch (error) {
+        setError(error.message);
+      } finally {
+        setLoading(false);
       }
-      return service;
-    });
-    setBillDetails({ ...billDetails, services: newServices });
+    };
+
+    fetchUserAndPatients();
+  }, []);
+
+  const handleEyeClick = (patient) => {
+    setSelectedPatient(patient);
+    setModalOpen(true);
   };
 
-  const calculateTotal = () => {
-    const total = billDetails.services.reduce((sum, service) => sum + parseFloat(service.cost || 0), 0);
-    setBillDetails({ ...billDetails, totalAmount: total });
+  const handleCloseModal = () => {
+    setSelectedPatient(null);
+    setModalOpen(false);
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    calculateTotal();
-    // Save bill details to backend
-  };
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error: {error}</p>;
+  if (patients.length === 0) return <p>No patients found.</p>;
 
   return (
-    <div className="p-6 bg-white rounded-lg shadow-md w-full max-w-4xl mx-auto">
-      <h2 className="text-2xl font-semibold mb-4">Billing Section</h2>
-      <form onSubmit={handleSubmit} className="mb-8">
-        <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700">Patient Name</label>
-          <input
-            type="text"
-            name="patientName"
-            value={billDetails.patientName}
-            onChange={handleInputChange}
-            className="mt-1 p-2 w-full border border-gray-300 rounded-md"
-          />
-        </div>
-        <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700">Services</label>
-          {billDetails.services.map((service, index) => (
-            <div key={index} className="flex items-center mb-2">
-              <select
-                name="name"
-                value={service.name}
-                onChange={(e) => handleServiceChange(index, e)}
-                className="mr-2 p-2 w-full border border-gray-300 rounded-md"
-              >
-                <option value="">Select Service</option>
-                {servicesList.map((serviceItem, idx) => (
-                  <option key={idx} value={serviceItem.name}>{serviceItem.name}</option>
-                ))}
-              </select>
-              <input
-                type="number"
-                name="cost"
-                placeholder="Cost"
-                value={service.cost}
-                onChange={(e) => handleServiceChange(index, e)}
-                className="p-2 w-full border border-gray-300 rounded-md"
-              />
-            </div>
-          ))}
-          <button type="button" onClick={addService} className="px-4 py-2 bg-blue-500 text-white rounded-md">
-            Add Service
-          </button>
-        </div>
-        <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700">Total Amount</label>
-          <input
-            type="number"
-            name="totalAmount"
-            value={billDetails.totalAmount}
-            readOnly
-            className="mt-1 p-2 w-full border border-gray-300 rounded-md bg-gray-100"
-          />
-        </div>
-        <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700">Status</label>
-          <select
-            name="status"
-            value={billDetails.status}
-            onChange={handleInputChange}
-            className="mt-1 p-2 w-full border border-gray-300 rounded-md"
-          >
-            <option value="Pending">Pending</option>
-            <option value="Paid">Paid</option>
-            <option value="Cancelled">Cancelled</option>
-          </select>
-        </div>
-        <button type="submit" className="px-4 py-2 bg-green-500 text-white rounded-md">
-          Save Bill
-        </button>
-      </form>
-
-      <h3 className="text-xl font-semibold mb-4">Sample Data</h3>
-      <table className="min-w-full bg-white border border-gray-300">
+    <div className="w-[970px] bg-white px-5 pb-5 shadow-xl rounded-lg mt-5">
+      <div className="flex justify-between items-center pt-3 pb-3">
+        <h2 className="text-xl font-bold">Billing Queue</h2>
+      </div>
+      <table className="min-w-full">
         <thead>
-          <tr>
-            <th className="px-4 py-2 border-b">Patient Name</th>
-            <th className="px-4 py-2 border-b">Services</th>
-            <th className="px-4 py-2 border-b">Total Amount</th>
-            <th className="px-4 py-2 border-b">Status</th>
+          <tr className="text-left text-[11px] font-sans">
+            <th>No</th>
+            <th>Patient Name</th>
+            <th>Assurance</th>
+            <th>Contact</th>
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
-          {sampleData.map((record, index) => (
-            <tr key={index}>
-              <td className="px-4 py-2 border-b">{record.patientName}</td>
-              <td className="px-4 py-2 border-b">
-                {record.services.map((service, idx) => (
-                  <div key={idx}>
-                    {service.name} (${service.cost})
-                  </div>
-                ))}
+          {patients.map((patient, index) => (
+            <tr
+              key={patient.id}
+              className={`text-[11px]  h-[34px] ${
+                index % 2 === 0 ? "bg-[#ddf4fc]" : ""
+              }`}
+            >
+              <td>{index + 1}</td>
+              <td>{patient.Patient.name}</td>
+              <td>{patient.assurance}</td>
+              <td>{patient.Patient.contact}</td>
+              <td>
+                <button
+                  onClick={() => handleEyeClick(patient)}
+                  className="text-center pl-2 text-lg hover:text-[#00afee]"
+                >
+                  <FaEye />
+                </button>
               </td>
-              <td className="px-4 py-2 border-b">${record.totalAmount}</td>
-              <td className="px-4 py-2 border-b">{record.status}</td>
             </tr>
           ))}
         </tbody>
       </table>
+      {selectedPatient && (
+        <ServiceDetailsModal
+          patient={selectedPatient.Patient}
+          services={selectedPatient.services}
+          queueId={selectedPatient.id} // Pass the queueId
+          isOpen={modalOpen}
+          onClose={handleCloseModal}
+        />
+      )}
     </div>
   );
-};
+}
 
 export default BillingSection;

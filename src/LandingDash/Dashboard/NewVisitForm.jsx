@@ -20,8 +20,9 @@ const NewVisitForm = ({ patientId, onAddVisit, onClose }) => {
   const [socialHistory, setSocialHistory] = useState("");
   const [medication, setMedication] = useState("");
   const [images, setImages] = useState([]);
+  const [doctorId, setDoctorId] = useState(""); // Doctor ID state
   const [doctorName, setDoctorName] = useState("");
-  const [Hospitalname, setHospitalname] = useState("");
+  const [hospitalName, setHospitalName] = useState("");
   const [showServicePopup, setShowServicePopup] = useState(false); // State to handle service popup
   const [selectedServices, setSelectedServices] = useState([]); // State to handle selected services
   const [queueId, setQueueId] = useState(null);
@@ -39,8 +40,9 @@ const NewVisitForm = ({ patientId, onAddVisit, onClose }) => {
             },
           }
         );
+        setDoctorId(response.data.user.id); // Set doctor ID
         setDoctorName(response.data.user.name);
-        setHospitalname(response.data.hospital.name);
+        setHospitalName(response.data.hospital.name);
       } catch (error) {
         console.error("Error fetching user data:", error);
         Swal.fire({
@@ -129,8 +131,9 @@ const NewVisitForm = ({ patientId, onAddVisit, onClose }) => {
       immunizations,
       insurance,
       socialHistory,
-      doctorname: doctorName,
-      Hospitalname: Hospitalname,
+      doctorId, // Include doctor ID
+      doctorName,
+      hospitalName,
       medications: medication
         .split(",")
         .map((med) => ({ medication: med.trim() })),
@@ -149,9 +152,10 @@ const NewVisitForm = ({ patientId, onAddVisit, onClose }) => {
         }
       );
 
+      // Update the queue with selected services and doctor ID
       await axios.put(
         `http://localhost:5000/api/queue/edit/${queueId}`,
-        { services: selectedServices },
+        { services: selectedServices, doctorId }, // Include doctor ID in the payload
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -192,8 +196,9 @@ const NewVisitForm = ({ patientId, onAddVisit, onClose }) => {
       immunizations,
       insurance,
       socialHistory,
-      doctorname: doctorName,
-      Hospitalname: Hospitalname,
+      doctorId, // Use fetched doctor ID here
+      doctorName,
+      hospitalName,
       medications: medication
         .split(",")
         .map((med) => ({ medication: med.trim() })),
