@@ -10,35 +10,63 @@ function Patientlist() {
   const [error, setError] = useState(null);
   const [selectedPatient, setSelectedPatient] = useState(null);
   const [token, setToken] = useState(localStorage.getItem("token") || "");
+  const [hospitalId, setHospitalId] = useState(null); // Default to null to signify not loaded yet
 
-  // Fetch queue data from the backend
+  // Fetch hospital ID from the user data endpoint
   useEffect(() => {
-    const fetchQueue = async () => {
+    const fetchHospitalId = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/queue", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        const sortedQueue = response.data.sort(
-          (a, b) => new Date(a.createdAt) - new Date(b.createdAt)
+        const response = await axios.get(
+          "http://localhost:5000/api/user/data",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
         );
-        setQueue(sortedQueue);
-        setLoading(false);
+        const fetchedHospitalId = response.data.hospital.id; // Adjust based on your response structure
+        setHospitalId(fetchedHospitalId);
       } catch (error) {
-        setError("Failed to fetch queue data");
-        setLoading(false);
-        console.error("Failed to fetch queue data:", error);
+        setError("Failed to fetch hospital data");
+        console.error("Failed to fetch hospital data:", error);
       }
     };
 
     if (token) {
-      fetchQueue();
+      fetchHospitalId();
     } else {
       setError("No token found");
-      setLoading(false);
     }
   }, [token]);
+
+  // Fetch queue data from the backend once hospitalId is available
+  useEffect(() => {
+    if (hospitalId) {
+      const fetchQueue = async () => {
+        try {
+          const response = await axios.get(
+            `http://localhost:5000/api/queue/${hospitalId}`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+          const sortedQueue = response.data.sort(
+            (a, b) => new Date(a.createdAt) - new Date(b.createdAt)
+          );
+          setQueue(sortedQueue);
+          setLoading(false);
+        } catch (error) {
+          setError("Failed to fetch queue data");
+          setLoading(false);
+          console.error("Failed to fetch queue data:", error);
+        }
+      };
+
+      fetchQueue();
+    }
+  }, [hospitalId, token]);
 
   // Define doctor types from the fetched queue data
   const doctorTypes = Array.from(new Set(queue.map((entry) => entry.doctor)));
@@ -49,7 +77,11 @@ function Patientlist() {
     : queue;
 
   const handleDelete = async (id) => {
-    if (window.confirm("Are you sure you want to remove this patient from the queue?")) {
+    if (
+      window.confirm(
+        "Are you sure you want to remove this patient from the queue?"
+      )
+    ) {
       try {
         await axios.delete(`http://localhost:5000/api/queue/${id}`, {
           headers: {
@@ -127,9 +159,8 @@ function Patientlist() {
               <td>{entry.Patient.contact}</td>
               <td>{entry.doctor}</td>
               <td>
-                
                 <button
-                  className="text-[20px] ml-2 "
+                  className="text-[20px] ml-2"
                   onClick={() => handleDelete(entry.id)}
                 >
                   <MdDelete />
@@ -139,7 +170,6 @@ function Patientlist() {
           ))}
         </tbody>
       </table>
-      
     </div>
   );
 }

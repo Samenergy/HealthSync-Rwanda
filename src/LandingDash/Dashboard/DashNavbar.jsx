@@ -77,8 +77,8 @@ function DashNavbar({ sidebarOpen, setSidebarOpen }) {
           <img
             src={
               sidebarOpen
-                ? "./src/assets/logo.JPG"
-                : "./src/assets/logo (2).JPG"
+                ? "/logo.JPG"
+                : "/logo (2).JPG"
             }
             className="w-[170px]"
             alt="Medical Center Clinic Logo"

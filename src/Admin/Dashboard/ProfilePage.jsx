@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import defaultProfileImage from "../../assets/saaamu.PNG";
 
 function ProfilePage() {
   const [userProfile, setUserProfile] = useState(null);
@@ -58,7 +59,7 @@ function ProfilePage() {
           <div>
             <div className="flex items-center mb-4">
               <img
-                src={userProfile.picture || "/default-avatar.png"}
+                src={userProfile.picture ? `http://localhost:5000/${userProfile.picture}` : defaultProfileImage}
                 alt="User Avatar"
                 className="w-16 h-16 rounded-full mr-4"
               />
@@ -70,7 +71,7 @@ function ProfilePage() {
                   <strong>Email:</strong> {userProfile.email}
                 </p>
                 <p>
-                  
+                  <strong>Role:</strong> {userProfile.role}
                 </p>
               </div>
             </div>
@@ -118,7 +119,7 @@ function ProfilePage() {
             </p>
             {hospitalProfile.logo ? (
               <img
-                src={hospitalProfile.logo}
+                src={`http://localhost:5000/${hospitalProfile.logo}`}
                 alt="Hospital Logo"
                 className="mt-4 w-32 h-32 object-contain"
               />

@@ -16,6 +16,7 @@ function BillingSection() {
       const token = localStorage.getItem("token");
 
       try {
+        // Fetch user data
         const userResponse = await fetch("http://localhost:5000/api/user/data", {
           method: "GET",
           headers: {
@@ -28,10 +29,11 @@ function BillingSection() {
         }
 
         const userData = await userResponse.json();
-        const userId = userData.user.id;
+        const hospitalId = userData.hospital.id;
 
+        // Fetch patients data based on hospital ID
         const patientsResponse = await fetch(
-          `http://localhost:5000/api/queue/inprogress/`,
+          `http://localhost:5000/api/queue/in-progress/${hospitalId}`,
           {
             method: "GET",
             headers: {
@@ -67,7 +69,7 @@ function BillingSection() {
   };
 
   if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error: {error}</p>;
+  if (error) return <p className="text-red-500">Error: {error}</p>;
   if (patients.length === 0) return <p>No patients found.</p>;
 
   return (
@@ -89,7 +91,7 @@ function BillingSection() {
           {patients.map((patient, index) => (
             <tr
               key={patient.id}
-              className={`text-[11px]  h-[34px] ${
+              className={`text-[11px] h-[34px] ${
                 index % 2 === 0 ? "bg-[#ddf4fc]" : ""
               }`}
             >

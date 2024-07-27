@@ -57,7 +57,7 @@ function AdminDashNavbar({ sidebarOpen, setSidebarOpen }) {
             <img
               src={
                 sidebarOpen
-                  ? "./src/assets/logo.JPG"
+                  ? "/logo.JPG"
                   : "./src/assets/logo (2).JPG"
               }
               className="w-[170px]"

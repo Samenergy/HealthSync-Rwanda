@@ -17,18 +17,25 @@ function ServiceDetailsModal({ patient, services, queueId, isOpen, onClose }) {
   const handleDoneClick = async () => {
     try {
       const token = localStorage.getItem("token");
+
       const response = await axios.patch(
         `http://localhost:5000/api/queue/${queueId}/done`,
-        {},
+        {
+          amounts: {
+            Patient: patientAmount.toFixed(2),
+            Assurance: assuranceAmount.toFixed(2),
+          },
+        },
         {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         }
       );
+
       // Update amounts with the response data
       setAmounts(response.data.queueItem.amounts);
-      
+
       Swal.fire({
         title: "Success!",
         text: "Queue item status updated to completed",

@@ -59,7 +59,7 @@ function EditProfilePage() {
 
   const handleFileChange = (e) => {
     const { name, files } = e.target;
-    if (name === "user_picture" && files[0]) {
+    if (name === "picture" && files[0]) {
       setAdminPicture(files[0]);
     } else if (name === "hospital_logo" && files[0]) {
       setHospitalLogo(files[0]);
@@ -102,20 +102,36 @@ function EditProfilePage() {
 
     try {
       const formData = new FormData();
-      formData.append("user", JSON.stringify(userProfile));
-      if (adminPicture) formData.append("user_picture", adminPicture);
+      formData.append("name", userProfile.name);
+      formData.append("email", userProfile.email);
+      if (adminPicture) formData.append("picture", adminPicture);
       if (hospitalLogo && userProfile.role === "administrator") {
         formData.append("hospital_logo", hospitalLogo);
-        formData.append("hospital", JSON.stringify(hospitalProfile));
+        formData.append("hospitalName", hospitalProfile.name);
+        formData.append("address", hospitalProfile.address);
+        formData.append("facilityType", hospitalProfile.facilityType);
+        formData.append("phoneNumber", hospitalProfile.phoneNumber);
+        formData.append("taxIdNumber", hospitalProfile.taxIdNumber);
+        formData.append(
+          "businessRegistrationNumber",
+          hospitalProfile.businessRegistrationNumber
+        );
+        formData.append("country", hospitalProfile.country);
+        formData.append("province", hospitalProfile.province);
+        formData.append("district", hospitalProfile.district);
+        formData.append("sector", hospitalProfile.sector);
       }
 
-      const response = await fetch("http://localhost:5000/api/user/update", {
-        method: "PUT",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        body: formData,
-      });
+      const response = await fetch(
+        `http://localhost:5000/api/user/${userProfile.role}/${userProfile.id}`,
+        {
+          method: "PUT",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          body: formData,
+        }
+      );
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -243,90 +259,188 @@ function EditProfilePage() {
             </label>
             <input
               type="file"
-              name="user_picture"
+              name="picture"
               onChange={handleFileChange}
               className="w-full border rounded px-3 py-2"
             />
           </div>
-
-          {/* Hospital Profile Fields */}
           {userProfile.role === "administrator" && (
-            <>
-              <h3 className="text-lg font-semibold mt-4 mb-2">
-                Hospital Profile
-              </h3>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Hospital Name
-                </label>
-                <input
-                  type="text"
-                  name="name"
-                  value={hospitalProfile.name || ""}
-                  onChange={handleHospitalInputChange}
-                  className={`w-full border rounded px-3 py-2 ${
-                    formErrors.hospital_name ? "border-red-500" : ""
-                  }`}
-                />
-                {formErrors.hospital_name && (
-                  <p className="text-red-500 text-xs">{formErrors.hospital_name}</p>
-                )}
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Address
-                </label>
-                <input
-                  type="text"
-                  name="address"
-                  value={hospitalProfile.address || ""}
-                  onChange={handleHospitalInputChange}
-                  className={`w-full border rounded px-3 py-2 ${
-                    formErrors.hospital_address ? "border-red-500" : ""
-                  }`}
-                />
-                {formErrors.hospital_address && (
-                  <p className="text-red-500 text-xs">{formErrors.hospital_address}</p>
-                )}
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Phone Number
-                </label>
-                <input
-                  type="text"
-                  name="phoneNumber"
-                  value={hospitalProfile.phoneNumber || ""}
-                  onChange={handleHospitalInputChange}
-                  className={`w-full border rounded px-3 py-2 ${
-                    formErrors.hospital_phoneNumber ? "border-red-500" : ""
-                  }`}
-                />
-                {formErrors.hospital_phoneNumber && (
-                  <p className="text-red-500 text-xs">{formErrors.hospital_phoneNumber}</p>
-                )}
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Hospital Logo
-                </label>
-                <input
-                  type="file"
-                  name="hospital_logo"
-                  onChange={handleFileChange}
-                  className="w-full border rounded px-3 py-2"
-                />
-              </div>
-            </>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Hospital Logo
+              </label>
+              <input
+                type="file"
+                name="hospital_logo"
+                onChange={handleFileChange}
+                className="w-full border rounded px-3 py-2"
+              />
+            </div>
           )}
           <button
             type="submit"
-            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+            className="bg-blue-500 text-white px-4 py-2 rounded"
           >
-            Save Changes
+            Update Profile
           </button>
         </form>
       </div>
+
+      {/* Edit Hospital Profile Section (Only for Admins) */}
+      {userProfile.role === "administrator" && hospitalProfile && (
+        <div className="bg-white p-6 rounded-lg shadow-md mb-8">
+          <h2 className="text-xl font-semibold mb-4">Edit Hospital Profile</h2>
+          <form onSubmit={handleProfileSubmit} className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Hospital Name
+              </label>
+              <input
+                type="text"
+                name="name"
+                value={hospitalProfile.name || ""}
+                onChange={handleHospitalInputChange}
+                className={`w-full border rounded px-3 py-2 ${
+                  formErrors.hospital_name ? "border-red-500" : ""
+                }`}
+              />
+              {formErrors.hospital_name && (
+                <p className="text-red-500 text-xs">
+                  {formErrors.hospital_name}
+                </p>
+              )}
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Address
+              </label>
+              <input
+                type="text"
+                name="address"
+                value={hospitalProfile.address || ""}
+                onChange={handleHospitalInputChange}
+                className={`w-full border rounded px-3 py-2 ${
+                  formErrors.hospital_address ? "border-red-500" : ""
+                }`}
+              />
+              {formErrors.hospital_address && (
+                <p className="text-red-500 text-xs">
+                  {formErrors.hospital_address}
+                </p>
+              )}
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Facility Type
+              </label>
+              <input
+                type="text"
+                name="facilityType"
+                value={hospitalProfile.facilityType || ""}
+                onChange={handleHospitalInputChange}
+                className="w-full border rounded px-3 py-2"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Phone Number
+              </label>
+              <input
+                type="text"
+                name="phoneNumber"
+                value={hospitalProfile.phoneNumber || ""}
+                onChange={handleHospitalInputChange}
+                className={`w-full border rounded px-3 py-2 ${
+                  formErrors.hospital_phoneNumber ? "border-red-500" : ""
+                }`}
+              />
+              {formErrors.hospital_phoneNumber && (
+                <p className="text-red-500 text-xs">
+                  {formErrors.hospital_phoneNumber}
+                </p>
+              )}
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Tax ID Number
+              </label>
+              <input
+                type="text"
+                name="taxIdNumber"
+                value={hospitalProfile.taxIdNumber || ""}
+                onChange={handleHospitalInputChange}
+                className="w-full border rounded px-3 py-2"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Business Registration Number
+              </label>
+              <input
+                type="text"
+                name="businessRegistrationNumber"
+                value={hospitalProfile.businessRegistrationNumber || ""}
+                onChange={handleHospitalInputChange}
+                className="w-full border rounded px-3 py-2"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Country
+              </label>
+              <input
+                type="text"
+                name="country"
+                value={hospitalProfile.country || ""}
+                onChange={handleHospitalInputChange}
+                className="w-full border rounded px-3 py-2"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Province
+              </label>
+              <input
+                type="text"
+                name="province"
+                value={hospitalProfile.province || ""}
+                onChange={handleHospitalInputChange}
+                className="w-full border rounded px-3 py-2"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                District
+              </label>
+              <input
+                type="text"
+                name="district"
+                value={hospitalProfile.district || ""}
+                onChange={handleHospitalInputChange}
+                className="w-full border rounded px-3 py-2"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Sector
+              </label>
+              <input
+                type="text"
+                name="sector"
+                value={hospitalProfile.sector || ""}
+                onChange={handleHospitalInputChange}
+                className="w-full border rounded px-3 py-2"
+              />
+            </div>
+            <button
+              type="submit"
+              className="bg-blue-500 text-white px-4 py-2 rounded"
+            >
+              Update Hospital Profile
+            </button>
+          </form>
+        </div>
+      )}
 
       {/* Change Password Section */}
       <div className="bg-white p-6 rounded-lg shadow-md">
@@ -340,13 +454,8 @@ function EditProfilePage() {
               type="password"
               value={oldPassword}
               onChange={(e) => setOldPassword(e.target.value)}
-              className={`w-full border rounded px-3 py-2 ${
-                formErrors.oldPassword ? "border-red-500" : ""
-              }`}
+              className="w-full border rounded px-3 py-2"
             />
-            {formErrors.oldPassword && (
-              <p className="text-red-500 text-xs">{formErrors.oldPassword}</p>
-            )}
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -373,16 +482,13 @@ function EditProfilePage() {
               value={confirmNewPassword}
               onChange={(e) => setConfirmNewPassword(e.target.value)}
               className={`w-full border rounded px-3 py-2 ${
-                formErrors.confirmNewPassword ? "border-red-500" : ""
+                formErrors.newPassword ? "border-red-500" : ""
               }`}
             />
-            {formErrors.confirmNewPassword && (
-              <p className="text-red-500 text-xs">{formErrors.confirmNewPassword}</p>
-            )}
           </div>
           <button
             type="submit"
-            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+            className="bg-blue-500 text-white px-4 py-2 rounded"
           >
             Change Password
           </button>
