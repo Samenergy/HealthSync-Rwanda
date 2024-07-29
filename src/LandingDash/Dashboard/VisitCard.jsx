@@ -7,7 +7,7 @@ import EditVisitForm from "./EditVisitForm";
 
 const VisitsSection = ({ patientId }) => {
   const scrollContainerRef = useRef(null);
-  const [sortOrder, setSortOrder] = useState("date-asc");
+  const [sortOrder, setSortOrder] = useState("date-desc");
   const [selectedVisit, setSelectedVisit] = useState(null);
   const [showDetails, setShowDetails] = useState(false);
   const [fullScreenImage, setFullScreenImage] = useState("");
@@ -65,9 +65,9 @@ const VisitsSection = ({ patientId }) => {
       return 1;
     }
 
-    // Then sort by creation time within the same status group
-    const dateA = new Date(a.creationTime); // Assuming `creationTime` is a field
-    const dateB = new Date(b.creationTime); // Adjust as needed
+    // Then sort by date within the same status group
+    const dateA = new Date(a.date); // Assuming `date` is a field
+    const dateB = new Date(b.date); // Adjust as needed
 
     switch (sortOrder) {
       case "date-asc":
@@ -230,9 +230,7 @@ const VisitsSection = ({ patientId }) => {
             <p>
               <strong>Description:</strong> {selectedVisit.description}
             </p>
-            <p>
-              <strong>Status:</strong> {selectedVisit.status}
-            </p>
+            
             <p>
               <strong>Disease:</strong> {selectedVisit.disease}
             </p>
@@ -264,32 +262,22 @@ const VisitsSection = ({ patientId }) => {
               <strong>Social History:</strong> {selectedVisit.socialHistory}
             </p>
             <p>
-              <strong>Doctor's Name:</strong> {selectedVisit.doctorname}
+              <strong>Doctor:</strong> {selectedVisit.doctorname}
             </p>
             <p>
-              <strong>Hospital Name:</strong> {selectedVisit.Hospitalname}
+              <strong>Hospital:</strong> {selectedVisit.Hospitalname}
             </p>
-            {selectedVisit.medication &&
-              selectedVisit.medication.length > 0 && (
-                <div>
-                  <h3 className="text-lg font-semibold">Medications:</h3>
-                  <ul className="list-disc list-inside">
-                    {selectedVisit.medication.map((med, idx) => (
-                      <li key={idx}>{med}</li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-            {selectedVisit.images && selectedVisit.images.length > 0 && (
-              <div className="mt-4">
-                <h3 className="text-lg font-semibold">Images:</h3>
-                <div className="flex flex-wrap gap-2">
+            
+            {selectedVisit.images && (
+              <div>
+                <strong>Images:</strong>
+                <div className="flex gap-2 flex-wrap">
                   {selectedVisit.images.map((img, idx) => (
                     <img
                       key={idx}
                       src={img}
                       alt={`Visit Image ${idx + 1}`}
-                      className="w-24 h-24 object-cover cursor-pointer"
+                      className="w-16 h-16 object-cover cursor-pointer"
                       onClick={() => handleImageClick(img)}
                     />
                   ))}
@@ -297,7 +285,7 @@ const VisitsSection = ({ patientId }) => {
               </div>
             )}
             <button
-              className="mt-4 bg-gray-500 text-white px-4 py-2 rounded-lg"
+              className="bg-[#00afee] text-white px-4 py-2 rounded-lg mt-4"
               onClick={handleCloseDetails}
             >
               Close
@@ -307,29 +295,26 @@ const VisitsSection = ({ patientId }) => {
       )}
 
       {fullScreenImage && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-80 z-50">
-          <div className="relative">
-            <img
-              src={fullScreenImage}
-              alt="Full Screen"
-              className="max-w-full max-h-screen"
-            />
-            <button
-              className="absolute top-4 right-4 bg-gray-800 text-white p-2 rounded-full"
-              onClick={handleCloseFullScreenImage}
-            >
-              &times;
-            </button>
-          </div>
+        <div
+          className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
+          onClick={handleCloseFullScreenImage}
+        >
+          <img
+            src={fullScreenImage}
+            alt="Full Screen"
+            className="max-w-full max-h-full"
+          />
         </div>
       )}
 
       {isEditFormVisible && visitToEdit && (
-        <EditVisitForm
-          visit={visitToEdit}
-          onSave={handleSaveEdit}
-          onClose={handleCloseEditForm}
-        />
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+          <EditVisitForm
+            visit={visitToEdit}
+            onClose={handleCloseEditForm}
+            onSave={handleSaveEdit}
+          />
+        </div>
       )}
     </div>
   );

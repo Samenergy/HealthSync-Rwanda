@@ -1,42 +1,46 @@
 import axios from "axios";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState("");
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
 
   const handleSignIn = async () => {
     const data = { email, password };
-  
+
     try {
-      const response = await axios.post("http://localhost:5000/api/login", data);
+      const response = await axios.post(
+        "http://localhost:5000/api/login",
+        data
+      );
       console.log(response.data);
-  
+
       if (response.status === 200) {
         // Save the token to localStorage
         localStorage.setItem("token", response.data.token);
-        
-  
+
         const userRole = response.data.user.role.toLowerCase();
         switch (userRole) {
           case "administrator":
-            window.location.href = "/admin";
+            navigate("/admin");
             break;
           case "doctor":
-            window.location.href = "/Dashboard";
+            navigate("/Dashboard");
             break;
           case "receptionist":
-            window.location.href = "/Reception";
+            navigate("/Reception");
             break;
           default:
-            window.location.href = "/";
+            navigate("/");
             break;
         }
       }
     } catch (error) {
       console.error("Login error:", error);
+      setError("Login failed. Please check your credentials.");
     }
   };
 
@@ -111,8 +115,6 @@ export default function Login() {
             </div>
           </div>
 
-          
-
           <div>
             <button
               type="button"
@@ -123,6 +125,10 @@ export default function Login() {
             </button>
           </div>
         </form>
+
+        {error && (
+          <p className="mt-2 text-center text-sm text-red-500">{error}</p>
+        )}
 
         <p className="mt-2 text-center text-sm text-gray-500">
           Not a member?{" "}

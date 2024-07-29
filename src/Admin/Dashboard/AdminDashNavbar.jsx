@@ -65,7 +65,7 @@ function AdminDashNavbar({ sidebarOpen, setSidebarOpen }) {
             />
           </a>
         </div>
-        <div className="flex flex-col items-center justify-center mt-6">
+        {/* <div className="flex flex-col items-center justify-center mt-6">
           <div className="relative bg-[#ddf4fc] p-2 shadow-2xl ">
             <img
               src="./src/assets/saaamu.PNG"
@@ -80,7 +80,7 @@ function AdminDashNavbar({ sidebarOpen, setSidebarOpen }) {
         </div>
         <h1 className="mt-5 text-center uppercase font-semibold text-xs underline -mb-10 ">
           Main
-        </h1>
+        </h1> */}
         <div
           className={`pt-[50px] px-2 font-bold text-md flex flex-col  justify-between ${
             !sidebarOpen ? "items-center" : "items-left"

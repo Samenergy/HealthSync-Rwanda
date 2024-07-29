@@ -57,8 +57,8 @@ function ProfilePage() {
         {userProfile ? (
           <div>
             <div className="flex items-center mb-4">
-              <img
-                src={userProfile.picture || "/default-avatar.png"}
+            <img
+                src={userProfile.picture ? `http://localhost:5000/${userProfile.picture}` : defaultProfileImage}
                 alt="User Avatar"
                 className="w-16 h-16 rounded-full mr-4"
               />
