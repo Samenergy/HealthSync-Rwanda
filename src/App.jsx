@@ -20,6 +20,7 @@ import Patientdata from "./LandingDash/Dashboard/Patientdata";
 import Billing from "./Billing/Billing";
 import Reports from "./LandingDash/Reports/Reports";
 import BillingAdmin from "./Admin/Billing/BillingAdmin";
+import Reportsection from "./Admin/ReportAdmin/Reportsection";
 
 const App = () => {
   return (
@@ -73,11 +74,15 @@ const App = () => {
         />
         <Route
           path="/reports"
-          element={<Reports />}
+          element={<PrivateRoute component={Reports} />}
         />
         <Route
           path="/BillingHospital"
-          element={<BillingAdmin />}
+          element={<PrivateRoute component={BillingAdmin} />}
+        />
+        <Route
+          path="/Allreports"
+          element={<PrivateRoute component={Reportsection} />}
         />
       </Routes>
     </div>

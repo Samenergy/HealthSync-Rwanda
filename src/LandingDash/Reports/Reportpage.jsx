@@ -1,8 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { MdDelete } from "react-icons/md";
+import { MdDelete, MdVerified } from "react-icons/md";
 import { FaEye } from "react-icons/fa";
 import axios from "axios";
 import { addDays, startOfWeek, startOfMonth, isSameDay, isWithinInterval } from 'date-fns';
+import Modal from 'react-modal';
+
+// Set the app element for accessibility
+Modal.setAppElement('#root');
 
 function Reportpage() {
   const [queue, setQueue] = useState([]);
@@ -11,63 +15,58 @@ function Reportpage() {
   const [error, setError] = useState(null);
   const [selectedPatient, setSelectedPatient] = useState(null);
   const [token, setToken] = useState(localStorage.getItem("token") || "");
-  const [hospitalId, setHospitalId] = useState(null); // Default to null to signify not loaded yet
+  const [doctorId, setDoctorId] = useState(null);
 
-  // Fetch hospital ID from the user data endpoint
+  // Fetch doctor ID from the user data endpoint
   useEffect(() => {
-    const fetchHospitalId = async () => {
+    const fetchDoctorId = async () => {
+      try {
+        const response = await axios.get("http://localhost:5000/api/user/data", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        const fetchedDoctorId = response.data.user.id;
+        setDoctorId(fetchedDoctorId);
+      } catch (error) {
+        setError("Failed to fetch doctor data");
+        console.error("Failed to fetch doctor data:", error);
+      }
+    };
+
+    if (token) {
+      fetchDoctorId();
+    } else {
+      setError("No token found");
+    }
+  }, [token]);
+
+  // Fetch queue data from the backend once doctorId is available
+  useEffect(() => {
+    const fetchQueue = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:5000/api/user/data",
+          `http://localhost:5000/api/queue/doctor/${doctorId}/completed`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
             },
           }
         );
-        const fetchedDoctorId = response.data.user.id; // Adjust based on your response structure
-        setHospitalId(fetchedDoctorId);
+        const sortedQueue = response.data.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+        setQueue(sortedQueue);
+        setLoading(false);
       } catch (error) {
-        setError("Failed to fetch hospital data");
-        console.error("Failed to fetch hospital data:", error);
+        setError("Failed to fetch queue data");
+        setLoading(false);
+        console.error("Failed to fetch queue data:", error);
       }
     };
 
-    if (token) {
-      fetchHospitalId();
-    } else {
-      setError("No token found");
-    }
-  }, [token]);
-
-  // Fetch queue data from the backend once hospitalId is available
-  useEffect(() => {
-    if (hospitalId) {
-      const fetchQueue = async () => {
-        try {
-          const response = await axios.get(
-            `http://localhost:5000/api/queue/${hospitalId}`,
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            }
-          );
-          const sortedQueue = response.data.sort(
-            (a, b) => new Date(a.createdAt) - new Date(b.createdAt)
-          );
-          setQueue(sortedQueue);
-          setLoading(false);
-        } catch (error) {
-          setError("Failed to fetch queue data");
-          setLoading(false);
-          console.error("Failed to fetch queue data:", error);
-        }
-      };
-
+    if (doctorId) {
       fetchQueue();
     }
-  }, [hospitalId, token]);
+  }, [doctorId, token]);
 
   // Define date filters
   const today = new Date();
@@ -95,11 +94,7 @@ function Reportpage() {
   });
 
   const handleDelete = async (id) => {
-    if (
-      window.confirm(
-        "Are you sure you want to remove this patient from the queue?"
-      )
-    ) {
+    if (window.confirm("Are you sure you want to remove this patient from the queue?")) {
       try {
         await axios.delete(`http://localhost:5000/api/queue/${id}`, {
           headers: {
@@ -122,7 +117,6 @@ function Reportpage() {
     setSelectedPatient(null);
   };
 
-  // Handle token change, e.g., during login
   const handleTokenChange = (newToken) => {
     setToken(newToken);
     localStorage.setItem("token", newToken); // Save token in localStorage
@@ -145,57 +139,66 @@ function Reportpage() {
           </select>
         </div>
       </div>
-      {loading && <p>Loading...</p>}
-      {error && <p className="text-red-500">{error}</p>}
-      <table className="min-w-full">
-        <thead>
-          <tr className="text-left text-[11px] font-sans">
-            <th>No</th>
-            <th>Patient Name</th>
-            <th>Gender</th>
-            <th>Date</th>
-            <th>Phone Number</th>
-            <th>Status</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {filteredQueue.map((entry, index) => (
-            <tr
-              key={entry.id}
-              className={`text-[11px] h-[34px] ${
-                index % 2 === 0 ? "bg-[#ddf4fc]" : ""
-              }`}
-            >
-              <td>{index + 1}</td>
-              <td>{entry.Patient.name}</td>
-              <td>{entry.Patient.gender}</td>
-              <td>{new Date(entry.createdAt).toLocaleDateString()}</td>
-              <td>{entry.Patient.contact}</td>
-              <td>{entry.status}</td>
-              <td>
-                <button
-                  className="text-[20px] ml-2"
-                  onClick={() => handleDelete(entry.id)}
-                >
-                  <MdDelete />
-                </button>
-                <button
-                  className="text-[20px] ml-2"
-                  onClick={() => openModal(entry)}
-                >
-                  <FaEye />
-                </button>
-              </td>
+      {loading ? (
+        <p>Loading...</p>
+      ) : error ? (
+        <p className="text-red-500">{error}</p>
+      ) : (
+        <table className="min-w-full">
+          <thead>
+            <tr className="text-left text-[11px] font-sans">
+              <th>No</th>
+              <th>Patient Name</th>
+              <th>Gender</th>
+              <th>Date</th>
+              <th>Phone Number</th>
+              <th>Status</th>
+              <th>Actions</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {filteredQueue.map((entry, index) => (
+              <tr
+                key={entry.id}
+                className={`text-[11px] h-[34px] ${index % 2 === 0 ? "bg-[#ddf4fc]" : ""}`}
+              >
+                <td>{index + 1}</td>
+                <td>{entry.Patient.name}</td>
+                <td>{entry.Patient.gender}</td>
+                <td>{new Date(entry.createdAt).toLocaleDateString()}</td>
+                <td>{entry.Patient.contact}</td>
+                <td className="flex items-center gap-1 text-green-600 mt-2 "><MdVerified />{entry.status}</td>
+
+                <td>
+                  <button className="text-[20px] ml-2" onClick={() => openModal(entry)}>
+                    <FaEye />
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
       {selectedPatient && (
-        <div>
-          {/* Modal code for displaying patient details */}
-          <button onClick={closeModal}>Close</button>
-        </div>
+        <Modal
+          isOpen={!!selectedPatient}
+          onRequestClose={closeModal}
+          contentLabel="Patient Details"
+          className="fixed inset-0 flex items-center justify-center p-4 bg-black bg-opacity-50"
+        >
+          <div className="bg-white rounded-lg shadow-lg p-6 w-[400px]">
+            <h2 className="text-xl font-bold mb-4">Patient Details</h2>
+            <p><strong>Name:</strong> {selectedPatient.Patient.name}</p>
+            <p><strong>Gender:</strong> {selectedPatient.Patient.gender}</p>
+            <p><strong>Date:</strong> {new Date(selectedPatient.createdAt).toLocaleDateString()}</p>
+            <p><strong>Phone Number:</strong> {selectedPatient.Patient.contact}</p>
+            <p><strong>Status:</strong> {selectedPatient.status}</p>
+            <p><strong>Services:</strong> {selectedPatient.services.join(', ')}</p>
+
+
+            <button className="mt-4 bg-blue-500 text-white p-2 rounded" onClick={closeModal}>Close</button>
+          </div>
+        </Modal>
       )}
     </div>
   );

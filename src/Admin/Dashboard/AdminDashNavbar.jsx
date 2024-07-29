@@ -104,13 +104,13 @@ function AdminDashNavbar({ sidebarOpen, setSidebarOpen }) {
               <h1 className={` ${!sidebarOpen && "hidden"} `}>Scheduling</h1>
             </div>
           </a>
-          <a href="">
+          <a href="/Allreports">
             <div className="pb-[20px] flex items-center hover:text-[#00AFEE]">
               <RiBarChartFill className="text-3xl w-auto mr-4" />
               <h1 className={` ${!sidebarOpen && "hidden"} `}>Reports</h1>
             </div>
           </a>
-          <a href="">
+          <a href="BillingHospital">
             <div className="pb-[20px] flex items-center hover:text-[#00AFEE]">
               <FaRegCreditCard className="text-3xl w-auto mr-4" />
               <h1 className={` ${!sidebarOpen && "hidden"} `}>Billing</h1>

@@ -1,8 +1,9 @@
 import React, { useState } from "react";
-import Billingpage from './Billingpage';
-import AdminDashNavbar from '../Dashboard/AdminDashNavbar';
 
-const BillingAdmin = () => {
+import AdminDashNavbar from "../Dashboard/AdminDashNavbar";
+import AllReports from "./Reports";
+
+const Reportsection = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
 
   return (
@@ -16,11 +17,11 @@ const BillingAdmin = () => {
           sidebarOpen ? "ml-56" : "ml-1/6"
         } p-6 pt-20`}
       >
-        <h1 className="font-bold text-4xl mb-4">Billing </h1>
-        <Billingpage />
+        <h1 className="font-bold text-4xl mb-4">Report </h1>
+        <AllReports/>
       </div>
     </div>
   );
 };
 
-export default BillingAdmin;
+export default Reportsection;

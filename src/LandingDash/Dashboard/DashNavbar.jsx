@@ -142,7 +142,7 @@ function DashNavbar({ sidebarOpen, setSidebarOpen }) {
         {/* Top Navbar */}
         <header
           className={`fixed top-0 left-0 right-0 h-16 bg-[#F9F8F4]  z-20 flex items-center justify-between p-4 transition-all duration-500 ${
-            sidebarOpen ? "ml-[16.7%]" : "ml-[5.7%]"
+            sidebarOpen ? "ml-[16%]" : "ml-[5.7%]"
           }`}
         >
           <FaBars

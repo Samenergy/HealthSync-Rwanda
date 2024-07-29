@@ -10,10 +10,26 @@ const Users = () => {
   const [data, setData] = useState([
     {
       id: 1,
-      Name: "John Doe",
+      Name: "Samuel Dushime",
+      Role: "Administrator",
+      email: "riral180@gmail.com",
+      Speciality: "Administrator",
+      PracticeTime: {
+        Mon: "9 AM - 6 PM",
+        Tue: "9 AM - 6 PM",
+        Wed: "9 AM - 6 PM",
+        Thu: "9 AM - 6 PM",
+        Fri: "9 AM - 6 PM",
+        Sat: "9 AM - 6 PM",
+        Sun: "Off",
+      },
+    },
+    {
+      id: 2,
+      Name: "Jean Claude Nshimiyimana",
       Role: "Doctor",
-      email: "john.doe@example.com",
-      Speciality: "Cardiology",
+      email: "hahimo7243@modotso.com",
+      Speciality: "Neurology",
       PracticeTime: {
         Mon: "9 AM - 5 PM",
         Tue: "9 AM - 5 PM",
@@ -25,11 +41,11 @@ const Users = () => {
       },
     },
     {
-      id: 2,
-      Name: "Jane Smith",
-      Role: "Nurse",
-      email: "jane.smith@example.com",
-      Speciality: "Pediatrics",
+      id: 3,
+      Name: "Serge Karenzi",
+      Role: "Receptionists",
+      email: "sdushime38@gmail.com",
+      Speciality: "Office Managment",
       PracticeTime: {
         Mon: "8 AM - 4 PM",
         Tue: "8 AM - 4 PM",
@@ -40,22 +56,7 @@ const Users = () => {
         Sun: "Off",
       },
     },
-    {
-      id: 3,
-      Name: "Bob Johnson",
-      Role: "Reception",
-      email: "bob.johnson@example.com",
-      Speciality: "N/A",
-      PracticeTime: {
-        Mon: "9 AM - 6 PM",
-        Tue: "9 AM - 6 PM",
-        Wed: "9 AM - 6 PM",
-        Thu: "9 AM - 6 PM",
-        Fri: "9 AM - 6 PM",
-        Sat: "9 AM - 6 PM",
-        Sun: "Off",
-      },
-    },
+    
   ]);
 
   const [filteredData, setFilteredData] = useState([]);
