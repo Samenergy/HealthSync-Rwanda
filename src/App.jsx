@@ -2,7 +2,6 @@ import React from "react";
 import { Route, Routes } from "react-router-dom";
 import Login from "./pages/Login";
 import Landingpage from "./Landingpage/Landingpage";
-import HospitalSignup from "./pages/HospitalSignup";
 import LandingDashboard from "./LandingDash/LandingDashboard";
 import Schedulingpage from "./Scheduling/Schedulingpage";
 import "./App.css";
@@ -20,6 +19,7 @@ import ProfileReception from "./LandingDash/DashboardReception/Profilereceptioni
 import Patientdata from "./LandingDash/Dashboard/Patientdata";
 import Billing from "./Billing/Billing";
 import Reports from "./LandingDash/Reports/Reports";
+import BillingAdmin from "./Admin/Billing/BillingAdmin";
 
 const App = () => {
   return (
@@ -73,7 +73,11 @@ const App = () => {
         />
         <Route
           path="/reports"
-          element={<PrivateRoute component={Reports} />}
+          element={<Reports />}
+        />
+        <Route
+          path="/BillingHospital"
+          element={<BillingAdmin />}
         />
       </Routes>
     </div>

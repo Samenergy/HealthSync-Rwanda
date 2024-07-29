@@ -70,7 +70,7 @@ function DashNavbar({ sidebarOpen, setSidebarOpen }) {
       {/* Sidebar */}
       <div
         className={`fixed top-0 left-0 h-screen border border-[#ffffff] shadow-xl rounded-lg transition-all duration-500 ${
-          sidebarOpen ? "w-1/6" : "w-20"
+          sidebarOpen ? "w-56" : "w-20"
         } bg-[#F9F8F4] p-5 pt-8`}
       >
         <div>
