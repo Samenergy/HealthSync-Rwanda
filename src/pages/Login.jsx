@@ -13,7 +13,7 @@ export default function Login() {
 
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/login",
+        "https://healthsync.up.railway.app/api/login",
         data
       );
       console.log(response.data);

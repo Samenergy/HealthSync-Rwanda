@@ -2,7 +2,7 @@ const people = [
   {
     name: "Samuel Dushime",
     role: "Developer",
-    imageUrl: "./src/assets/IMG_2755.jpeg",
+    imageUrl: "/IMG_2755.jpeg",
   },
 ];
 
@@ -27,9 +27,9 @@ export default function Team() {
         >
           {people.map((person) => (
             <li key={person.name}>
-              <div className="flex items-center gap-x-6">
+              <div className="flex items-center gap-x-6 mt-5">
                 <img
-                  className="h-40 w-40 rounded-full"
+                  className="h-40 w-40 rounded-full ml-12"
                   src={person.imageUrl}
                   alt=""
                 />

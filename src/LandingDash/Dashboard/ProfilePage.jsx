@@ -10,12 +10,15 @@ function ProfilePage() {
   useEffect(() => {
     const fetchProfiles = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/user/data", {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const response = await fetch(
+          "https://healthsync.up.railway.app/api/user/data",
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
 
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
@@ -69,9 +72,7 @@ function ProfilePage() {
                 <p>
                   <strong>Email:</strong> {userProfile.email}
                 </p>
-                <p>
-                  
-                </p>
+                <p></p>
               </div>
             </div>
           </div>
@@ -87,9 +88,10 @@ function ProfilePage() {
               <strong>Name:</strong> {hospitalProfile.name}
             </p>
             <p>
-              <strong>Facility Type:</strong> {hospitalProfile.facilityType || "N/A"}
+              <strong>Facility Type:</strong>{" "}
+              {hospitalProfile.facilityType || "N/A"}
             </p>
-            
+
             {hospitalProfile.logo ? (
               <img
                 src={hospitalProfile.logo}

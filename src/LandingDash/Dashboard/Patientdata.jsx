@@ -19,7 +19,7 @@ const Patientdata = () => {
       console.log("Fetching patient with ID:", id); // Debugging log
       try {
         const response = await fetch(
-          `http://localhost:5000/api/user/patients/${id}`,
+          `https://healthsync.up.railway.app/api/user/patients/${id}`,
           {
             method: "GET",
             headers: {

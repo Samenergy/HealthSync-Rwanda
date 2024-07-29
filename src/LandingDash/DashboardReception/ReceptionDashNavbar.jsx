@@ -28,7 +28,7 @@ function classNames(...classes) {
 const handleSignOut = async () => {
   try {
     // Make a POST request to the logout route
-    await fetch("http://localhost:5000/api/users/logout", {
+    await fetch("https://healthsync.up.railway.app/api/users/logout", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -73,11 +73,7 @@ function ReceptionDashNavbar() {
       >
         <div>
           <img
-            src={
-              sidebarOpen
-                ? "/logo.JPG"
-                : "/logo (2).JPG"
-            }
+            src={sidebarOpen ? "/logo.JPG" : "/logo (2).JPG"}
             className="w-[170px]"
             alt="Medical Center Clinic Logo"
           />

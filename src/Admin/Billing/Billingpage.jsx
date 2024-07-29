@@ -2,11 +2,17 @@ import React, { useState, useEffect } from "react";
 import { FaEye } from "react-icons/fa";
 import { MdVerified } from "react-icons/md";
 import axios from "axios";
-import { addDays, startOfWeek, startOfMonth, isSameDay, isWithinInterval } from 'date-fns';
-import Modal from 'react-modal';
+import {
+  addDays,
+  startOfWeek,
+  startOfMonth,
+  isSameDay,
+  isWithinInterval,
+} from "date-fns";
+import Modal from "react-modal";
 
 // Set the app element for accessibility
-Modal.setAppElement('#root');
+Modal.setAppElement("#root");
 
 function Billingpage() {
   const [queue, setQueue] = useState([]);
@@ -21,7 +27,7 @@ function Billingpage() {
     const fetchHospitalId = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:5000/api/user/data",
+          "https://healthsync.up.railway.app/api/user/data",
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -49,7 +55,7 @@ function Billingpage() {
       const fetchQueue = async () => {
         try {
           const response = await axios.get(
-            `http://localhost:5000/api/queue/completed/${hospitalId}`,
+            `https://healthsync.up.railway.app/api/queue/completed/${hospitalId}`,
             {
               headers: {
                 Authorization: `Bearer ${token}`,
@@ -104,11 +110,14 @@ function Billingpage() {
       )
     ) {
       try {
-        await axios.delete(`http://localhost:5000/api/queue/${id}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        await axios.delete(
+          `https://healthsync.up.railway.app/api/queue/${id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
         setQueue(queue.filter((entry) => entry.id !== id));
       } catch (error) {
         setError("Failed to delete queue entry");
@@ -175,7 +184,10 @@ function Billingpage() {
               <td>{entry.Patient.gender}</td>
               <td>{new Date(entry.createdAt).toLocaleDateString()}</td>
               <td>{entry.Patient.contact}</td>
-              <td className="flex items-center gap-1 text-green-600 mt-2 "><MdVerified />{entry.status}</td>
+              <td className="flex items-center gap-1 text-green-600 mt-2 ">
+                <MdVerified />
+                {entry.status}
+              </td>
               <td>
                 <button
                   className="text-[20px] ml-2"
@@ -197,14 +209,32 @@ function Billingpage() {
         >
           <div className="bg-white rounded-lg shadow-lg p-6 w-[400px]">
             <h2 className="text-xl font-bold mb-4">Patient Details</h2>
-            <p><strong>Name:</strong> {selectedPatient.Patient.name}</p>
-            <p><strong>Gender:</strong> {selectedPatient.Patient.gender}</p>
-            <p><strong>Date:</strong> {new Date(selectedPatient.createdAt).toLocaleDateString()}</p>
-            <p><strong>Phone Number:</strong> {selectedPatient.Patient.contact}</p>
-            <p><strong>Status:</strong> {selectedPatient.status}</p>
-            <p><strong>Services:</strong> {selectedPatient.services.join(', ')}</p>
+            <p>
+              <strong>Name:</strong> {selectedPatient.Patient.name}
+            </p>
+            <p>
+              <strong>Gender:</strong> {selectedPatient.Patient.gender}
+            </p>
+            <p>
+              <strong>Date:</strong>{" "}
+              {new Date(selectedPatient.createdAt).toLocaleDateString()}
+            </p>
+            <p>
+              <strong>Phone Number:</strong> {selectedPatient.Patient.contact}
+            </p>
+            <p>
+              <strong>Status:</strong> {selectedPatient.status}
+            </p>
+            <p>
+              <strong>Services:</strong> {selectedPatient.services.join(", ")}
+            </p>
             {/* Add more details as needed */}
-            <button className="mt-4 bg-blue-500 text-white p-2 rounded" onClick={closeModal}>Close</button>
+            <button
+              className="mt-4 bg-blue-500 text-white p-2 rounded"
+              onClick={closeModal}
+            >
+              Close
+            </button>
           </div>
         </Modal>
       )}

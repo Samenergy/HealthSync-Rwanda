@@ -22,7 +22,7 @@ const VisitsSection = ({ patientId }) => {
   const fetchVisits = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:5000/api/user/records/${patientId}`,
+        `https://healthsync.up.railway.app/api/user/records/${patientId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -230,7 +230,7 @@ const VisitsSection = ({ patientId }) => {
             <p>
               <strong>Description:</strong> {selectedVisit.description}
             </p>
-            
+
             <p>
               <strong>Disease:</strong> {selectedVisit.disease}
             </p>
@@ -267,7 +267,7 @@ const VisitsSection = ({ patientId }) => {
             <p>
               <strong>Hospital:</strong> {selectedVisit.Hospitalname}
             </p>
-            
+
             {selectedVisit.images && (
               <div>
                 <strong>Images:</strong>

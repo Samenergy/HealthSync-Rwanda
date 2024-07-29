@@ -11,12 +11,15 @@ function ProfilePage() {
   useEffect(() => {
     const fetchProfiles = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/user/data", {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const response = await fetch(
+          "https://healthsync.up.railway.app/api/user/data",
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
 
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
@@ -59,7 +62,11 @@ function ProfilePage() {
           <div>
             <div className="flex items-center mb-4">
               <img
-                src={userProfile.picture ? `http://localhost:5000/${userProfile.picture}` : defaultProfileImage}
+                src={
+                  userProfile.picture
+                    ? `https://healthsync.up.railway.app/${userProfile.picture}`
+                    : defaultProfileImage
+                }
                 alt="User Avatar"
                 className="w-16 h-16 rounded-full mr-4"
               />
@@ -88,7 +95,8 @@ function ProfilePage() {
               <strong>Name:</strong> {hospitalProfile.name}
             </p>
             <p>
-              <strong>Facility Type:</strong> {hospitalProfile.facilityType || "N/A"}
+              <strong>Facility Type:</strong>{" "}
+              {hospitalProfile.facilityType || "N/A"}
             </p>
             <p>
               <strong>Address:</strong> {hospitalProfile.address}
@@ -100,10 +108,12 @@ function ProfilePage() {
               <strong>Email:</strong> {hospitalProfile.email}
             </p>
             <p>
-              <strong>Tax ID Number:</strong> {hospitalProfile.taxIdNumber || "N/A"}
+              <strong>Tax ID Number:</strong>{" "}
+              {hospitalProfile.taxIdNumber || "N/A"}
             </p>
             <p>
-              <strong>Business Registration Number:</strong> {hospitalProfile.businessRegistrationNumber || "N/A"}
+              <strong>Business Registration Number:</strong>{" "}
+              {hospitalProfile.businessRegistrationNumber || "N/A"}
             </p>
             <p>
               <strong>Country:</strong> {hospitalProfile.country}
@@ -119,7 +129,7 @@ function ProfilePage() {
             </p>
             {hospitalProfile.logo ? (
               <img
-                src={`http://localhost:5000/${hospitalProfile.logo}`}
+                src={`https://healthsync.up.railway.app/${hospitalProfile.logo}`}
                 alt="Hospital Logo"
                 className="mt-4 w-32 h-32 object-contain"
               />

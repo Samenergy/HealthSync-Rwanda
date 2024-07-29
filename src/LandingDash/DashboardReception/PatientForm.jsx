@@ -45,13 +45,15 @@ const PatientForm = ({ onClose }) => {
       Swal.fire({
         icon: "error",
         title: "Error",
-        text: error.response?.data?.error || "An error occurred while adding the patient.",
+        text:
+          error.response?.data?.error ||
+          "An error occurred while adding the patient.",
       });
     }
   };
 
   const addPatient = async (patientData) => {
-    const API_URL = "http://localhost:5000/api/user/patients";
+    const API_URL = "https://healthsync.up.railway.app/api/user/patients";
     try {
       const response = await axios.post(API_URL, patientData, {
         headers: {
@@ -117,7 +119,9 @@ const PatientForm = ({ onClose }) => {
           className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:border-blue-300"
           required
         >
-          <option value="" disabled>Select Gender</option>
+          <option value="" disabled>
+            Select Gender
+          </option>
           <option value="Male">Male</option>
           <option value="Female">Female</option>
           <option value="Other">Other</option>

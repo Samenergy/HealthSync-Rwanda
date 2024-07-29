@@ -17,12 +17,15 @@ function EditProfilePage() {
   useEffect(() => {
     const fetchProfiles = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/user/data", {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const response = await fetch(
+          "https://healthsync.up.railway.app/api/user/data",
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
 
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
@@ -123,7 +126,7 @@ function EditProfilePage() {
       }
 
       const response = await fetch(
-        `http://localhost:5000/api/user/${userProfile.role}/${userProfile.id}`,
+        `https://healthsync.up.railway.app/api/user/${userProfile.role}/${userProfile.id}`,
         {
           method: "PUT",
           headers: {
@@ -159,7 +162,7 @@ function EditProfilePage() {
 
     try {
       const response = await fetch(
-        "http://localhost:5000/api/user/change-password",
+        "https://healthsync.up.railway.app/api/user/change-password",
         {
           method: "PUT",
           headers: {

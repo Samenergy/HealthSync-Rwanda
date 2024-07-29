@@ -19,7 +19,7 @@ function ServiceDetailsModal({ patient, services, queueId, isOpen, onClose }) {
       const token = localStorage.getItem("token");
 
       const response = await axios.patch(
-        `http://localhost:5000/api/queue/${queueId}/done`,
+        `https://healthsync.up.railway.app/api/queue/${queueId}/done`,
         {
           amounts: {
             Patient: patientAmount.toFixed(2),
@@ -63,7 +63,7 @@ function ServiceDetailsModal({ patient, services, queueId, isOpen, onClose }) {
         try {
           const token = localStorage.getItem("token");
           const response = await axios.get(
-            `http://localhost:5000/api/queue/${queueId}`,
+            `https://healthsync.up.railway.app/api/queue/${queueId}`,
             {
               headers: {
                 Authorization: `Bearer ${token}`,

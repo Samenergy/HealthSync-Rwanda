@@ -49,7 +49,7 @@ function Receptionpatienttable() {
     const fetchPatients = async () => {
       try {
         const response = await fetch(
-          "http://localhost:5000/api/user/patients",
+          "https://healthsync.up.railway.app/api/user/patients",
           {
             method: "GET",
             headers: {
@@ -71,12 +71,15 @@ function Receptionpatienttable() {
   useEffect(() => {
     const fetchHospitalId = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/user/data", {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const response = await fetch(
+          "https://healthsync.up.railway.app/api/user/data",
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
         const data = await response.json();
         setHospitalId(data.hospital.id);
       } catch (error) {
@@ -107,7 +110,7 @@ function Receptionpatienttable() {
     const fetchPatientById = async (id) => {
       try {
         const response = await fetch(
-          `http://localhost:5000/api/user/patients/${id}`,
+          `https://healthsync.up.railway.app/api/user/patients/${id}`,
           {
             method: "GET",
             headers: {
@@ -168,14 +171,17 @@ function Receptionpatienttable() {
     };
 
     try {
-      const response = await fetch("http://localhost:5000/api/queue/add", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(queueData),
-      });
+      const response = await fetch(
+        "https://healthsync.up.railway.app/api/queue/add",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(queueData),
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Failed to add patient to the queue");

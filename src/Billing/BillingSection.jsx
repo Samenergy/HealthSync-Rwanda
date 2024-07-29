@@ -17,12 +17,15 @@ function BillingSection() {
 
       try {
         // Fetch user data
-        const userResponse = await fetch("http://localhost:5000/api/user/data", {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const userResponse = await fetch(
+          "https://healthsync.up.railway.app/api/user/data",
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
 
         if (!userResponse.ok) {
           throw new Error("Failed to fetch user data");
@@ -33,7 +36,7 @@ function BillingSection() {
 
         // Fetch patients data based on hospital ID
         const patientsResponse = await fetch(
-          `http://localhost:5000/api/queue/in-progress/${hospitalId}`,
+          `https://healthsync.up.railway.app/api/queue/in-progress/${hospitalId}`,
           {
             method: "GET",
             headers: {

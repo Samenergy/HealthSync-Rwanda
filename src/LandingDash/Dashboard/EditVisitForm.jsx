@@ -36,7 +36,7 @@ const EditVisitForm = ({ visit, onClose }) => {
     e.preventDefault();
     try {
       await axios.put(
-        `http://localhost:5000/api/user/records/${visit.id}`,
+        `https://healthsync.up.railway.app/api/user/records/${visit.id}`,
         formData,
         {
           headers: {
@@ -69,7 +69,10 @@ const EditVisitForm = ({ visit, onClose }) => {
             />
           </div>
           <div className="mb-4">
-            <label className="block text-sm font-medium mb-2" htmlFor="description">
+            <label
+              className="block text-sm font-medium mb-2"
+              htmlFor="description"
+            >
               Description
             </label>
             <textarea

@@ -33,7 +33,7 @@ const NewVisitForm = ({ patientId, onAddVisit, onClose }) => {
     const fetchDetails = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:5000/api/user/data",
+          "https://healthsync.up.railway.app/api/user/data",
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -56,7 +56,7 @@ const NewVisitForm = ({ patientId, onAddVisit, onClose }) => {
     const fetchInsurance = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:5000/api/queue/assurance/${patientId}`,
+          `https://healthsync.up.railway.app/api/queue/assurance/${patientId}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -77,7 +77,7 @@ const NewVisitForm = ({ patientId, onAddVisit, onClose }) => {
     const fetchQueueId = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:5000/api/queue/patient/${patientId}`,
+          `https://healthsync.up.railway.app/api/queue/patient/${patientId}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -143,7 +143,7 @@ const NewVisitForm = ({ patientId, onAddVisit, onClose }) => {
 
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/user/records",
+        "https://healthsync.up.railway.app/api/user/records",
         newVisit,
         {
           headers: {
@@ -154,7 +154,7 @@ const NewVisitForm = ({ patientId, onAddVisit, onClose }) => {
 
       // Update the queue with selected services and doctor ID
       await axios.put(
-        `http://localhost:5000/api/queue/edit/${queueId}`,
+        `https://healthsync.up.railway.app/api/queue/edit/${queueId}`,
         { services: selectedServices, doctorId }, // Include doctor ID in the payload
         {
           headers: {
@@ -207,7 +207,7 @@ const NewVisitForm = ({ patientId, onAddVisit, onClose }) => {
 
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/user/records",
+        "https://healthsync.up.railway.app/api/user/records",
         newVisit,
         {
           headers: {

@@ -12,7 +12,7 @@ const SignupProcess = () => {
   const prevStep = () => setStep(step - 1);
 
   const submitData = (data) => {
-    fetch("http://localhost:5000/api/admin/signup", {
+    fetch("https://healthsync.up.railway.app/api/admin/signup", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

@@ -13,12 +13,15 @@ function PatientTable() {
       const token = localStorage.getItem("token");
 
       try {
-        const userResponse = await fetch("http://localhost:5000/api/user/data", {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const userResponse = await fetch(
+          "https://healthsync.up.railway.app/api/user/data",
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
 
         if (!userResponse.ok) {
           throw new Error("Failed to fetch user data");
@@ -28,7 +31,7 @@ function PatientTable() {
         const userId = userData.user.id;
 
         const patientsResponse = await fetch(
-          `http://localhost:5000/api/queue/doctor/${userId}`,
+          `https://healthsync.up.railway.app/api/queue/doctor/${userId}`,
           {
             method: "GET",
             headers: {

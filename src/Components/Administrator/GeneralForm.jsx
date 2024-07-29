@@ -85,7 +85,7 @@ const AddUserForm = () => {
 
       // Check if the email already exists
       const userCheckResponse = await fetch(
-        "http://localhost:5000/api/admin/check-user",
+        "https://healthsync.up.railway.app/api/admin/check-user",
         {
           method: "POST",
           headers: {
@@ -111,14 +111,17 @@ const AddUserForm = () => {
       }
 
       // Add the new user
-      const response = await fetch("http://localhost:5000/api/admin/add-user", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ ...formData, role, hospitalId }),
-      });
+      const response = await fetch(
+        "https://healthsync.up.railway.app/api/admin/add-user",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ ...formData, role, hospitalId }),
+        }
+      );
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -291,7 +294,10 @@ const AddUserForm = () => {
         )}
       </div>
       <input type="hidden" name="hospitalId" value={hospitalId} />
-      <button type="submit" className="w-full bg-blue-500 text-white py-2 rounded">
+      <button
+        type="submit"
+        className="w-full bg-blue-500 text-white py-2 rounded"
+      >
         Add User
       </button>
     </form>
