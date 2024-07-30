@@ -19,7 +19,7 @@ export default function Team() {
           <p className="mt-6 text-lg leading-8 text-gray-600">
             I'm a dedicated Software Engineering student with a passion for
             technology and problem-solving. The idea for HealthSync Rwanda arose
-            from recognizing the outdated record management challenges faced by
+            from recognizing the record management challenges faced by
             healthcare providers in Rwanda.
           </p>
         </div>
