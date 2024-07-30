@@ -1,10 +1,10 @@
-import React from 'react';
+import React from "react";
 
 const people = [
   {
-    name: 'Samuel Dushime',
-    role: 'Developer',
-    imageUrl: '/IMG_2755.jpeg',
+    name: "Samuel Dushime",
+    role: "Developer",
+    imageUrl: "/IMG_2755.jpeg",
   },
 ];
 

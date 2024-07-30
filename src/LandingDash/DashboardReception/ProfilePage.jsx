@@ -64,11 +64,12 @@ function ProfilePage() {
                 src={
                   userProfile.picture
                     ? `https://healthsync.up.railway.app/${userProfile.picture}`
-                    : defaultProfileImage
+                    : ""
                 }
                 alt="User Avatar"
                 className="w-16 h-16 rounded-full mr-4"
               />
+
               <div>
                 <p>
                   <strong>Name:</strong> {userProfile.name}
