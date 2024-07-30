@@ -50,7 +50,7 @@ export default function Login() {
         <Link to="/">
           <img
             className="mx-auto h-auto w-auto"
-            src="./src/assets/logo.png"
+            src="/logo.png"
             alt="Logo"
           />
         </Link>

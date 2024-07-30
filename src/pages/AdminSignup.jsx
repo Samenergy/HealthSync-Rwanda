@@ -44,7 +44,7 @@ const SignupAdmin = ({ nextStep, setAdminData }) => {
         <a href="/" className=" ">
           <img
             className="mx-auto py-5 h-auto w-auto"
-            src="./src/assets/logo.png"
+            src="/logo.png"
             alt="Logo"
           />
         </a>
