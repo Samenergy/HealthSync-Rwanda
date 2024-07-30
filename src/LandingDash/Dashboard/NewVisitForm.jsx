@@ -21,8 +21,8 @@ const NewVisitForm = ({ patientId, onAddVisit, onClose }) => {
   const [medication, setMedication] = useState("");
   const [images, setImages] = useState([]);
   const [doctorId, setDoctorId] = useState(""); // Doctor ID state
-  const [doctorName, setDoctorName] = useState("");
-  const [hospitalName, setHospitalName] = useState("");
+  const [doctorname, setdoctorname] = useState("");
+  const [Hospitalname, setHospitalname] = useState("");
   const [showServicePopup, setShowServicePopup] = useState(false); // State to handle service popup
   const [selectedServices, setSelectedServices] = useState([]); // State to handle selected services
   const [queueId, setQueueId] = useState(null);
@@ -41,8 +41,8 @@ const NewVisitForm = ({ patientId, onAddVisit, onClose }) => {
           }
         );
         setDoctorId(response.data.user.id); // Set doctor ID
-        setDoctorName(response.data.user.name);
-        setHospitalName(response.data.hospital.name);
+        setdoctorname(response.data.user.name);
+        setHospitalname(response.data.hospital.name);
       } catch (error) {
         console.error("Error fetching user data:", error);
         Swal.fire({
