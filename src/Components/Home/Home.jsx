@@ -21,8 +21,8 @@ const Home = () => {
             </p>
             <div className="mt-10 flex items-center justify-center lg:justify-start gap-x-6">
               <a
-                href="#"
-                className="rounded-md bg-[#012243] px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-[#468d5f] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#37af65]"
+                href="/signup"
+                className="rounded-md bg-[#012243] px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-[#0f161d] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#37af65]"
               >
                 Get Started
               </a>
