@@ -11,7 +11,6 @@ import LandingPatientlistRec from "./LandingPatientList/LandingPatientlistRec";
 import AdminDashboard from "./Admin/LandingpageAdmin/AdminDashboard";
 import Userpage from "./Admin/Users/LandingUsers/Userpage";
 import SignupProcess from "./pages/SignupAdminAndHospital";
-import Patientinfo from "./LandingDash/Dashboard/Patientdata";
 import Profile from "./Admin/Dashboard/Profile";
 import PrivateRoute from "./PrivateRoute";
 import ProfileDoctor from "./LandingDash/Dashboard/ProfileDoctor";

@@ -26,7 +26,7 @@ const Users = () => {
     },
     {
       id: 2,
-      Name: "Jean Claude Nshimiyimana",
+      Name: "Gakumba Vianney",
       Role: "Doctor",
       email: "hahimo7243@modotso.com",
       Speciality: "Neurology",
@@ -42,9 +42,25 @@ const Users = () => {
     },
     {
       id: 3,
-      Name: "Serge Karenzi",
+      Name: "Alice Uwase",
+      Role: "Doctor",
+      email: "hahimo7243@modotso.com",
+      Speciality: "General Medicine",
+      PracticeTime: {
+        Mon: "9 AM - 5 PM",
+        Tue: "9 AM - 5 PM",
+        Wed: "Off",
+        Thu: "9 AM - 5 PM",
+        Fri: "9 AM - 5 PM",
+        Sat: "Off",
+        Sun: "Off",
+      },
+    },
+    {
+      id: 4,
+      Name: "Eric Niyonzima",
       Role: "Receptionists",
-      email: "sdushime38@gmail.com",
+      email: "eric.niyonzima@gmail.com",
       Speciality: "Office Managment",
       PracticeTime: {
         Mon: "8 AM - 4 PM",

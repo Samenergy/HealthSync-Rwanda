@@ -1,6 +1,13 @@
-#b-image{
-    background-image: url(https://images.pexels.com/photos/4989167/pexels-photo-4989167.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1);
+.hero-bg {
+    background-image: url(/ent-doctor-2-11.png);
+    background-size: cover;
     background-repeat: no-repeat;
-    background-size: cover; 
-    
-}
+    background-position: center;
+  }
+  
+  @media (max-width: 1024px) {
+    .text-left {
+      text-align: center;
+      margin-left: 0;
+    }
+  }

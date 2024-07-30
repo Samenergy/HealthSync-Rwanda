@@ -1,34 +1,37 @@
 import React from "react";
-import "./Home.css"
+import "./Home.css";
 
-function Home() {
+const Home = () => {
   return (
-    <div id="b-image" className="relative isolate px-6 pt-14 lg:px-8 ">
-      <div className="mx-auto max-w-2xl py-32 sm:py-48 lg:py-56 ml-10">
-        <div className="text-left  duration-500">
-          <h1 className="text-4xl font-bold tracking-tight text-blue-950 sm:text-6xl filter-none">
-            Revolutionalising healthcare record managment in Rwanda
-          </h1>
-          <p className="mt-6 text-lg leading-8 text-blue-950">
-            Discover how HealthSync Rwanda's intergrated electronic health
-            record (EHR) system streamlines processes, improve patient care,and
-            enhances operational eficiency
-          </p>
-          <div className="mt-10 flex items-center justify-start gap-x-9 text-xl">
-            <a
-              href="/Signup"
-              className="rounded-md bg-[#011c36] px-3.5 py-2.5 font-semibold text-white shadow-sm transition hover:bg-blue-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
-            >
-              Get started
-            </a>
-            <a href="#" className=" font-semibold leading-6 text-gray-900">
-              Learn more <span aria-hidden="true">→</span>
-            </a>
+    <div className="hero-bg">
+      <div className="px-6 lg:px-8">
+        <div className="mx-auto max-w-2xl py-32 sm:py-48 lg:py-64">
+          <div className="text-center lg:text-left lg:-ml-60">
+            <h1 className="mt-6 text-lg leading-8 text-gray-800 font-semibold uppercase">
+              WELCOME TO HealthSync Rwanda
+            </h1>
+            <h1 className="text-4xl font-bold tracking-tight text-[#012243] sm:text-5xl lg:text-6xl">
+              Revolutionalising <br />Healthcare Record <br /> Managment 
+            </h1>
+
+            <p className="mt-6 text-lg leading-8 text-[#012243]">
+              Discover how HealthSync Rwanda's intergrated electronic health <br />
+              record (EHR) system streamlines processes, improve patient
+              care, <br /> and enhances operational eficiency
+            </p>
+            <div className="mt-10 flex items-center justify-center lg:justify-start gap-x-6">
+              <a
+                href="#"
+                className="rounded-md bg-[#012243] px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-[#468d5f] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#37af65]"
+              >
+                Get Started
+              </a>
+            </div>
           </div>
         </div>
       </div>
     </div>
   );
-}
+};
 
 export default Home;

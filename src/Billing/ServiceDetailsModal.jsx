@@ -168,6 +168,7 @@ function ServiceDetailsModal({ patient, services, queueId, isOpen, onClose }) {
             </p>
           </div>
         </div>
+        <div className="">
         <button
           onClick={onClose}
           className="mt-16 bg-blue-500 text-white p-2 rounded-lg"
@@ -180,6 +181,7 @@ function ServiceDetailsModal({ patient, services, queueId, isOpen, onClose }) {
         >
           Mark as Done
         </button>
+        </div>
       </div>
     </div>
   );

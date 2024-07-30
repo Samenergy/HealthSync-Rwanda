@@ -1,0 +1,13 @@
+.about-bg {
+  background-image: url(/h2-testimonial-bg-001-scaled.webp);
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+@media (max-width: 1024px) {
+  .text-left {
+    text-align: center;
+    margin-left: 0;
+  }
+}
