@@ -31,17 +31,17 @@ const SignupAdmin = ({ nextStep, setAdminData }) => {
     if (!validatePassword()) {
       return;
     }
-    setAdminData(formData); 
-    nextStep(); 
+    setAdminData(formData);
+    nextStep();
   };
 
   return (
-    <div className="bg-[#011e3c] ">
+    <div className="bg-[#011e3c]">
       <form
         onSubmit={handleSubmit}
         className="max-w-xl mx-auto px-20 p-8 bg-[#011e3c] mt-0 pb-20 shadow-lg shadow-[#00aeee] rounded-lg text-white"
       >
-        <a href="/" className=" ">
+        <a href="/" className="">
           <img
             className="mx-auto py-5 h-auto w-auto"
             src="/logo.png"
@@ -102,10 +102,18 @@ const SignupAdmin = ({ nextStep, setAdminData }) => {
         </div>
         <button
           type="submit"
-          className="w-full bg-blue-500 text-white py-2 rounded"
+          className="w-full bg-blue-500 text-white py-2 rounded mb-4"
         >
           Next
         </button>
+        <div className="text-center">
+          <p className="text-gray-300">
+            Already have an account?{" "}
+            <a href="/login" className="text-blue-400 hover:text-blue-300">
+              Log in
+            </a>
+          </p>
+        </div>
       </form>
     </div>
   );

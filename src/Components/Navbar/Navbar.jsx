@@ -93,7 +93,7 @@ export default function Navbar() {
                 <span className="sr-only">Your Company</span>
                 <img
                   className="h-8 w-auto"
-                  src="./src/assets/logo.png"
+                  src="/logo.png"
                   alt=""
                 />
               </a>
@@ -121,7 +121,7 @@ export default function Navbar() {
                 </div>
                 <div className="py-6">
                   <a
-                    href="#"
+                    href="/login"
                     className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
                   >
                     Log in
