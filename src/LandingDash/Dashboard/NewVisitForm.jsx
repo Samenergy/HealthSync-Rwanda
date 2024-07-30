@@ -133,7 +133,7 @@ const NewVisitForm = ({ patientId, onAddVisit, onClose }) => {
       socialHistory,
       doctorId, // Include doctor ID
       doctorname,
-      HospitalName,
+      Hospitalname,
       medications: medication
         .split(",")
         .map((med) => ({ medication: med.trim() })),
