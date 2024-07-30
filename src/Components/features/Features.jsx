@@ -1,70 +1,78 @@
-import { GrStorage } from "react-icons/gr";
-import { MdOutlineHealthAndSafety } from "react-icons/md";
-import { FaChartSimple } from "react-icons/fa6";
-export default function Features() {
+import React from 'react';
+import { GrStorage } from 'react-icons/gr';
+import { MdOutlineHealthAndSafety } from 'react-icons/md';
+import { FaChartSimple } from 'react-icons/fa6';
+
+const Features = () => {
   return (
     <div className="relative isolate overflow-hidden bg-[#011C36] py-20 sm:py-16">
-      <div className="pi-20">
-        <div className="mx-auto max-w-full lg:mx-0 pl-[100px]">
-          <h2 className="text-4xl font-bold tracking-tight text-[#ffffff] sm:text-6xl mr-20 text-center max-w-full">
-            Our Features
-          </h2>
-          <div className="py-10 flex flex-col lg:flex-row justify-center items-center max-w-full px-4 lg:px-20">
-            <div className="w-full lg:w-[260px] bg-black h-[405px] p-10 rounded-sm mr-20 mb-8 lg:mb-0 lg:mr-8">
-              <div className=" lg:ml-8 ml-[30%] flex justify-center items-center rounded-full bg-[#011C36] w-16 h-16 lg:w-28 lg:h-20 mb-6">
-                <img
-                  className="w-20 h-auto lg:w-20 lg:h-auto"
-                  src="/nurse.svg"
-                  alt=""
-                />
-              </div>
-              <h2 className="text-white text-lg lg:text-xl font-bold mb-4 text-center lg:text-center">
-                Patient Care
-              </h2>
-              <p className="text-gray-50 text-center lg:text-center">
-                Simplify patient check-in, access medical history securely, and
-                Stay organized with appointment scheduling and reminders.
-              </p>
-            </div>
-            <div className="w-full lg:w-[260px] bg-black h-auto p-10 rounded-sm mr-20 mb-8 lg:mb-0 lg:mr-8">
-              <div className=" lg:ml-8 ml-[30%] flex justify-center items-center rounded-full bg-[#011C36] w-16 h-16 lg:w-28 lg:h-20 mb-6">
-                <GrStorage className="text-white text-7xl " />{" "}
-              </div>
-              <h2 className="text-white text-lg lg:text-xl font-bold mb-4 text-center lg:text-center">
-                Patient Data Storage
-              </h2>
-              <p className="text-gray-50 text-center lg:text-center">
-                Digitize patient records for easy access and ensure
-                HIPAA-compliant data security measures are in place.
-              </p>
-            </div>
-            <div className="w-full lg:w-[260px] bg-black h-auto p-10 rounded-sm mr-20 mb-8 lg:mb-0 lg:mr-8">
-              <div className=" lg:ml-8 ml-[30%] flex justify-center items-center rounded-full bg-[#011C36] w-16 h-16 lg:w-28 lg:h-20 mb-6">
-                <MdOutlineHealthAndSafety className="text-white text-7xl " />
-              </div>
-              <h2 className="text-white text-lg lg:text-xl font-bold mb-4 text-center lg:text-center">
-                Automated Insurance Claims
-              </h2>
-              <p className="text-gray-50 text-center lg:text-center">
-                Submit claims in real-time and integrate seamlessly with
-                insurance providers for faster reimbursement.
-              </p>
-            </div>
-            <div className="w-full lg:w-[260px] bg-black h-auto p-10 rounded-sm mr-20 mb-8 lg:mb-0 lg:mr-8">
-              <div className=" lg:ml-8 ml-[30%] flex justify-center items-center rounded-full bg-[#011C36] w-16 h-16 lg:w-28 lg:h-20 mb-6">
-                <FaChartSimple className="text-white text-7xl " />
-              </div>
-              <h2 className="text-white text-lg lg:text-xl font-bold mb-4 text-center lg:text-center">
-                Data Reports
-              </h2>
-              <p className="text-gray-50 text-center lg:text-center">
-                Generate customizable reports for insights into patient
-                demographics and trends, enabling informed decision-making.
-              </p>
-            </div>
+      <h2 className="text-center font-bold uppercase text-2xl md:text-3xl p-10 text-white underline underline-offset-8">
+        Our Features
+      </h2>
+
+      <div className="flex flex-col md:flex-row gap-8 px-5 md:px-10 max-w-6xl mx-auto">
+        {/* Card 1 */}
+        <div className="max-w-xs mx-auto bg-black shadow-lg p-6 text-center transition-transform transform group hover:bg-[#00afee] hover:scale-105 hover:shadow-xl duration-300 ease-in-out">
+          <div className="flex justify-center mb-4">
+            <img
+              className="h-12 w-12 text-[#abd498] group-hover:text-white transition-colors duration-300"
+              src="/nurse.svg"
+              alt="Patient Care"
+            />
           </div>
+          <h2 className="text-lg font-semibold text-white mb-2 group-hover:text-white transition-colors duration-300">
+            Patient Care
+          </h2>
+          <p className="text-gray-50 group-hover:text-white transition-colors duration-300">
+            Simplify patient check-in, access medical history securely, and stay
+            organized with appointment scheduling and reminders.
+          </p>
+        </div>
+
+        {/* Card 2 */}
+        <div className="max-w-xs mx-auto bg-black shadow-lg p-6 text-center transition-transform transform group hover:bg-[#00afee] hover:scale-105 hover:shadow-xl duration-300 ease-in-out">
+          <div className="flex justify-center mb-4">
+            <GrStorage className="h-12 w-12 text-[#fff] group-hover:text-white transition-colors duration-300" />
+          </div>
+          <h2 className="text-lg font-semibold text-white mb-2 group-hover:text-white transition-colors duration-300">
+            Patient Data Storage
+          </h2>
+          <p className="text-gray-50 group-hover:text-white transition-colors duration-300">
+            Digitize patient records for easy access and ensure HIPAA-compliant
+            data security measures are in place.
+          </p>
+        </div>
+
+        {/* Card 3 */}
+        <div className="max-w-xs mx-auto bg-black shadow-lg p-6 text-center transition-transform transform group hover:bg-[#00afee] hover:scale-105 hover:shadow-xl duration-300 ease-in-out">
+          <div className="flex justify-center mb-4">
+            <MdOutlineHealthAndSafety className="h-12 w-12 text-[#fff] group-hover:text-white transition-colors duration-300" />
+          </div>
+          <h2 className="text-lg font-semibold text-white mb-2 group-hover:text-white transition-colors duration-300">
+            Automated Insurance Claims
+          </h2>
+          <p className="text-gray-50 group-hover:text-white transition-colors duration-300">
+            Submit claims in real-time and integrate seamlessly with insurance
+            providers for faster reimbursement.
+          </p>
+        </div>
+
+        {/* Card 4 */}
+        <div className="max-w-xs mx-auto bg-black shadow-lg p-6 text-center transition-transform transform group hover:bg-[#00afee] hover:scale-105 hover:shadow-xl duration-300 ease-in-out">
+          <div className="flex justify-center mb-4">
+            <FaChartSimple className="h-12 w-12 text-[#fff] group-hover:text-white transition-colors duration-300" />
+          </div>
+          <h2 className="text-lg font-semibold text-white mb-2 group-hover:text-white transition-colors duration-300">
+            Data Reports
+          </h2>
+          <p className="text-gray-50 group-hover:text-white transition-colors duration-300">
+            Generate customizable reports for insights into patient demographics
+            and trends, enabling informed decision-making.
+          </p>
         </div>
       </div>
     </div>
   );
-}
+};
+
+export default Features;

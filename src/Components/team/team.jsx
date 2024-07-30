@@ -1,3 +1,5 @@
+import React from 'react';
+
 const people = [
   {
     name: "Samuel Dushime",
@@ -8,8 +10,8 @@ const people = [
 
 export default function Team() {
   return (
-    <div className="bg-white py-24 sm:py-32">
-      <div className="mx-auto grid max-w-7xl gap-x-8 gap-y-20 px-6 lg:px-8 xl:grid-cols-3">
+    <div className="bg-white py-12 sm:py-24 lg:py-32">
+      <div className="mx-auto grid max-w-7xl gap-x-8 gap-y-10 px-6 lg:px-8 xl:grid-cols-3">
         <div className="max-w-2xl">
           <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
             About me
@@ -23,17 +25,17 @@ export default function Team() {
         </div>
         <ul
           role="list"
-          className="grid gap-x-8 gap-y-12 sm:grid-cols-2 sm:gap-y-16 xl:col-span-2"
+          className="grid gap-x-8 gap-y-10 sm:grid-cols-2 xl:col-span-2"
         >
           {people.map((person) => (
             <li key={person.name}>
-              <div className="flex items-center gap-x-6 mt-5">
+              <div className="flex flex-col sm:flex-row items-center gap-x-6 mt-5">
                 <img
-                  className="h-40 w-40 rounded-full ml-12"
+                  className="h-40 w-40 rounded-full"
                   src={person.imageUrl}
-                  alt=""
+                  alt={person.name}
                 />
-                <div>
+                <div className="mt-4 sm:mt-0 text-center sm:text-left">
                   <h3 className="text-xl font-bold leading-7 tracking-tight text-gray-900">
                     {person.name}
                   </h3>
