@@ -285,6 +285,7 @@ function Receptionpatienttable() {
                 className="border border-red-950 rounded-md p-2 mt-1 w-full"
               >
                 <option value="">Select Assurance</option>
+                <option value="None">None</option>
                 <option value="UAP">UAP</option>
                 <option value="RADIANT">RADIANT</option>
                 <option value="SANLAM">SANLAM</option>

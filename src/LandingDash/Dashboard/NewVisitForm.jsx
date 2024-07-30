@@ -132,8 +132,8 @@ const NewVisitForm = ({ patientId, onAddVisit, onClose }) => {
       insurance,
       socialHistory,
       doctorId, // Include doctor ID
-      doctorName,
-      hospitalName,
+      doctorname,
+      HospitalName,
       medications: medication
         .split(",")
         .map((med) => ({ medication: med.trim() })),
@@ -197,8 +197,8 @@ const NewVisitForm = ({ patientId, onAddVisit, onClose }) => {
       insurance,
       socialHistory,
       doctorId, // Use fetched doctor ID here
-      doctorName,
-      hospitalName,
+      doctorname,
+      Hospitalname,
       medications: medication
         .split(",")
         .map((med) => ({ medication: med.trim() })),
