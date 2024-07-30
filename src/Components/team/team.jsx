@@ -2,9 +2,9 @@ import React from 'react';
 
 const people = [
   {
-    name: "Samuel Dushime",
-    role: "Developer",
-    imageUrl: "/IMG_2755.jpeg",
+    name: 'Samuel Dushime',
+    role: 'Developer',
+    imageUrl: '/IMG_2755.jpeg',
   },
 ];
 
@@ -17,10 +17,10 @@ export default function Team() {
             About me
           </h2>
           <p className="mt-6 text-lg leading-8 text-gray-600">
-            I'm a dedicated Software Engineering student at African Leadership
-            University with a passion for technology and problem-solving. I
-            specialize in software development and have strong skills in
-            organization, time management, and attention to detail.
+            I'm a dedicated Software Engineering student with a passion for
+            technology and problem-solving. The idea for HealthSync Rwanda arose
+            from recognizing the outdated record management challenges faced by
+            healthcare providers in Rwanda.
           </p>
         </div>
         <ul
