@@ -20,12 +20,16 @@ const EditVisitForm = ({ visit, onClose }) => {
     socialHistory: "",
     doctorName: "",
     hospitalName: "",
-    medications: "",
+    medications: [],
     images: [],
   });
 
   useEffect(() => {
-    setFormData(visit);
+    setFormData({
+      ...visit,
+      medications: visit.medications || [],
+      images: visit.images || [],
+    });
   }, [visit]);
 
   useEffect(() => {
@@ -63,6 +67,15 @@ const EditVisitForm = ({ visit, onClose }) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  const handleMedicationsChange = (e) => {
+    // Convert text input to array of objects if needed
+    // Example: [{ name: 'Med1', dosage: '100mg' }]
+    setFormData((prev) => ({
+      ...prev,
+      medications: JSON.parse(e.target.value),
+    }));
+  };
+
   const handleImageChange = (e) => {
     const files = Array.from(e.target.files);
     setFormData((prev) => ({ ...prev, images: files }));
@@ -71,21 +84,40 @@ const EditVisitForm = ({ visit, onClose }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      const token = localStorage.getItem("token");
+
+      // Create FormData instance
+      const data = new FormData();
+      Object.keys(formData).forEach((key) => {
+        if (key === "images") {
+          formData.images.forEach((image) => data.append("images", image));
+        } else if (key === "medications") {
+          data.append(key, JSON.stringify(formData.medications));
+        } else {
+          data.append(key, formData[key]);
+        }
+      });
+
       await axios.put(
         `https://healthsync.up.railway.app/api/user/records/${visit.id}`,
-        formData,
+        data,
         {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data",
           },
         }
       );
-      onClose(); 
+      onClose();
     } catch (error) {
       console.error("Error updating visit:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Failed to update visit",
+      });
     }
   };
-
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
       <div className="bg-white p-6 rounded-lg shadow-lg max-w-lg w-full max-h-screen overflow-y-auto">
@@ -105,7 +137,10 @@ const EditVisitForm = ({ visit, onClose }) => {
             />
           </div>
           <div className="mb-4">
-            <label className="block text-sm font-medium mb-2" htmlFor="description">
+            <label
+              className="block text-sm font-medium mb-2"
+              htmlFor="description"
+            >
               Description
             </label>
             <textarea
@@ -208,7 +243,10 @@ const EditVisitForm = ({ visit, onClose }) => {
             />
           </div>
           <div className="mb-4">
-            <label className="block text-sm font-medium mb-2" htmlFor="bloodPressure">
+            <label
+              className="block text-sm font-medium mb-2"
+              htmlFor="bloodPressure"
+            >
               Blood Pressure
             </label>
             <input
@@ -221,7 +259,10 @@ const EditVisitForm = ({ visit, onClose }) => {
             />
           </div>
           <div className="mb-4">
-            <label className="block text-sm font-medium mb-2" htmlFor="immunizations">
+            <label
+              className="block text-sm font-medium mb-2"
+              htmlFor="immunizations"
+            >
               Immunizations
             </label>
             <input
@@ -233,9 +274,12 @@ const EditVisitForm = ({ visit, onClose }) => {
               className="w-full border border-gray-300 px-3 py-2 rounded-lg"
             />
           </div>
-          
+
           <div className="mb-4">
-            <label className="block text-sm font-medium mb-2" htmlFor="socialHistory">
+            <label
+              className="block text-sm font-medium mb-2"
+              htmlFor="socialHistory"
+            >
               Social History
             </label>
             <textarea
@@ -246,16 +290,19 @@ const EditVisitForm = ({ visit, onClose }) => {
               className="w-full border border-gray-300 px-3 py-2 rounded-lg"
             />
           </div>
-          
+
           <div className="mb-4">
-            <label className="block text-sm font-medium mb-2" htmlFor="medications">
+            <label
+              className="block text-sm font-medium mb-2"
+              htmlFor="medications"
+            >
               Medications
             </label>
             <textarea
               id="medications"
               name="medications"
-              value={formData.medications}
-              onChange={handleChange}
+              value={JSON.stringify(formData.medications)}
+              onChange={handleMedicationsChange}
               className="w-full border border-gray-300 px-3 py-2 rounded-lg"
             />
           </div>
