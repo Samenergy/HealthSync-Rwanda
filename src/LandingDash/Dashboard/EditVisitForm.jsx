@@ -1,39 +1,64 @@
 import React, { useState, useEffect } from "react";
-import PropTypes from "prop-types";
 import axios from "axios";
 import Swal from "sweetalert2";
+import servicesList from "../../Billing/services";
 
-const EditVisitForm = ({ visit, patientId, onClose, onSave  }) => {
-  const [insurance, setInsurance] = useState(""); 
-  const [formData, setFormData] = useState({
-    date: "",
-    description: "",
-    disease: "",
-    status: "",
-    details: "",
-    notes: "",
-    height: "",
-    weight: "",
-    bmi: "",
-    bloodPressure: "",
-    immunizations: "",
-    insurance: "",
-    socialHistory: "",
-    doctorName: "",
-    hospitalName: "",
-    medications: "",
-    images: [], // Updated to handle file objects
-  });
+const EditVisitForm = ({ visitId, onUpdateVisit, onClose }) => {
+  const token = localStorage.getItem("token");
 
+  // Initialize state with default values
+  const [date, setDate] = useState("");
+  const [description, setDescription] = useState("");
+  const [disease, setDisease] = useState("");
+  const [details, setDetails] = useState("");
+  const [notes, setNotes] = useState("");
+  const [height, setHeight] = useState("");
+  const [weight, setWeight] = useState("");
+  const [bmi, setBmi] = useState("");
+  const [bloodPressure, setBloodPressure] = useState("");
+  const [immunizations, setImmunizations] = useState("");
+  const [insurance, setInsurance] = useState(""); // This will be populated automatically
+  const [socialHistory, setSocialHistory] = useState("");
+  const [medication, setMedication] = useState("");
+  const [images, setImages] = useState([]);
+  const [doctorId, setDoctorId] = useState("");
+  const [doctorname, setdoctorname] = useState("");
+  const [Hospitalname, setHospitalname] = useState("");
+  const [showServicePopup, setShowServicePopup] = useState(false);
+  const [selectedServices, setSelectedServices] = useState([]);
+  const [queueId, setQueueId] = useState(null);
+
+  // Fetch visit data on component mount
   useEffect(() => {
-    setFormData(visit);
-  }, [visit]);
-
-  useEffect(() => {
-    const fetchDetails = async () => {
+    const fetchVisitData = async () => {
       try {
-        const token = localStorage.getItem("token");
         const response = await axios.get(
+          `https://healthsync.up.railway.app/api/user/records/${visitId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        const visit = response.data;
+
+        setDate(visit.date);
+        setDescription(visit.description);
+        setDisease(visit.disease);
+        setDetails(visit.details);
+        setNotes(visit.notes);
+        setHeight(visit.height);
+        setWeight(visit.weight);
+        setBmi(visit.bmi);
+        setBloodPressure(visit.bloodPressure);
+        setImmunizations(visit.immunizations);
+        setInsurance(visit.insurance);
+        setSocialHistory(visit.socialHistory);
+        setMedication(visit.medications.map((m) => m.medication).join(", "));
+        setImages(visit.images.map((img) => img.image)); // Assume images are URLs
+        setSelectedServices(visit.services || []);
+
+        const doctorResponse = await axios.get(
           "https://healthsync.up.railway.app/api/user/data",
           {
             headers: {
@@ -41,81 +66,89 @@ const EditVisitForm = ({ visit, patientId, onClose, onSave  }) => {
             },
           }
         );
-        setFormData((prev) => ({
-          ...prev,
-          doctorName: response.data.user.name,
-          hospitalName: response.data.hospital.name,
-        }));
-      } catch (error) {
-        console.error("Error fetching user data:", error);
-        Swal.fire({
-          icon: "error",
-          title: "Error",
-          text: "Failed to fetch user data",
-        });
-      }
-    };
+        setDoctorId(doctorResponse.data.user.id);
+        setdoctorname(doctorResponse.data.user.name);
+        setHospitalname(doctorResponse.data.hospital.name);
 
-    const fetchInsurance = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        const response = await axios.get(
-          `https://healthsync.up.railway.app/api/queue/assurance/${patientId}`,
+        const queueResponse = await axios.get(
+          `https://healthsync.up.railway.app/api/queue/patient/${visit.patientId}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
             },
           }
         );
-        setInsurance(response.data.assurance);
+        setQueueId(queueResponse.data.id);
       } catch (error) {
-        console.error("Error fetching assurance:", error);
+        console.error("Error fetching visit data:", error);
         Swal.fire({
           icon: "error",
           title: "Error",
-          text: "Failed to fetch insurance",
+          text: "Failed to fetch visit data",
         });
       }
     };
 
-    fetchDetails();
-    fetchInsurance();
-  }, [patientId]);
+    fetchVisitData();
+  }, [token, visitId]);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+  const handleUpdate = async () => {
+    if (window.confirm("Are you sure you want to update this visit?")) {
+      setShowServicePopup(true);
+    }
   };
 
-  const handleImageChange = (e) => {
-    const files = Array.from(e.target.files);
-    setFormData((prev) => ({ ...prev, images: files }));
-  };
+  const handleConfirmServices = async () => {
+    if (!queueId) {
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Queue ID not found",
+      });
+      return;
+    }
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+    const updatedVisit = {
+      date,
+      description,
+      status: "Done",
+      disease,
+      details,
+      notes,
+      height,
+      weight,
+      bmi,
+      bloodPressure,
+      immunizations,
+      insurance,
+      socialHistory,
+      doctorId,
+      doctorname,
+      Hospitalname,
+      medications: medication
+        .split(",")
+        .map((med) => ({ medication: med.trim() })),
+      images: images.map((file) => ({ image: URL.createObjectURL(file) })),
+      services: selectedServices,
+    };
+
     try {
-      const token = localStorage.getItem("token");
-
-      // Prepare form data for submission
-      const submitData = new FormData();
-      for (const key in formData) {
-        if (Array.isArray(formData[key])) {
-          formData[key].forEach((file, index) => {
-            submitData.append(`${key}[${index}]`, file);
-          });
-        } else {
-          submitData.append(key, formData[key]);
-        }
-      }
-
       await axios.put(
-        `https://healthsync.up.railway.app/api/user/records/${visit.id}`,
-        submitData,
+        `https://healthsync.up.railway.app/api/user/records/${visitId}`,
+        updatedVisit,
         {
           headers: {
             Authorization: `Bearer ${token}`,
-            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      await axios.put(
+        `https://healthsync.up.railway.app/api/queue/edit/${queueId}`,
+        { services: selectedServices, doctorId },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
           },
         }
       );
@@ -123,17 +156,35 @@ const EditVisitForm = ({ visit, patientId, onClose, onSave  }) => {
       Swal.fire({
         icon: "success",
         title: "Success",
-        text: "Visit record updated successfully",
+        text: "Visit updated successfully",
       });
+      onUpdateVisit(updatedVisit);
       onClose();
     } catch (error) {
-      console.error("Error updating visit:", error);
+      console.error("Error updating visit data:", error);
       Swal.fire({
         icon: "error",
         title: "Error",
-        text: "Failed to update visit record",
+        text: "Failed to update visit data",
       });
     }
+  };
+
+  const handleImageChange = (e) => {
+    const files = Array.from(e.target.files);
+    setImages(files);
+  };
+
+  const handleServiceChange = (service) => {
+    setSelectedServices((prev) =>
+      prev.includes(service)
+        ? prev.filter((s) => s !== service)
+        : [...prev, service]
+    );
+  };
+
+  const handleServicePopupClose = () => {
+    setShowServicePopup(false);
   };
 
   return (
@@ -141,9 +192,24 @@ const EditVisitForm = ({ visit, patientId, onClose, onSave  }) => {
       <div className="bg-white p-6 rounded-lg shadow-lg max-w-lg w-full max-h-screen overflow-y-auto">
         <h2 className="text-xl font-bold mb-4">Edit Visit</h2>
         <form onSubmit={handleSubmit}>
-          
           <div className="mb-4">
-            <label className="block text-sm font-medium mb-2" htmlFor="description">
+            <label className="block text-sm font-medium mb-2" htmlFor="date">
+              Date
+            </label>
+            <input
+              type="date"
+              id="date"
+              name="date"
+              value={formData.date}
+              onChange={handleChange}
+              className="w-full border border-gray-300 px-3 py-2 rounded-lg"
+            />
+          </div>
+          <div className="mb-4">
+            <label
+              className="block text-sm font-medium mb-2"
+              htmlFor="description"
+            >
               Description
             </label>
             <textarea
@@ -178,8 +244,8 @@ const EditVisitForm = ({ visit, patientId, onClose, onSave  }) => {
               onChange={handleChange}
               className="w-full border border-gray-300 px-3 py-2 rounded-lg"
             >
-              <option value="In Progress">In Progress</option>
-              <option value="Done">Done</option>
+              <option value="IN PROGRESS">In Progress</option>
+              <option value="DONE">Done</option>
             </select>
           </div>
           <div className="mb-4">
@@ -246,7 +312,10 @@ const EditVisitForm = ({ visit, patientId, onClose, onSave  }) => {
             />
           </div>
           <div className="mb-4">
-            <label className="block text-sm font-medium mb-2" htmlFor="bloodPressure">
+            <label
+              className="block text-sm font-medium mb-2"
+              htmlFor="bloodPressure"
+            >
               Blood Pressure
             </label>
             <input
@@ -259,7 +328,10 @@ const EditVisitForm = ({ visit, patientId, onClose, onSave  }) => {
             />
           </div>
           <div className="mb-4">
-            <label className="block text-sm font-medium mb-2" htmlFor="immunizations">
+            <label
+              className="block text-sm font-medium mb-2"
+              htmlFor="immunizations"
+            >
               Immunizations
             </label>
             <input
@@ -272,24 +344,14 @@ const EditVisitForm = ({ visit, patientId, onClose, onSave  }) => {
             />
           </div>
           <div className="mb-4">
-            <label className="block text-sm font-medium mb-2" htmlFor="insurance">
-              Insurance
+            <label
+              className="block text-sm font-medium mb-2"
+              htmlFor="socialHistory"
+            >
+              Social History
             </label>
             <input
               type="text"
-              id="insurance"
-              name="insurance"
-              value={insurance} // Set insurance from state
-              onChange={(e) => setFormData({ ...formData, insurance: e.target.value })}
-              className="w-full border border-gray-300 px-3 py-2 rounded-lg"
-              readOnly // Set to readOnly if you don't want it editable
-            />
-          </div>
-          <div className="mb-4">
-            <label className="block text-sm font-medium mb-2" htmlFor="socialHistory">
-              Social History
-            </label>
-            <textarea
               id="socialHistory"
               name="socialHistory"
               value={formData.socialHistory}
@@ -298,10 +360,14 @@ const EditVisitForm = ({ visit, patientId, onClose, onSave  }) => {
             />
           </div>
           <div className="mb-4">
-            <label className="block text-sm font-medium mb-2" htmlFor="medications">
+            <label
+              className="block text-sm font-medium mb-2"
+              htmlFor="medications"
+            >
               Medications
             </label>
-            <textarea
+            <input
+              type="text"
               id="medications"
               name="medications"
               value={formData.medications}
@@ -322,47 +388,85 @@ const EditVisitForm = ({ visit, patientId, onClose, onSave  }) => {
               className="w-full border border-gray-300 px-3 py-2 rounded-lg"
             />
           </div>
-          <div className="flex justify-end space-x-4">
+          <div className="flex justify-end space-x-2">
+            <button
+              type="button"
+              onClick={handleUpdate}
+              className="bg-blue-500 text-white px-4 py-2 rounded-lg"
+            >
+              Update
+            </button>
             <button
               type="button"
               onClick={onClose}
               className="bg-gray-500 text-white px-4 py-2 rounded-lg"
             >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              className="bg-blue-500 text-white px-4 py-2 rounded-lg"
-            >
-              Save Changes
+              Close
             </button>
           </div>
         </form>
       </div>
+      {showServicePopup && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-lg max-h-full overflow-y-auto">
+            <h3 className="text-2xl font-bold mb-4">Select Services</h3>
+            <div className="mb-4">
+              {servicesList.map((service) => (
+                <div key={service.name} className="flex items-center mb-2">
+                  <input
+                    type="checkbox"
+                    id={service.name}
+                    checked={selectedServices.includes(service.name)}
+                    onChange={() => handleServiceChange(service.name)}
+                    className="mr-2"
+                  />
+                  <label htmlFor={service.name} className="text-sm font-medium">
+                    {service.name}
+                  </label>
+                </div>
+              ))}
+            </div>
+            <div className="flex justify-end space-x-2">
+              <button
+                type="button"
+                onClick={handleConfirmServices}
+                className="bg-green-500 text-white px-4 py-2 rounded-lg"
+              >
+                Confirm
+              </button>
+              <button
+                type="button"
+                onClick={handleServicePopupClose}
+                className="bg-gray-500 text-white px-4 py-2 rounded-lg"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
 
 EditVisitForm.propTypes = {
-  patientId: PropTypes.string.isRequired,
   visit: PropTypes.shape({
-    date: PropTypes.string,
-    description: PropTypes.string,
-    disease: PropTypes.string,
-    status: PropTypes.string,
-    details: PropTypes.string,
-    notes: PropTypes.string,
-    height: PropTypes.string,
-    weight: PropTypes.string,
-    bmi: PropTypes.string,
-    bloodPressure: PropTypes.string,
-    immunizations: PropTypes.string,
-    insurance: PropTypes.string,
-    socialHistory: PropTypes.string,
-    doctorName: PropTypes.string,
-    hospitalName: PropTypes.string,
-    medications: PropTypes.string,
-    images: PropTypes.arrayOf(PropTypes.instanceOf(File)),
+    id: PropTypes.string.isRequired,
+    date: PropTypes.string.isRequired,
+    description: PropTypes.string.isRequired,
+    disease: PropTypes.string.isRequired,
+    status: PropTypes.string.isRequired,
+    details: PropTypes.string.isRequired,
+    notes: PropTypes.string.isRequired,
+    height: PropTypes.string.isRequired,
+    weight: PropTypes.string.isRequired,
+    bmi: PropTypes.string.isRequired,
+    bloodPressure: PropTypes.string.isRequired,
+    immunizations: PropTypes.string.isRequired,
+    socialHistory: PropTypes.string.isRequired,
+    medications: PropTypes.string.isRequired,
+    images: PropTypes.array.isRequired,
+    patientId: PropTypes.string.isRequired,
   }).isRequired,
   onClose: PropTypes.func.isRequired,
 };
