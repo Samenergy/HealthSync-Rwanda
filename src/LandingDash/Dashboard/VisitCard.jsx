@@ -15,6 +15,8 @@ const VisitsSection = ({ patientId }) => {
   const [isFormVisible, setFormVisible] = useState(false);
   const [isEditFormVisible, setEditFormVisible] = useState(false);
   const [visitToEdit, setVisitToEdit] = useState(null);
+ 
+
 
   const token = localStorage.getItem("token");
 
