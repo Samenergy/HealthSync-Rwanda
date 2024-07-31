@@ -3,6 +3,7 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import servicesList from "../../Billing/services";
 import PropTypes from "prop-types";
+
 const EditVisitForm = ({ visitId, onUpdateVisit, onClose }) => {
   const token = localStorage.getItem("token");
 
@@ -92,7 +93,51 @@ const EditVisitForm = ({ visitId, onUpdateVisit, onClose }) => {
     fetchVisitData();
   }, [token, visitId]);
 
-  const handleUpdate = async () => {
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    switch (name) {
+      case "date":
+        setDate(value);
+        break;
+      case "description":
+        setDescription(value);
+        break;
+      case "disease":
+        setDisease(value);
+        break;
+      case "details":
+        setDetails(value);
+        break;
+      case "notes":
+        setNotes(value);
+        break;
+      case "height":
+        setHeight(value);
+        break;
+      case "weight":
+        setWeight(value);
+        break;
+      case "bmi":
+        setBmi(value);
+        break;
+      case "bloodPressure":
+        setBloodPressure(value);
+        break;
+      case "immunizations":
+        setImmunizations(value);
+        break;
+      case "socialHistory":
+        setSocialHistory(value);
+        break;
+      case "medications":
+        setMedication(value);
+        break;
+      default:
+        break;
+    }
+  };
+
+  const handleUpdate = () => {
     if (window.confirm("Are you sure you want to update this visit?")) {
       setShowServicePopup(true);
     }
@@ -200,7 +245,7 @@ const EditVisitForm = ({ visitId, onUpdateVisit, onClose }) => {
               type="date"
               id="date"
               name="date"
-              value={formData.date}
+              value={date}
               onChange={handleChange}
               className="w-full border border-gray-300 px-3 py-2 rounded-lg"
             />
@@ -215,7 +260,7 @@ const EditVisitForm = ({ visitId, onUpdateVisit, onClose }) => {
             <textarea
               id="description"
               name="description"
-              value={formData.description}
+              value={description}
               onChange={handleChange}
               className="w-full border border-gray-300 px-3 py-2 rounded-lg"
             />
@@ -228,25 +273,10 @@ const EditVisitForm = ({ visitId, onUpdateVisit, onClose }) => {
               type="text"
               id="disease"
               name="disease"
-              value={formData.disease}
+              value={disease}
               onChange={handleChange}
               className="w-full border border-gray-300 px-3 py-2 rounded-lg"
             />
-          </div>
-          <div className="mb-4">
-            <label className="block text-sm font-medium mb-2" htmlFor="status">
-              Status
-            </label>
-            <select
-              id="status"
-              name="status"
-              value={formData.status}
-              onChange={handleChange}
-              className="w-full border border-gray-300 px-3 py-2 rounded-lg"
-            >
-              <option value="IN PROGRESS">In Progress</option>
-              <option value="DONE">Done</option>
-            </select>
           </div>
           <div className="mb-4">
             <label className="block text-sm font-medium mb-2" htmlFor="details">
@@ -255,7 +285,7 @@ const EditVisitForm = ({ visitId, onUpdateVisit, onClose }) => {
             <textarea
               id="details"
               name="details"
-              value={formData.details}
+              value={details}
               onChange={handleChange}
               className="w-full border border-gray-300 px-3 py-2 rounded-lg"
             />
@@ -267,7 +297,7 @@ const EditVisitForm = ({ visitId, onUpdateVisit, onClose }) => {
             <textarea
               id="notes"
               name="notes"
-              value={formData.notes}
+              value={notes}
               onChange={handleChange}
               className="w-full border border-gray-300 px-3 py-2 rounded-lg"
             />
@@ -280,7 +310,7 @@ const EditVisitForm = ({ visitId, onUpdateVisit, onClose }) => {
               type="text"
               id="height"
               name="height"
-              value={formData.height}
+              value={height}
               onChange={handleChange}
               className="w-full border border-gray-300 px-3 py-2 rounded-lg"
             />
@@ -293,7 +323,7 @@ const EditVisitForm = ({ visitId, onUpdateVisit, onClose }) => {
               type="text"
               id="weight"
               name="weight"
-              value={formData.weight}
+              value={weight}
               onChange={handleChange}
               className="w-full border border-gray-300 px-3 py-2 rounded-lg"
             />
@@ -306,7 +336,7 @@ const EditVisitForm = ({ visitId, onUpdateVisit, onClose }) => {
               type="text"
               id="bmi"
               name="bmi"
-              value={formData.bmi}
+              value={bmi}
               onChange={handleChange}
               className="w-full border border-gray-300 px-3 py-2 rounded-lg"
             />
@@ -322,7 +352,7 @@ const EditVisitForm = ({ visitId, onUpdateVisit, onClose }) => {
               type="text"
               id="bloodPressure"
               name="bloodPressure"
-              value={formData.bloodPressure}
+              value={bloodPressure}
               onChange={handleChange}
               className="w-full border border-gray-300 px-3 py-2 rounded-lg"
             />
@@ -334,11 +364,10 @@ const EditVisitForm = ({ visitId, onUpdateVisit, onClose }) => {
             >
               Immunizations
             </label>
-            <input
-              type="text"
+            <textarea
               id="immunizations"
               name="immunizations"
-              value={formData.immunizations}
+              value={immunizations}
               onChange={handleChange}
               className="w-full border border-gray-300 px-3 py-2 rounded-lg"
             />
@@ -350,11 +379,10 @@ const EditVisitForm = ({ visitId, onUpdateVisit, onClose }) => {
             >
               Social History
             </label>
-            <input
-              type="text"
+            <textarea
               id="socialHistory"
               name="socialHistory"
-              value={formData.socialHistory}
+              value={socialHistory}
               onChange={handleChange}
               className="w-full border border-gray-300 px-3 py-2 rounded-lg"
             />
@@ -370,7 +398,7 @@ const EditVisitForm = ({ visitId, onUpdateVisit, onClose }) => {
               type="text"
               id="medications"
               name="medications"
-              value={formData.medications}
+              value={medication}
               onChange={handleChange}
               className="w-full border border-gray-300 px-3 py-2 rounded-lg"
             />
@@ -382,92 +410,69 @@ const EditVisitForm = ({ visitId, onUpdateVisit, onClose }) => {
             <input
               type="file"
               id="images"
-              name="images"
               multiple
               onChange={handleImageChange}
               className="w-full border border-gray-300 px-3 py-2 rounded-lg"
             />
           </div>
-          <div className="flex justify-end space-x-2">
+          <div className="flex justify-between">
             <button
               type="button"
               onClick={handleUpdate}
               className="bg-blue-500 text-white px-4 py-2 rounded-lg"
             >
-              Update
+              Save
             </button>
             <button
               type="button"
               onClick={onClose}
               className="bg-gray-500 text-white px-4 py-2 rounded-lg"
             >
-              Close
+              Cancel
             </button>
           </div>
         </form>
-      </div>
-      {showServicePopup && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-lg max-h-full overflow-y-auto">
-            <h3 className="text-2xl font-bold mb-4">Select Services</h3>
-            <div className="mb-4">
+        {showServicePopup && (
+          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+            <div className="bg-white p-6 rounded-lg shadow-lg max-w-lg w-full">
+              <h3 className="text-lg font-semibold mb-4">Select Services</h3>
               {servicesList.map((service) => (
-                <div key={service.name} className="flex items-center mb-2">
+                <div key={service} className="mb-2">
                   <input
                     type="checkbox"
-                    id={service.name}
-                    checked={selectedServices.includes(service.name)}
-                    onChange={() => handleServiceChange(service.name)}
-                    className="mr-2"
+                    checked={selectedServices.includes(service)}
+                    onChange={() => handleServiceChange(service)}
                   />
-                  <label htmlFor={service.name} className="text-sm font-medium">
-                    {service.name}
-                  </label>
+                  <label className="ml-2">{service}</label>
                 </div>
               ))}
-            </div>
-            <div className="flex justify-end space-x-2">
-              <button
-                type="button"
-                onClick={handleConfirmServices}
-                className="bg-green-500 text-white px-4 py-2 rounded-lg"
-              >
-                Confirm
-              </button>
-              <button
-                type="button"
-                onClick={handleServicePopupClose}
-                className="bg-gray-500 text-white px-4 py-2 rounded-lg"
-              >
-                Cancel
-              </button>
+              <div className="flex justify-between mt-4">
+                <button
+                  type="button"
+                  onClick={handleConfirmServices}
+                  className="bg-blue-500 text-white px-4 py-2 rounded-lg"
+                >
+                  Confirm
+                </button>
+                <button
+                  type="button"
+                  onClick={handleServicePopupClose}
+                  className="bg-gray-500 text-white px-4 py-2 rounded-lg"
+                >
+                  Close
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 };
 
 EditVisitForm.propTypes = {
-  visit: PropTypes.shape({
-    id: PropTypes.string.isRequired,
-    date: PropTypes.string.isRequired,
-    description: PropTypes.string.isRequired,
-    disease: PropTypes.string.isRequired,
-    status: PropTypes.string.isRequired,
-    details: PropTypes.string.isRequired,
-    notes: PropTypes.string.isRequired,
-    height: PropTypes.string.isRequired,
-    weight: PropTypes.string.isRequired,
-    bmi: PropTypes.string.isRequired,
-    bloodPressure: PropTypes.string.isRequired,
-    immunizations: PropTypes.string.isRequired,
-    socialHistory: PropTypes.string.isRequired,
-    medications: PropTypes.string.isRequired,
-    images: PropTypes.array.isRequired,
-    patientId: PropTypes.string.isRequired,
-  }).isRequired,
+  visitId: PropTypes.string.isRequired,
+  onUpdateVisit: PropTypes.func.isRequired,
   onClose: PropTypes.func.isRequired,
 };
 
