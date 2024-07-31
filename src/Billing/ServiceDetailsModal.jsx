@@ -168,19 +168,19 @@ function ServiceDetailsModal({ patient, services, queueId, isOpen, onClose }) {
             </p>
           </div>
         </div>
-        <div className=" flex gap-10">
-        <button
-          onClick={onClose}
-          className="mt-16 bg-blue-500 text-white p-2 rounded-lg"
-        >
-          Close
-        </button>
-        <button
-          onClick={handleDoneClick}
-          className="bg-green-500 text-white p-2 rounded-lg"
-        >
-          Mark as Done
-        </button>
+        <div className="flex space-x-4 mt-16">
+          <button
+            onClick={onClose}
+            className="bg-blue-500 text-white p-2 rounded-lg"
+          >
+            Close
+          </button>
+          <button
+            onClick={handleDoneClick}
+            className="bg-green-500 text-white p-2 rounded-lg"
+          >
+            Mark as Done
+          </button>
         </div>
       </div>
     </div>
