@@ -233,19 +233,7 @@ const EditVisitForm = ({ visit, onClose }) => {
               className="w-full border border-gray-300 px-3 py-2 rounded-lg"
             />
           </div>
-          <div className="mb-4">
-            <label className="block text-sm font-medium mb-2" htmlFor="insurance">
-              Insurance
-            </label>
-            <input
-              type="text"
-              id="insurance"
-              name="insurance"
-              value={formData.insurance}
-              onChange={handleChange}
-              className="w-full border border-gray-300 px-3 py-2 rounded-lg"
-            />
-          </div>
+          
           <div className="mb-4">
             <label className="block text-sm font-medium mb-2" htmlFor="socialHistory">
               Social History
@@ -258,34 +246,7 @@ const EditVisitForm = ({ visit, onClose }) => {
               className="w-full border border-gray-300 px-3 py-2 rounded-lg"
             />
           </div>
-          <div className="mb-4">
-            <label className="block text-sm font-medium mb-2" htmlFor="doctorName">
-              Doctor Name
-            </label>
-            <input
-              type="text"
-              id="doctorName"
-              name="doctorName"
-              value={formData.doctorName}
-              onChange={handleChange}
-              className="w-full border border-gray-300 px-3 py-2 rounded-lg"
-              readOnly
-            />
-          </div>
-          <div className="mb-4">
-            <label className="block text-sm font-medium mb-2" htmlFor="hospitalName">
-              Hospital Name
-            </label>
-            <input
-              type="text"
-              id="hospitalName"
-              name="hospitalName"
-              value={formData.hospitalName}
-              onChange={handleChange}
-              className="w-full border border-gray-300 px-3 py-2 rounded-lg"
-              readOnly
-            />
-          </div>
+          
           <div className="mb-4">
             <label className="block text-sm font-medium mb-2" htmlFor="medications">
               Medications
