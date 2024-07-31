@@ -26,32 +26,6 @@ const EditVisitForm = ({ recordId, onUpdateVisit, onClose }) => {
   const [showServicePopup, setShowServicePopup] = useState(false);
   const [selectedServices, setSelectedServices] = useState([]);
 
-  const fetchRecordId = async () => {
-    try {
-      const response = await axios.get(
-        "https://healthsyncrwanda.vercel.app/api/in-progress",
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      setRecordId(response.data.id);
-    } catch (error) {
-      console.error("Error fetching record IDs:", error);
-      Swal.fire({
-        icon: "error",
-        title: "Error",
-        text: "Failed to fetch record IDs",
-      });
-    }
-  };
-
-  useEffect(() => {
-    fetchRecordId();
-  }, [token]);
-
   useEffect(() => {
     if (recordId) {
       const fetchRecordDetails = async () => {
@@ -84,7 +58,7 @@ const EditVisitForm = ({ recordId, onUpdateVisit, onClose }) => {
           setImages(
             record.images.map((img) => ({
               ...img,
-              url: URL.createObjectURL(img),
+              url: img.url, // Assuming img.url is a valid URL
             }))
           );
           setSelectedServices(record.services);
@@ -114,7 +88,7 @@ const EditVisitForm = ({ recordId, onUpdateVisit, onClose }) => {
     }
   }, [token, recordId]);
 
-  const handleDone = async () => {
+  const handleDone = () => {
     if (window.confirm("Are you sure you are done?")) {
       setShowServicePopup(true);
     }
@@ -299,28 +273,26 @@ const EditVisitForm = ({ recordId, onUpdateVisit, onClose }) => {
           </div>
           <div className="mb-4">
             <label className="block text-sm font-medium mb-2" htmlFor="height">
-              Height (cm)
+              Height
             </label>
             <input
-              type="number"
+              type="text"
               id="height"
               value={height}
               onChange={(e) => setHeight(e.target.value)}
               className="border border-gray-300 px-4 py-2 rounded-lg w-full"
-              required
             />
           </div>
           <div className="mb-4">
             <label className="block text-sm font-medium mb-2" htmlFor="weight">
-              Weight (kg)
+              Weight
             </label>
             <input
-              type="number"
+              type="text"
               id="weight"
               value={weight}
               onChange={(e) => setWeight(e.target.value)}
               className="border border-gray-300 px-4 py-2 rounded-lg w-full"
-              required
             />
           </div>
           <div className="mb-4">
@@ -328,12 +300,11 @@ const EditVisitForm = ({ recordId, onUpdateVisit, onClose }) => {
               BMI
             </label>
             <input
-              type="number"
+              type="text"
               id="bmi"
               value={bmi}
               onChange={(e) => setBmi(e.target.value)}
               className="border border-gray-300 px-4 py-2 rounded-lg w-full"
-              readOnly
             />
           </div>
           <div className="mb-4">
@@ -400,7 +371,7 @@ const EditVisitForm = ({ recordId, onUpdateVisit, onClose }) => {
               className="block text-sm font-medium mb-2"
               htmlFor="medication"
             >
-              Medication
+              Medications
             </label>
             <input
               type="text"
@@ -421,21 +392,22 @@ const EditVisitForm = ({ recordId, onUpdateVisit, onClose }) => {
               onChange={handleImageChange}
               className="border border-gray-300 px-4 py-2 rounded-lg w-full"
             />
-            {images.map((img, index) => (
-              <div key={index} className="mt-2">
+            <div className="mt-2">
+              {images.map((image, index) => (
                 <img
-                  src={img.url}
+                  key={index}
+                  src={image.url}
                   alt={`Preview ${index}`}
-                  className="w-20 h-20 object-cover"
+                  className="w-32 h-32 object-cover mt-2"
                 />
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
-          <div className="mb-4">
+          <div className="flex justify-between">
             <button
               type="button"
               onClick={handleInProgress}
-              className="bg-yellow-500 text-white px-4 py-2 rounded-lg mr-2"
+              className="bg-yellow-500 text-white px-4 py-2 rounded-lg"
             >
               Save as In Progress
             </button>
@@ -444,47 +416,47 @@ const EditVisitForm = ({ recordId, onUpdateVisit, onClose }) => {
               onClick={handleDone}
               className="bg-blue-500 text-white px-4 py-2 rounded-lg"
             >
-              Done
+              Mark as Done
+            </button>
+            <button
+              type="button"
+              onClick={onClose}
+              className="bg-red-500 text-white px-4 py-2 rounded-lg"
+            >
+              Cancel
             </button>
           </div>
-          <button
-            type="button"
-            onClick={onClose}
-            className="bg-gray-500 text-white px-4 py-2 rounded-lg"
-          >
-            Cancel
-          </button>
         </form>
-
         {showServicePopup && (
           <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
             <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-lg">
-              <h3 className="text-2xl font-bold mb-4">Select Services</h3>
-              {servicesList.map((service, index) => (
-                <div key={index} className="mb-2">
-                  <input
-                    type="checkbox"
-                    id={`service-${index}`}
-                    checked={selectedServices.includes(service)}
-                    onChange={() => handleServiceChange(service)}
-                  />
-                  <label htmlFor={`service-${index}`} className="ml-2">
-                    {service}
-                  </label>
-                </div>
-              ))}
-              <div className="mt-4">
+              <h3 className="text-lg font-bold mb-4">Select Services</h3>
+              <div className="mb-4">
+                {servicesList.map((service, index) => (
+                  <div key={index} className="flex items-center mb-2">
+                    <input
+                      type="checkbox"
+                      id={service}
+                      checked={selectedServices.includes(service)}
+                      onChange={() => handleServiceChange(service)}
+                      className="mr-2"
+                    />
+                    <label htmlFor={service}>{service}</label>
+                  </div>
+                ))}
+              </div>
+              <div className="flex justify-end">
                 <button
                   type="button"
                   onClick={handleConfirmServices}
-                  className="bg-blue-500 text-white px-4 py-2 rounded-lg mr-2"
+                  className="bg-blue-500 text-white px-4 py-2 rounded-lg"
                 >
                   Confirm
                 </button>
                 <button
                   type="button"
                   onClick={handleServicePopupClose}
-                  className="bg-gray-500 text-white px-4 py-2 rounded-lg"
+                  className="bg-gray-500 text-white px-4 py-2 rounded-lg ml-2"
                 >
                   Cancel
                 </button>
