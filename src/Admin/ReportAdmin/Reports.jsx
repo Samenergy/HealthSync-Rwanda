@@ -7,7 +7,7 @@ import {
   fetchQueueManagementReport,
   fetchPatientDemographicsReport,
 } from "./Api";
-import { FaMale, FaFemale } from 'react-icons/fa';
+import { FaMale, FaFemale } from "react-icons/fa";
 // Utility function to fetch data based on report type
 const fetchReportData = async (reportType) => {
   switch (reportType) {
@@ -73,6 +73,36 @@ const Reports = () => {
               <tbody>
                 {Array.isArray(reportData.dailyReport) &&
                   reportData.dailyReport.map((item, index) => (
+                    <tr key={index}>
+                      <td className="py-2 px-4 border-b">
+                        {item.Patient.name}
+                      </td>
+                      <td className="py-2 px-4 border-b">
+                        {item.Doctor?.name || "N/A"}
+                      </td>
+                      <td className="py-2 px-4 border-b">
+                        {item.Hospital.hospitalName}
+                      </td>
+                      <td className="py-2 px-4 border-b">
+                        {new Date(item.createdAt).toLocaleDateString()}
+                      </td>
+                    </tr>
+                  ))}
+              </tbody>
+
+              <h3 className="text-xl font-semibold mb-2">Weekly Report</h3>
+
+              <thead className="bg-gray-100 text-left">
+                <tr>
+                  <th className="py-2 px-4 border-b">Patient Name</th>
+                  <th className="py-2 px-4 border-b">Doctor Name</th>
+                  <th className="py-2 px-4 border-b">Hospital</th>
+                  <th className="py-2 px-4 border-b">Date</th>
+                </tr>
+              </thead>
+              <tbody>
+                {Array.isArray(reportData.dailyReport) &&
+                  reportData.weeklyReport.map((item, index) => (
                     <tr key={index}>
                       <td className="py-2 px-4 border-b">
                         {item.Patient.name}
@@ -184,31 +214,43 @@ const Reports = () => {
 
       case "patient-demographics":
         return (
-            
+          <div>
+            <h3 className="text-xl font-semibold mb-4">
+              Patient Demographics Report
+            </h3>
 
-            <div>
-              <h3 className="text-xl font-semibold mb-4">Patient Demographics Report</h3>
-            
-              <div className=" ">
-                <div className="grid grid-cols-2 gap-4">
-                  {Array.isArray(reportData) && reportData.length > 0 ? (
-                    reportData.map((item, index) => (
-                      <div key={index} className="flex flex-col items-center py-5 px-4 shadow-lg rounded-lg border border-gray-200 bg-white">
-                        <div className="flex items-center space-x-2 mb-2">
-                          {item.gender === 'Male' && <FaMale className="text-blue-500 text-3xl" />}
-                          {item.gender === 'Female' && <FaFemale className="text-pink-500 text-3xl" />}
-                          <span className="font-bold text-gray-700 text-2xl">{item.gender}</span>
-                        </div>
-                        <span className="text-gray-900 font-light text-5xl">{item.genderCount}</span>
+            <div className=" ">
+              <div className="grid grid-cols-2 gap-4">
+                {Array.isArray(reportData) && reportData.length > 0 ? (
+                  reportData.map((item, index) => (
+                    <div
+                      key={index}
+                      className="flex flex-col items-center py-5 px-4 shadow-lg rounded-lg border border-gray-200 bg-white"
+                    >
+                      <div className="flex items-center space-x-2 mb-2">
+                        {item.gender === "Male" && (
+                          <FaMale className="text-blue-500 text-3xl" />
+                        )}
+                        {item.gender === "Female" && (
+                          <FaFemale className="text-pink-500 text-3xl" />
+                        )}
+                        <span className="font-bold text-gray-700 text-2xl">
+                          {item.gender}
+                        </span>
                       </div>
-                    ))
-                  ) : (
-                    <div className="text-gray-500 text-center py-4 col-span-2">No data available</div>
-                  )}
-                </div>
+                      <span className="text-gray-900 font-light text-5xl">
+                        {item.genderCount}
+                      </span>
+                    </div>
+                  ))
+                ) : (
+                  <div className="text-gray-500 text-center py-4 col-span-2">
+                    No data available
+                  </div>
+                )}
               </div>
             </div>
-            
+          </div>
         );
       default:
         return <div>Select a report type</div>;
