@@ -310,10 +310,9 @@ const VisitsSection = ({ patientId }) => {
       {isEditFormVisible && visitToEdit && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
           <EditVisitForm
-            visit={visitToEdit}
-            patientId={patientId}
-            onClose={handleCloseEditForm}
-            onSave={handleSaveEdit}
+            recordId={selectedVisit.id}
+            onUpdateVisit={fetchVisits}
+            onClose={() => setSelectedVisit(null)}
           />
         </div>
       )}
