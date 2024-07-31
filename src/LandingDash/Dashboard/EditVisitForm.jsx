@@ -25,6 +25,31 @@ const EditVisitForm = ({ recordId, onUpdateVisit, onClose }) => {
   const [hospitalName, setHospitalName] = useState("");
   const [showServicePopup, setShowServicePopup] = useState(false);
   const [selectedServices, setSelectedServices] = useState([]);
+  const fetchRecordId = async () => {
+    try {
+      const response = await axios.get(
+        "https://healthsyncrwanda.vercel.app/api/in-progress",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      setRecordId(response.data.id);
+    } catch (error) {
+      console.error(
+        "Error fetching record IDs:",
+        error.response ? error.response.data : error.message
+      );
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Failed to fetch record IDs",
+      });
+    }
+  };
+  fetchRecordId();
 
   useEffect(() => {
     if (recordId) {
