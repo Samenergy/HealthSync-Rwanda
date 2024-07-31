@@ -191,7 +191,7 @@ const EditVisitForm = ({ visitId, onUpdateVisit, onClose }) => {
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
       <div className="bg-white p-6 rounded-lg shadow-lg max-w-lg w-full max-h-screen overflow-y-auto">
         <h2 className="text-xl font-bold mb-4">Edit Visit</h2>
-        <form onSubmit={handleSubmit}>
+        <form>
           <div className="mb-4">
             <label className="block text-sm font-medium mb-2" htmlFor="date">
               Date
