@@ -11,7 +11,7 @@ const Graphtable = () => {
           <a href="">Yearly</a>
         </div>
         <div>
-          <img src="./src/assets/chart.png" alt="" />
+          <img src="/chart.png" alt="" />
         </div>
       </div>
     </div>
