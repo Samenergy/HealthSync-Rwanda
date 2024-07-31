@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import axios from "axios";
 import Swal from "sweetalert2";
 
-const EditVisitForm = ({ patientId, visit, onClose }) => {
+const EditVisitForm = ({ visit, patientId, onClose, onSave  }) => {
   const [insurance, setInsurance] = useState(""); 
   const [formData, setFormData] = useState({
     date: "",
