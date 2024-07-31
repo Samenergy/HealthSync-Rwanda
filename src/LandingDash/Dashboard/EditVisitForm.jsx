@@ -140,8 +140,8 @@ const EditVisitForm = ({ visit, onClose }) => {
               onChange={handleChange}
               className="w-full border border-gray-300 px-3 py-2 rounded-lg"
             >
-              <option value="In Progress">In Progress</option>
-              <option value="Done">Done</option>
+              <option value="IN PROGRESS">In Progress</option>
+              <option value="DONE">Done</option>
             </select>
           </div>
           <div className="mb-4">
