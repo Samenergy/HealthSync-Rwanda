@@ -3,7 +3,8 @@ import PropTypes from "prop-types";
 import axios from "axios";
 import Swal from "sweetalert2";
 
-const EditVisitForm = ({ visit, onClose }) => {
+const EditVisitForm = ({ patientId, visit, onClose }) => {
+  const [insurance, setInsurance] = useState(""); 
   const [formData, setFormData] = useState({
     date: "",
     description: "",
@@ -20,8 +21,8 @@ const EditVisitForm = ({ visit, onClose }) => {
     socialHistory: "",
     doctorName: "",
     hospitalName: "",
-    medications: "", // Updated to be a text field
-    images: [], // This will now handle file objects
+    medications: "",
+    images: [], // Updated to handle file objects
   });
 
   useEffect(() => {
@@ -55,8 +56,31 @@ const EditVisitForm = ({ visit, onClose }) => {
       }
     };
 
+    const fetchInsurance = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await axios.get(
+          `https://healthsync.up.railway.app/api/queue/assurance/${patientId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        setInsurance(response.data.assurance);
+      } catch (error) {
+        console.error("Error fetching assurance:", error);
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Failed to fetch insurance",
+        });
+      }
+    };
+
     fetchDetails();
-  }, []);
+    fetchInsurance();
+  }, [patientId]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -117,20 +141,7 @@ const EditVisitForm = ({ visit, onClose }) => {
       <div className="bg-white p-6 rounded-lg shadow-lg max-w-lg w-full max-h-screen overflow-y-auto">
         <h2 className="text-xl font-bold mb-4">Edit Visit</h2>
         <form onSubmit={handleSubmit}>
-          {/* Form Fields */}
-          <div className="mb-4">
-            <label className="block text-sm font-medium mb-2" htmlFor="date">
-              Date
-            </label>
-            <input
-              type="date"
-              id="date"
-              name="date"
-              value={formData.date}
-              onChange={handleChange}
-              className="w-full border border-gray-300 px-3 py-2 rounded-lg"
-            />
-          </div>
+          
           <div className="mb-4">
             <label className="block text-sm font-medium mb-2" htmlFor="description">
               Description
@@ -167,8 +178,8 @@ const EditVisitForm = ({ visit, onClose }) => {
               onChange={handleChange}
               className="w-full border border-gray-300 px-3 py-2 rounded-lg"
             >
-              <option value="IN PROGRESS">In Progress</option>
-              <option value="DONE">Done</option>
+              <option value="In Progress">In Progress</option>
+              <option value="Done">Done</option>
             </select>
           </div>
           <div className="mb-4">
@@ -261,6 +272,20 @@ const EditVisitForm = ({ visit, onClose }) => {
             />
           </div>
           <div className="mb-4">
+            <label className="block text-sm font-medium mb-2" htmlFor="insurance">
+              Insurance
+            </label>
+            <input
+              type="text"
+              id="insurance"
+              name="insurance"
+              value={insurance} // Set insurance from state
+              onChange={(e) => setFormData({ ...formData, insurance: e.target.value })}
+              className="w-full border border-gray-300 px-3 py-2 rounded-lg"
+              readOnly // Set to readOnly if you don't want it editable
+            />
+          </div>
+          <div className="mb-4">
             <label className="block text-sm font-medium mb-2" htmlFor="socialHistory">
               Social History
             </label>
@@ -319,6 +344,7 @@ const EditVisitForm = ({ visit, onClose }) => {
 };
 
 EditVisitForm.propTypes = {
+  patientId: PropTypes.string.isRequired,
   visit: PropTypes.shape({
     date: PropTypes.string,
     description: PropTypes.string,
