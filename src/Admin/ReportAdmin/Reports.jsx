@@ -90,7 +90,7 @@ const Reports = () => {
                   ))}
               </tbody>
 
-              <h3 className="text-xl font-semibold mb-2">Weekly Report</h3>
+              <h3 className="text-xl font-semibold mb-2 mt-5">Weekly Report</h3>
 
               <thead className="bg-gray-100 text-left">
                 <tr>
