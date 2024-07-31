@@ -57,7 +57,7 @@ const EditVisitForm = ({ visit, onClose }) => {
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-      <div className="bg-white p-6 rounded-lg shadow-lg max-w-lg w-full">
+      <div className="bg-white p-6 rounded-lg shadow-lg max-w-lg w-full max-h-screen overflow-y-auto">
         <h2 className="text-xl font-bold mb-4">Edit Visit</h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
@@ -74,10 +74,7 @@ const EditVisitForm = ({ visit, onClose }) => {
             />
           </div>
           <div className="mb-4">
-            <label
-              className="block text-sm font-medium mb-2"
-              htmlFor="description"
-            >
+            <label className="block text-sm font-medium mb-2" htmlFor="description">
               Description
             </label>
             <textarea
@@ -112,8 +109,8 @@ const EditVisitForm = ({ visit, onClose }) => {
               onChange={handleChange}
               className="w-full border border-gray-300 px-3 py-2 rounded-lg"
             >
-              <option value="In Progress">In Progress</option>
-              <option value="Done">Done</option>
+              <option value="IN PROGRESS">In Progress</option>
+              <option value="DONE">Done</option>
             </select>
           </div>
           <div className="mb-4">
@@ -180,10 +177,7 @@ const EditVisitForm = ({ visit, onClose }) => {
             />
           </div>
           <div className="mb-4">
-            <label
-              className="block text-sm font-medium mb-2"
-              htmlFor="bloodPressure"
-            >
+            <label className="block text-sm font-medium mb-2" htmlFor="bloodPressure">
               Blood Pressure
             </label>
             <input
@@ -196,10 +190,7 @@ const EditVisitForm = ({ visit, onClose }) => {
             />
           </div>
           <div className="mb-4">
-            <label
-              className="block text-sm font-medium mb-2"
-              htmlFor="immunizations"
-            >
+            <label className="block text-sm font-medium mb-2" htmlFor="immunizations">
               Immunizations
             </label>
             <input
@@ -212,10 +203,7 @@ const EditVisitForm = ({ visit, onClose }) => {
             />
           </div>
           <div className="mb-4">
-            <label
-              className="block text-sm font-medium mb-2"
-              htmlFor="insurance"
-            >
+            <label className="block text-sm font-medium mb-2" htmlFor="insurance">
               Insurance
             </label>
             <input
@@ -228,10 +216,7 @@ const EditVisitForm = ({ visit, onClose }) => {
             />
           </div>
           <div className="mb-4">
-            <label
-              className="block text-sm font-medium mb-2"
-              htmlFor="socialHistory"
-            >
+            <label className="block text-sm font-medium mb-2" htmlFor="socialHistory">
               Social History
             </label>
             <textarea
@@ -243,10 +228,7 @@ const EditVisitForm = ({ visit, onClose }) => {
             />
           </div>
           <div className="mb-4">
-            <label
-              className="block text-sm font-medium mb-2"
-              htmlFor="doctorName"
-            >
+            <label className="block text-sm font-medium mb-2" htmlFor="doctorName">
               Doctor Name
             </label>
             <input
@@ -259,10 +241,7 @@ const EditVisitForm = ({ visit, onClose }) => {
             />
           </div>
           <div className="mb-4">
-            <label
-              className="block text-sm font-medium mb-2"
-              htmlFor="hospitalName"
-            >
+            <label className="block text-sm font-medium mb-2" htmlFor="hospitalName">
               Hospital Name
             </label>
             <input
@@ -275,10 +254,7 @@ const EditVisitForm = ({ visit, onClose }) => {
             />
           </div>
           <div className="mb-4">
-            <label
-              className="block text-sm font-medium mb-2"
-              htmlFor="medications"
-            >
+            <label className="block text-sm font-medium mb-2" htmlFor="medications">
               Medications
             </label>
             <textarea
