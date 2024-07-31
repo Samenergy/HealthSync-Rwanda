@@ -37,11 +37,7 @@ const EditVisitForm = ({ recordId, onUpdateVisit, onClose }) => {
         }
       );
 
-      const recordIds = response.data.data;
-      if (recordIds.length > 0) {
-        // Fetch the details of the first record with status "In Progress"
-        setRecordId(recordIds[0]);
-      }
+      setRecordId(response.data.id);
     } catch (error) {
       console.error("Error fetching record IDs:", error);
       Swal.fire({
