@@ -58,10 +58,10 @@ const VisitsSection = ({ patientId }) => {
 
   const sortedVisits = [...visits].sort((a, b) => {
     // Prioritize "IN PROGRESS" visits first
-    if (a.status === "IN PROGRESS" && b.status !== "IN PROGRESS") {
+    if (a.status === "In Progress" && b.status !== "In Progress") {
       return -1;
     }
-    if (a.status !== "IN PROGRESS" && b.status === "IN PROGRESS") {
+    if (a.status !== "In Progress" && b.status === "In Progress") {
       return 1;
     }
 
@@ -84,7 +84,7 @@ const VisitsSection = ({ patientId }) => {
   });
 
   const handleRowClick = (visit) => {
-    if (visit.status !== "IN PROGRESS") {
+    if (visit.status !== "In Progress") {
       setSelectedVisit(visit);
       setShowDetails(true);
     } else {
@@ -197,13 +197,13 @@ const VisitsSection = ({ patientId }) => {
                   </span>
                 </td>
                 <td className="px-4 py-2 flex items-center gap-5 text-lg">
-                  {visit.status !== "IN PROGRESS" && (
+                  {visit.status !== "In Progress" && (
                     <FaEye
                       className="text-blue-500 cursor-pointer"
                       onClick={() => handleRowClick(visit)}
                     />
                   )}
-                  {visit.status === "IN PROGRESS" && (
+                  {visit.status === "In Progress" && (
                     <FaEdit
                       className="text-yellow-500 cursor-pointer"
                       onClick={(e) => {
