@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
 import servicesList from "../../Billing/services";
-
+import PropTypes from "prop-types";
 const EditVisitForm = ({ visitId, onUpdateVisit, onClose }) => {
   const token = localStorage.getItem("token");
 
