@@ -188,7 +188,7 @@ const VisitsSection = ({ patientId }) => {
                 <td className="py-2 px-4">
                   <span
                     className={`inline-block px-2 py-1 text-sm rounded-full text-white ${
-                      visit.status === "IN PROGRESS"
+                      visit.status === "In Progress"
                         ? "bg-green-600"
                         : "bg-red-400"
                     }`}

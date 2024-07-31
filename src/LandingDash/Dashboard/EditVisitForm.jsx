@@ -32,6 +32,11 @@ const EditVisitForm = ({ visit, onClose }) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  const handleImageChange = (e) => {
+    const files = Array.from(e.target.files);
+    setFormData((prev) => ({ ...prev, images: files }));
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -83,8 +88,19 @@ const EditVisitForm = ({ visit, onClose }) => {
               className="w-full border border-gray-300 px-3 py-2 rounded-lg"
             />
           </div>
-          {/* Add additional fields similarly */}
-          {/* Example field */}
+          <div className="mb-4">
+            <label className="block text-sm font-medium mb-2" htmlFor="disease">
+              Disease
+            </label>
+            <input
+              type="text"
+              id="disease"
+              name="disease"
+              value={formData.disease}
+              onChange={handleChange}
+              className="w-full border border-gray-300 px-3 py-2 rounded-lg"
+            />
+          </div>
           <div className="mb-4">
             <label className="block text-sm font-medium mb-2" htmlFor="status">
               Status
@@ -96,9 +112,195 @@ const EditVisitForm = ({ visit, onClose }) => {
               onChange={handleChange}
               className="w-full border border-gray-300 px-3 py-2 rounded-lg"
             >
-              <option value="IN PROGRESS">In Progress</option>
+              <option value="In Progress">In Progress</option>
               <option value="Done">Done</option>
             </select>
+          </div>
+          <div className="mb-4">
+            <label className="block text-sm font-medium mb-2" htmlFor="details">
+              Details
+            </label>
+            <textarea
+              id="details"
+              name="details"
+              value={formData.details}
+              onChange={handleChange}
+              className="w-full border border-gray-300 px-3 py-2 rounded-lg"
+            />
+          </div>
+          <div className="mb-4">
+            <label className="block text-sm font-medium mb-2" htmlFor="notes">
+              Notes
+            </label>
+            <textarea
+              id="notes"
+              name="notes"
+              value={formData.notes}
+              onChange={handleChange}
+              className="w-full border border-gray-300 px-3 py-2 rounded-lg"
+            />
+          </div>
+          <div className="mb-4">
+            <label className="block text-sm font-medium mb-2" htmlFor="height">
+              Height
+            </label>
+            <input
+              type="text"
+              id="height"
+              name="height"
+              value={formData.height}
+              onChange={handleChange}
+              className="w-full border border-gray-300 px-3 py-2 rounded-lg"
+            />
+          </div>
+          <div className="mb-4">
+            <label className="block text-sm font-medium mb-2" htmlFor="weight">
+              Weight
+            </label>
+            <input
+              type="text"
+              id="weight"
+              name="weight"
+              value={formData.weight}
+              onChange={handleChange}
+              className="w-full border border-gray-300 px-3 py-2 rounded-lg"
+            />
+          </div>
+          <div className="mb-4">
+            <label className="block text-sm font-medium mb-2" htmlFor="bmi">
+              BMI
+            </label>
+            <input
+              type="text"
+              id="bmi"
+              name="bmi"
+              value={formData.bmi}
+              onChange={handleChange}
+              className="w-full border border-gray-300 px-3 py-2 rounded-lg"
+            />
+          </div>
+          <div className="mb-4">
+            <label
+              className="block text-sm font-medium mb-2"
+              htmlFor="bloodPressure"
+            >
+              Blood Pressure
+            </label>
+            <input
+              type="text"
+              id="bloodPressure"
+              name="bloodPressure"
+              value={formData.bloodPressure}
+              onChange={handleChange}
+              className="w-full border border-gray-300 px-3 py-2 rounded-lg"
+            />
+          </div>
+          <div className="mb-4">
+            <label
+              className="block text-sm font-medium mb-2"
+              htmlFor="immunizations"
+            >
+              Immunizations
+            </label>
+            <input
+              type="text"
+              id="immunizations"
+              name="immunizations"
+              value={formData.immunizations}
+              onChange={handleChange}
+              className="w-full border border-gray-300 px-3 py-2 rounded-lg"
+            />
+          </div>
+          <div className="mb-4">
+            <label
+              className="block text-sm font-medium mb-2"
+              htmlFor="insurance"
+            >
+              Insurance
+            </label>
+            <input
+              type="text"
+              id="insurance"
+              name="insurance"
+              value={formData.insurance}
+              onChange={handleChange}
+              className="w-full border border-gray-300 px-3 py-2 rounded-lg"
+            />
+          </div>
+          <div className="mb-4">
+            <label
+              className="block text-sm font-medium mb-2"
+              htmlFor="socialHistory"
+            >
+              Social History
+            </label>
+            <textarea
+              id="socialHistory"
+              name="socialHistory"
+              value={formData.socialHistory}
+              onChange={handleChange}
+              className="w-full border border-gray-300 px-3 py-2 rounded-lg"
+            />
+          </div>
+          <div className="mb-4">
+            <label
+              className="block text-sm font-medium mb-2"
+              htmlFor="doctorName"
+            >
+              Doctor Name
+            </label>
+            <input
+              type="text"
+              id="doctorName"
+              name="doctorName"
+              value={formData.doctorName}
+              onChange={handleChange}
+              className="w-full border border-gray-300 px-3 py-2 rounded-lg"
+            />
+          </div>
+          <div className="mb-4">
+            <label
+              className="block text-sm font-medium mb-2"
+              htmlFor="hospitalName"
+            >
+              Hospital Name
+            </label>
+            <input
+              type="text"
+              id="hospitalName"
+              name="hospitalName"
+              value={formData.hospitalName}
+              onChange={handleChange}
+              className="w-full border border-gray-300 px-3 py-2 rounded-lg"
+            />
+          </div>
+          <div className="mb-4">
+            <label
+              className="block text-sm font-medium mb-2"
+              htmlFor="medications"
+            >
+              Medications
+            </label>
+            <textarea
+              id="medications"
+              name="medications"
+              value={formData.medications}
+              onChange={handleChange}
+              className="w-full border border-gray-300 px-3 py-2 rounded-lg"
+            />
+          </div>
+          <div className="mb-4">
+            <label className="block text-sm font-medium mb-2" htmlFor="images">
+              Images
+            </label>
+            <input
+              type="file"
+              id="images"
+              name="images"
+              multiple
+              onChange={handleImageChange}
+              className="w-full border border-gray-300 px-3 py-2 rounded-lg"
+            />
           </div>
           <button
             type="submit"
