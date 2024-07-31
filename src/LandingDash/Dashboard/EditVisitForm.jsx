@@ -1,55 +1,33 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
-import servicesList from "../../Billing/services";
+import servicesList from "../../Billing/services"; // Ensure this path is correct
 
 const EditVisitForm = ({ recordId, onUpdateVisit, onClose }) => {
   const token = localStorage.getItem("token");
 
-  const [date, setDate] = useState("");
-  const [description, setDescription] = useState("");
-  const [disease, setDisease] = useState("");
-  const [details, setDetails] = useState("");
-  const [notes, setNotes] = useState("");
-  const [height, setHeight] = useState("");
-  const [weight, setWeight] = useState("");
-  const [bmi, setBmi] = useState("");
-  const [bloodPressure, setBloodPressure] = useState("");
-  const [immunizations, setImmunizations] = useState("");
-  const [insurance, setInsurance] = useState("");
-  const [socialHistory, setSocialHistory] = useState("");
-  const [medication, setMedication] = useState("");
-  const [images, setImages] = useState([]);
-  const [doctorId, setDoctorId] = useState("");
-  const [doctorName, setDoctorName] = useState("");
-  const [hospitalName, setHospitalName] = useState("");
-  const [showServicePopup, setShowServicePopup] = useState(false);
-  const [selectedServices, setSelectedServices] = useState([]);
-  const fetchRecordId = async () => {
-    try {
-      const response = await axios.get(
-        "https://healthsyncrwanda.vercel.app/api/in-progress",
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+  const [formState, setFormState] = useState({
+    date: "",
+    description: "",
+    disease: "",
+    details: "",
+    notes: "",
+    height: "",
+    weight: "",
+    bmi: "",
+    bloodPressure: "",
+    immunizations: "",
+    insurance: "",
+    socialHistory: "",
+    medication: "",
+    images: [],
+    doctorId: "",
+    doctorName: "",
+    hospitalName: "",
+    selectedServices: [],
+  });
 
-      setRecordId(response.data.id);
-    } catch (error) {
-      console.error(
-        "Error fetching record IDs:",
-        error.response ? error.response.data : error.message
-      );
-      Swal.fire({
-        icon: "error",
-        title: "Error",
-        text: "Failed to fetch record IDs",
-      });
-    }
-  };
-  fetchRecordId();
+  const [showServicePopup, setShowServicePopup] = useState(false);
 
   useEffect(() => {
     if (recordId) {
@@ -63,31 +41,34 @@ const EditVisitForm = ({ recordId, onUpdateVisit, onClose }) => {
               },
             }
           );
-
           const record = response.data;
-          setDate(record.date);
-          setDescription(record.description);
-          setDisease(record.disease);
-          setDetails(record.details);
-          setNotes(record.notes);
-          setHeight(record.height);
-          setWeight(record.weight);
-          setBmi(record.bmi);
-          setBloodPressure(record.bloodPressure);
-          setImmunizations(record.immunizations);
-          setInsurance(record.insurance);
-          setSocialHistory(record.socialHistory);
-          setMedication(
-            record.medications.map((med) => med.medication).join(", ")
-          );
-          setImages(
-            record.images.map((img) => ({
+          setFormState({
+            date: record.date,
+            description: record.description,
+            disease: record.disease,
+            details: record.details,
+            notes: record.notes,
+            height: record.height,
+            weight: record.weight,
+            bmi: record.bmi,
+            bloodPressure: record.bloodPressure,
+            immunizations: record.immunizations,
+            insurance: record.insurance,
+            socialHistory: record.socialHistory,
+            medication: record.medications
+              .map((med) => med.medication)
+              .join(", "),
+            images: record.images.map((img) => ({
               ...img,
               url: img.url, // Assuming img.url is a valid URL
-            }))
-          );
-          setSelectedServices(record.services);
+            })),
+            selectedServices: record.services,
+            doctorId: "", // Default values will be set after fetching user data
+            doctorName: "",
+            hospitalName: "",
+          });
 
+          // Fetch user data
           const userResponse = await axios.get(
             "http://localhost:5000/api/user/data",
             {
@@ -96,9 +77,12 @@ const EditVisitForm = ({ recordId, onUpdateVisit, onClose }) => {
               },
             }
           );
-          setDoctorId(userResponse.data.user.id);
-          setDoctorName(userResponse.data.user.name);
-          setHospitalName(userResponse.data.hospital.name);
+          setFormState((prevState) => ({
+            ...prevState,
+            doctorId: userResponse.data.user.id,
+            doctorName: userResponse.data.user.name,
+            hospitalName: userResponse.data.hospital.name,
+          }));
         } catch (error) {
           console.error("Error fetching record details:", error);
           Swal.fire({
@@ -113,6 +97,14 @@ const EditVisitForm = ({ recordId, onUpdateVisit, onClose }) => {
     }
   }, [token, recordId]);
 
+  const handleChange = (e) => {
+    const { id, value } = e.target;
+    setFormState((prevState) => ({
+      ...prevState,
+      [id]: value,
+    }));
+  };
+
   const handleDone = () => {
     if (window.confirm("Are you sure you are done?")) {
       setShowServicePopup(true);
@@ -121,27 +113,11 @@ const EditVisitForm = ({ recordId, onUpdateVisit, onClose }) => {
 
   const handleConfirmServices = async () => {
     const updatedRecord = {
-      date,
-      description,
+      ...formState,
       status: "Done",
-      disease,
-      details,
-      notes,
-      height,
-      weight,
-      bmi,
-      bloodPressure,
-      immunizations,
-      insurance,
-      socialHistory,
-      doctorId,
-      doctorName,
-      hospitalName,
-      medications: medication
+      medications: formState.medication
         .split(",")
         .map((med) => ({ medication: med.trim() })),
-      images,
-      services: selectedServices,
     };
 
     try {
@@ -174,26 +150,11 @@ const EditVisitForm = ({ recordId, onUpdateVisit, onClose }) => {
 
   const handleInProgress = async () => {
     const updatedRecord = {
-      date,
-      description,
+      ...formState,
       status: "In Progress",
-      disease,
-      details,
-      notes,
-      height,
-      weight,
-      bmi,
-      bloodPressure,
-      immunizations,
-      insurance,
-      socialHistory,
-      doctorId,
-      doctorName,
-      hospitalName,
-      medications: medication
+      medications: formState.medication
         .split(",")
         .map((med) => ({ medication: med.trim() })),
-      images,
     };
 
     try {
@@ -224,15 +185,22 @@ const EditVisitForm = ({ recordId, onUpdateVisit, onClose }) => {
 
   const handleImageChange = (e) => {
     const files = Array.from(e.target.files);
-    setImages(files.map((file) => ({ file, url: URL.createObjectURL(file) })));
+    setFormState((prevState) => ({
+      ...prevState,
+      images: files.map((file) => ({
+        file,
+        url: URL.createObjectURL(file),
+      })),
+    }));
   };
 
   const handleServiceChange = (service) => {
-    setSelectedServices((prev) =>
-      prev.includes(service)
-        ? prev.filter((s) => s !== service)
-        : [...prev, service]
-    );
+    setFormState((prevState) => ({
+      ...prevState,
+      selectedServices: prevState.selectedServices.includes(service)
+        ? prevState.selectedServices.filter((s) => s !== service)
+        : [...prevState.selectedServices, service],
+    }));
   };
 
   const handleServicePopupClose = () => {
