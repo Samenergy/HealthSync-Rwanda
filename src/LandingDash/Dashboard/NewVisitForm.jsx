@@ -3,62 +3,36 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import servicesList from "../../Billing/services";
 
-const EditVisitForm = ({ visitId, onUpdateVisit, onClose }) => {
+const NewVisitForm = ({ patientId, onAddVisit, onClose }) => {
   const token = localStorage.getItem("token");
 
-  // Initialize state with default values
   const [date, setDate] = useState("");
   const [description, setDescription] = useState("");
   const [disease, setDisease] = useState("");
   const [details, setDetails] = useState("");
   const [notes, setNotes] = useState("");
-  const [height, setHeight] = useState("");
-  const [weight, setWeight] = useState("");
-  const [bmi, setBmi] = useState("");
+  const [height, setHeight] = useState();
+  const [weight, setWeight] = useState();
+  const [bmi, setBmi] = useState();
   const [bloodPressure, setBloodPressure] = useState("");
   const [immunizations, setImmunizations] = useState("");
   const [insurance, setInsurance] = useState(""); // This will be populated automatically
   const [socialHistory, setSocialHistory] = useState("");
   const [medication, setMedication] = useState("");
   const [images, setImages] = useState([]);
-  const [doctorId, setDoctorId] = useState("");
+  const [doctorId, setDoctorId] = useState(""); // Doctor ID state
   const [doctorname, setdoctorname] = useState("");
   const [Hospitalname, setHospitalname] = useState("");
-  const [showServicePopup, setShowServicePopup] = useState(false);
-  const [selectedServices, setSelectedServices] = useState([]);
+  const [showServicePopup, setShowServicePopup] = useState(false); // State to handle service popup
+  const [selectedServices, setSelectedServices] = useState([]); // State to handle selected services
   const [queueId, setQueueId] = useState(null);
 
-  // Fetch visit data on component mount
   useEffect(() => {
-    const fetchVisitData = async () => {
+    setDate(new Date().toISOString().split("T")[0]);
+
+    const fetchDetails = async () => {
       try {
         const response = await axios.get(
-          `https://healthsync.up.railway.app/api/user/records/${visitId}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        const visit = response.data;
-
-        setDate(visit.date);
-        setDescription(visit.description);
-        setDisease(visit.disease);
-        setDetails(visit.details);
-        setNotes(visit.notes);
-        setHeight(visit.height);
-        setWeight(visit.weight);
-        setBmi(visit.bmi);
-        setBloodPressure(visit.bloodPressure);
-        setImmunizations(visit.immunizations);
-        setInsurance(visit.insurance);
-        setSocialHistory(visit.socialHistory);
-        setMedication(visit.medications.map(m => m.medication).join(", "));
-        setImages(visit.images.map(img => img.image)); // Assume images are URLs
-        setSelectedServices(visit.services || []);
-        
-        const doctorResponse = await axios.get(
           "https://healthsync.up.railway.app/api/user/data",
           {
             headers: {
@@ -66,36 +40,69 @@ const EditVisitForm = ({ visitId, onUpdateVisit, onClose }) => {
             },
           }
         );
-        setDoctorId(doctorResponse.data.user.id);
-        setdoctorname(doctorResponse.data.user.name);
-        setHospitalname(doctorResponse.data.hospital.name);
+        setDoctorId(response.data.user.id); // Set doctor ID
+        setdoctorname(response.data.user.name);
+        setHospitalname(response.data.hospital.name);
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Failed to fetch user data",
+        });
+      }
+    };
 
-        const queueResponse = await axios.get(
-          `https://healthsync.up.railway.app/api/queue/patient/${visit.patientId}`,
+    const fetchInsurance = async () => {
+      try {
+        const response = await axios.get(
+          `https://healthsync.up.railway.app/api/queue/assurance/${patientId}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
             },
           }
         );
-        setQueueId(queueResponse.data.id);
-
+        setInsurance(response.data.assurance);
       } catch (error) {
-        console.error("Error fetching visit data:", error);
+        console.error("Error fetching assurance:", error);
         Swal.fire({
           icon: "error",
           title: "Error",
-          text: "Failed to fetch visit data",
+          text: "Failed to fetch insurance",
         });
       }
     };
 
-    fetchVisitData();
-  }, [token, visitId]);
+    const fetchQueueId = async () => {
+      try {
+        const response = await axios.get(
+          `https://healthsync.up.railway.app/api/queue/patient/${patientId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        setQueueId(response.data.id);
+      } catch (error) {
+        console.error("Error fetching queue ID:", error);
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Failed to fetch queue ID",
+        });
+      }
+    };
 
-  const handleUpdate = async () => {
-    if (window.confirm("Are you sure you want to update this visit?")) {
-      setShowServicePopup(true);
+    fetchDetails();
+    fetchInsurance();
+    fetchQueueId();
+  }, [token, patientId]);
+
+  const handleDone = async () => {
+    if (window.confirm("Are you sure you are done?")) {
+      setShowServicePopup(true); // Show service popup
     }
   };
 
@@ -109,7 +116,8 @@ const EditVisitForm = ({ visitId, onUpdateVisit, onClose }) => {
       return;
     }
 
-    const updatedVisit = {
+    const newVisit = {
+      patientId,
       date,
       description,
       status: "Done",
@@ -123,7 +131,7 @@ const EditVisitForm = ({ visitId, onUpdateVisit, onClose }) => {
       immunizations,
       insurance,
       socialHistory,
-      doctorId,
+      doctorId, // Include doctor ID
       doctorname,
       Hospitalname,
       medications: medication
@@ -134,9 +142,9 @@ const EditVisitForm = ({ visitId, onUpdateVisit, onClose }) => {
     };
 
     try {
-      await axios.put(
-        `https://healthsync.up.railway.app/api/user/records/${visitId}`,
-        updatedVisit,
+      const response = await axios.post(
+        "https://healthsync.up.railway.app/api/user/records",
+        newVisit,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -144,9 +152,10 @@ const EditVisitForm = ({ visitId, onUpdateVisit, onClose }) => {
         }
       );
 
+      // Update the queue with selected services and doctor ID
       await axios.put(
         `https://healthsync.up.railway.app/api/queue/edit/${queueId}`,
-        { services: selectedServices, doctorId },
+        { services: selectedServices, doctorId }, // Include doctor ID in the payload
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -157,16 +166,67 @@ const EditVisitForm = ({ visitId, onUpdateVisit, onClose }) => {
       Swal.fire({
         icon: "success",
         title: "Success",
-        text: "Visit updated successfully",
+        text: "Patient has been signed off successfully",
       });
-      onUpdateVisit(updatedVisit);
+      onAddVisit(response.data);
       onClose();
     } catch (error) {
-      console.error("Error updating visit data:", error);
+      console.error("Error posting visit data:", error);
       Swal.fire({
         icon: "error",
         title: "Error",
-        text: "Failed to update visit data",
+        text: "Failed to save visit data",
+      });
+    }
+  };
+
+  const handleInProgress = async () => {
+    const newVisit = {
+      patientId,
+      date,
+      description,
+      status: "In Progress",
+      disease,
+      details,
+      notes,
+      height,
+      weight,
+      bmi,
+      bloodPressure,
+      immunizations,
+      insurance,
+      socialHistory,
+      doctorId, // Use fetched doctor ID here
+      doctorname,
+      Hospitalname,
+      medications: medication
+        .split(",")
+        .map((med) => ({ medication: med.trim() })),
+      images: images.map((file) => ({ image: URL.createObjectURL(file) })),
+    };
+
+    try {
+      const response = await axios.post(
+        "https://healthsync.up.railway.app/api/user/records",
+        newVisit,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      Swal.fire({
+        icon: "success",
+        title: "Saved",
+        text: "Visit saved as 'In Progress'",
+      });
+      onAddVisit(response.data);
+    } catch (error) {
+      console.error("Error posting visit data:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Failed to save visit data",
       });
     }
   };
@@ -187,6 +247,7 @@ const EditVisitForm = ({ visitId, onUpdateVisit, onClose }) => {
   const handleServicePopupClose = () => {
     setShowServicePopup(false);
   };
+
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
       <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-lg max-h-full overflow-y-auto">
