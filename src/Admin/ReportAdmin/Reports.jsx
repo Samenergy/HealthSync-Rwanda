@@ -89,9 +89,9 @@ const Reports = () => {
                     </tr>
                   ))}
               </tbody>
-
-              <h3 className="text-xl font-semibold mb-2 mt-5">Weekly Report</h3>
-
+            </table>
+            <h3 className="text-xl font-semibold mb-2 mt-5">Weekly Report</h3>
+            <table className="min-w-full bg-white border border-gray-200">
               <thead className="bg-gray-100 text-left">
                 <tr>
                   <th className="py-2 px-4 border-b">Patient Name</th>
