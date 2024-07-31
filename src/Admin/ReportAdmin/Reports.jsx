@@ -101,7 +101,7 @@ const Reports = () => {
                 </tr>
               </thead>
               <tbody>
-                {Array.isArray(reportData.dailyReport) &&
+                {Array.isArray(reportData.weeklyReport) &&
                   reportData.weeklyReport.map((item, index) => (
                     <tr key={index}>
                       <td className="py-2 px-4 border-b">
