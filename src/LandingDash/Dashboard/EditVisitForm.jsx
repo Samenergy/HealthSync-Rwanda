@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import axios from "axios";
+import Swal from "sweetalert2";
 
 const EditVisitForm = ({ visit, onClose }) => {
   const [formData, setFormData] = useState({
@@ -27,6 +28,36 @@ const EditVisitForm = ({ visit, onClose }) => {
     setFormData(visit);
   }, [visit]);
 
+  useEffect(() => {
+    const fetchDetails = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await axios.get(
+          "https://healthsync.up.railway.app/api/user/data",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        setFormData((prev) => ({
+          ...prev,
+          doctorName: response.data.user.name,
+          hospitalName: response.data.hospital.name,
+        }));
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Failed to fetch user data",
+        });
+      }
+    };
+
+    fetchDetails();
+  }, []);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -49,7 +80,7 @@ const EditVisitForm = ({ visit, onClose }) => {
           },
         }
       );
-      onClose(); // Close the form after successful submission
+      onClose(); 
     } catch (error) {
       console.error("Error updating visit:", error);
     }
@@ -109,8 +140,8 @@ const EditVisitForm = ({ visit, onClose }) => {
               onChange={handleChange}
               className="w-full border border-gray-300 px-3 py-2 rounded-lg"
             >
-              <option value="IN PROGRESS">In Progress</option>
-              <option value="DONE">Done</option>
+              <option value="In Progress">In Progress</option>
+              <option value="Done">Done</option>
             </select>
           </div>
           <div className="mb-4">
@@ -238,6 +269,7 @@ const EditVisitForm = ({ visit, onClose }) => {
               value={formData.doctorName}
               onChange={handleChange}
               className="w-full border border-gray-300 px-3 py-2 rounded-lg"
+              readOnly
             />
           </div>
           <div className="mb-4">
@@ -251,6 +283,7 @@ const EditVisitForm = ({ visit, onClose }) => {
               value={formData.hospitalName}
               onChange={handleChange}
               className="w-full border border-gray-300 px-3 py-2 rounded-lg"
+              readOnly
             />
           </div>
           <div className="mb-4">
