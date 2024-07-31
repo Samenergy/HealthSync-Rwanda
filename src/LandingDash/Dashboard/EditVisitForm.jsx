@@ -2,12 +2,10 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
 import servicesList from "../../Billing/services";
-import PropTypes from "prop-types";
 
-const EditVisitForm = ({ visitId, onUpdateVisit, onClose }) => {
+const EditVisitForm = ({ recordId, onUpdateVisit, onClose }) => {
   const token = localStorage.getItem("token");
 
-  // Initialize state with default values
   const [date, setDate] = useState("");
   const [description, setDescription] = useState("");
   const [disease, setDisease] = useState("");
@@ -18,142 +16,116 @@ const EditVisitForm = ({ visitId, onUpdateVisit, onClose }) => {
   const [bmi, setBmi] = useState("");
   const [bloodPressure, setBloodPressure] = useState("");
   const [immunizations, setImmunizations] = useState("");
-  const [insurance, setInsurance] = useState(""); // This will be populated automatically
+  const [insurance, setInsurance] = useState("");
   const [socialHistory, setSocialHistory] = useState("");
   const [medication, setMedication] = useState("");
   const [images, setImages] = useState([]);
   const [doctorId, setDoctorId] = useState("");
-  const [doctorname, setdoctorname] = useState("");
-  const [Hospitalname, setHospitalname] = useState("");
+  const [doctorName, setDoctorName] = useState("");
+  const [hospitalName, setHospitalName] = useState("");
   const [showServicePopup, setShowServicePopup] = useState(false);
   const [selectedServices, setSelectedServices] = useState([]);
-  const [queueId, setQueueId] = useState(null);
 
-  // Fetch visit data on component mount
-  useEffect(() => {
-    const fetchVisitData = async () => {
-      try {
-        const response = await axios.get(
-          `https://healthsync.up.railway.app/api/user/records/${visitId}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        const visit = response.data;
+  const fetchRecordId = async () => {
+    try {
+      const response = await axios.get(
+        "https://healthsyncrwanda.vercel.app/api/in-progress",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
-        setDate(visit.date);
-        setDescription(visit.description);
-        setDisease(visit.disease);
-        setDetails(visit.details);
-        setNotes(visit.notes);
-        setHeight(visit.height);
-        setWeight(visit.weight);
-        setBmi(visit.bmi);
-        setBloodPressure(visit.bloodPressure);
-        setImmunizations(visit.immunizations);
-        setInsurance(visit.insurance);
-        setSocialHistory(visit.socialHistory);
-        setMedication(visit.medications.map((m) => m.medication).join(", "));
-        setImages(visit.images.map((img) => img.image)); // Assume images are URLs
-        setSelectedServices(visit.services || []);
-
-        const doctorResponse = await axios.get(
-          "https://healthsync.up.railway.app/api/user/data",
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        setDoctorId(doctorResponse.data.user.id);
-        setdoctorname(doctorResponse.data.user.name);
-        setHospitalname(doctorResponse.data.hospital.name);
-
-        const queueResponse = await axios.get(
-          `https://healthsync.up.railway.app/api/queue/patient/${visit.patientId}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        setQueueId(queueResponse.data.id);
-      } catch (error) {
-        console.error("Error fetching visit data:", error);
-        Swal.fire({
-          icon: "error",
-          title: "Error",
-          text: "Failed to fetch visit data",
-        });
+      const recordIds = response.data.data;
+      if (recordIds.length > 0) {
+        // Fetch the details of the first record with status "In Progress"
+        setRecordId(recordIds[0]);
       }
-    };
-
-    fetchVisitData();
-  }, [token, visitId]);
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    switch (name) {
-      case "date":
-        setDate(value);
-        break;
-      case "description":
-        setDescription(value);
-        break;
-      case "disease":
-        setDisease(value);
-        break;
-      case "details":
-        setDetails(value);
-        break;
-      case "notes":
-        setNotes(value);
-        break;
-      case "height":
-        setHeight(value);
-        break;
-      case "weight":
-        setWeight(value);
-        break;
-      case "bmi":
-        setBmi(value);
-        break;
-      case "bloodPressure":
-        setBloodPressure(value);
-        break;
-      case "immunizations":
-        setImmunizations(value);
-        break;
-      case "socialHistory":
-        setSocialHistory(value);
-        break;
-      case "medications":
-        setMedication(value);
-        break;
-      default:
-        break;
+    } catch (error) {
+      console.error("Error fetching record IDs:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Failed to fetch record IDs",
+      });
     }
   };
 
-  const handleUpdate = () => {
-    if (window.confirm("Are you sure you want to update this visit?")) {
+  useEffect(() => {
+    fetchRecordId();
+  }, [token]);
+
+  useEffect(() => {
+    if (recordId) {
+      const fetchRecordDetails = async () => {
+        try {
+          const response = await axios.get(
+            `http://localhost:5000/api/records/${recordId}`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+
+          const record = response.data;
+          setDate(record.date);
+          setDescription(record.description);
+          setDisease(record.disease);
+          setDetails(record.details);
+          setNotes(record.notes);
+          setHeight(record.height);
+          setWeight(record.weight);
+          setBmi(record.bmi);
+          setBloodPressure(record.bloodPressure);
+          setImmunizations(record.immunizations);
+          setInsurance(record.insurance);
+          setSocialHistory(record.socialHistory);
+          setMedication(
+            record.medications.map((med) => med.medication).join(", ")
+          );
+          setImages(
+            record.images.map((img) => ({
+              ...img,
+              url: URL.createObjectURL(img),
+            }))
+          );
+          setSelectedServices(record.services);
+
+          const userResponse = await axios.get(
+            "http://localhost:5000/api/user/data",
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+          setDoctorId(userResponse.data.user.id);
+          setDoctorName(userResponse.data.user.name);
+          setHospitalName(userResponse.data.hospital.name);
+        } catch (error) {
+          console.error("Error fetching record details:", error);
+          Swal.fire({
+            icon: "error",
+            title: "Error",
+            text: "Failed to fetch record details",
+          });
+        }
+      };
+
+      fetchRecordDetails();
+    }
+  }, [token, recordId]);
+
+  const handleDone = async () => {
+    if (window.confirm("Are you sure you are done?")) {
       setShowServicePopup(true);
     }
   };
 
   const handleConfirmServices = async () => {
-    if (!queueId) {
-      Swal.fire({
-        icon: "error",
-        title: "Error",
-        text: "Queue ID not found",
-      });
-      return;
-    }
-
-    const updatedVisit = {
+    const updatedRecord = {
       date,
       description,
       status: "Done",
@@ -168,29 +140,19 @@ const EditVisitForm = ({ visitId, onUpdateVisit, onClose }) => {
       insurance,
       socialHistory,
       doctorId,
-      doctorname,
-      Hospitalname,
+      doctorName,
+      hospitalName,
       medications: medication
         .split(",")
         .map((med) => ({ medication: med.trim() })),
-      images: images.map((file) => ({ image: URL.createObjectURL(file) })),
+      images,
       services: selectedServices,
     };
 
     try {
       await axios.put(
-        `https://healthsync.up.railway.app/api/user/records/${visitId}`,
-        updatedVisit,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      await axios.put(
-        `https://healthsync.up.railway.app/api/queue/edit/${queueId}`,
-        { services: selectedServices, doctorId },
+        `http://localhost:5000/api/records/${recordId}`,
+        updatedRecord,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -201,23 +163,73 @@ const EditVisitForm = ({ visitId, onUpdateVisit, onClose }) => {
       Swal.fire({
         icon: "success",
         title: "Success",
-        text: "Visit updated successfully",
+        text: "Medical record updated successfully",
       });
-      onUpdateVisit(updatedVisit);
+      onUpdateVisit(updatedRecord);
       onClose();
     } catch (error) {
-      console.error("Error updating visit data:", error);
+      console.error("Error updating record:", error);
       Swal.fire({
         icon: "error",
         title: "Error",
-        text: "Failed to update visit data",
+        text: "Failed to update medical record",
+      });
+    }
+  };
+
+  const handleInProgress = async () => {
+    const updatedRecord = {
+      date,
+      description,
+      status: "In Progress",
+      disease,
+      details,
+      notes,
+      height,
+      weight,
+      bmi,
+      bloodPressure,
+      immunizations,
+      insurance,
+      socialHistory,
+      doctorId,
+      doctorName,
+      hospitalName,
+      medications: medication
+        .split(",")
+        .map((med) => ({ medication: med.trim() })),
+      images,
+    };
+
+    try {
+      await axios.put(
+        `http://localhost:5000/api/records/${recordId}`,
+        updatedRecord,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      Swal.fire({
+        icon: "success",
+        title: "Saved",
+        text: "Record updated as 'In Progress'",
+      });
+      onUpdateVisit(updatedRecord);
+    } catch (error) {
+      console.error("Error updating record:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Failed to update record",
       });
     }
   };
 
   const handleImageChange = (e) => {
     const files = Array.from(e.target.files);
-    setImages(files);
+    setImages(files.map((file) => ({ file, url: URL.createObjectURL(file) })));
   };
 
   const handleServiceChange = (service) => {
@@ -234,22 +246,10 @@ const EditVisitForm = ({ visitId, onUpdateVisit, onClose }) => {
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-      <div className="bg-white p-6 rounded-lg shadow-lg max-w-lg w-full max-h-screen overflow-y-auto">
-        <h2 className="text-xl font-bold mb-4">Edit Visit</h2>
+      <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-lg max-h-full overflow-y-auto">
+        <h3 className="text-2xl font-bold mb-4">Edit Visit</h3>
         <form>
-          <div className="mb-4">
-            <label className="block text-sm font-medium mb-2" htmlFor="date">
-              Date
-            </label>
-            <input
-              type="date"
-              id="date"
-              name="date"
-              value={date}
-              onChange={handleChange}
-              className="w-full border border-gray-300 px-3 py-2 rounded-lg"
-            />
-          </div>
+          {/* Form fields */}
           <div className="mb-4">
             <label
               className="block text-sm font-medium mb-2"
@@ -257,12 +257,13 @@ const EditVisitForm = ({ visitId, onUpdateVisit, onClose }) => {
             >
               Description
             </label>
-            <textarea
+            <input
+              type="text"
               id="description"
-              name="description"
               value={description}
-              onChange={handleChange}
-              className="w-full border border-gray-300 px-3 py-2 rounded-lg"
+              onChange={(e) => setDescription(e.target.value)}
+              className="border border-gray-300 px-4 py-2 rounded-lg w-full"
+              required
             />
           </div>
           <div className="mb-4">
@@ -272,10 +273,10 @@ const EditVisitForm = ({ visitId, onUpdateVisit, onClose }) => {
             <input
               type="text"
               id="disease"
-              name="disease"
               value={disease}
-              onChange={handleChange}
-              className="w-full border border-gray-300 px-3 py-2 rounded-lg"
+              onChange={(e) => setDisease(e.target.value)}
+              className="border border-gray-300 px-4 py-2 rounded-lg w-full"
+              required
             />
           </div>
           <div className="mb-4">
@@ -284,10 +285,9 @@ const EditVisitForm = ({ visitId, onUpdateVisit, onClose }) => {
             </label>
             <textarea
               id="details"
-              name="details"
               value={details}
-              onChange={handleChange}
-              className="w-full border border-gray-300 px-3 py-2 rounded-lg"
+              onChange={(e) => setDetails(e.target.value)}
+              className="border border-gray-300 px-4 py-2 rounded-lg w-full"
             />
           </div>
           <div className="mb-4">
@@ -296,36 +296,35 @@ const EditVisitForm = ({ visitId, onUpdateVisit, onClose }) => {
             </label>
             <textarea
               id="notes"
-              name="notes"
               value={notes}
-              onChange={handleChange}
-              className="w-full border border-gray-300 px-3 py-2 rounded-lg"
+              onChange={(e) => setNotes(e.target.value)}
+              className="border border-gray-300 px-4 py-2 rounded-lg w-full"
             />
           </div>
           <div className="mb-4">
             <label className="block text-sm font-medium mb-2" htmlFor="height">
-              Height
+              Height (cm)
             </label>
             <input
-              type="text"
+              type="number"
               id="height"
-              name="height"
               value={height}
-              onChange={handleChange}
-              className="w-full border border-gray-300 px-3 py-2 rounded-lg"
+              onChange={(e) => setHeight(e.target.value)}
+              className="border border-gray-300 px-4 py-2 rounded-lg w-full"
+              required
             />
           </div>
           <div className="mb-4">
             <label className="block text-sm font-medium mb-2" htmlFor="weight">
-              Weight
+              Weight (kg)
             </label>
             <input
-              type="text"
+              type="number"
               id="weight"
-              name="weight"
               value={weight}
-              onChange={handleChange}
-              className="w-full border border-gray-300 px-3 py-2 rounded-lg"
+              onChange={(e) => setWeight(e.target.value)}
+              className="border border-gray-300 px-4 py-2 rounded-lg w-full"
+              required
             />
           </div>
           <div className="mb-4">
@@ -333,12 +332,12 @@ const EditVisitForm = ({ visitId, onUpdateVisit, onClose }) => {
               BMI
             </label>
             <input
-              type="text"
+              type="number"
               id="bmi"
-              name="bmi"
               value={bmi}
-              onChange={handleChange}
-              className="w-full border border-gray-300 px-3 py-2 rounded-lg"
+              onChange={(e) => setBmi(e.target.value)}
+              className="border border-gray-300 px-4 py-2 rounded-lg w-full"
+              readOnly
             />
           </div>
           <div className="mb-4">
@@ -351,10 +350,9 @@ const EditVisitForm = ({ visitId, onUpdateVisit, onClose }) => {
             <input
               type="text"
               id="bloodPressure"
-              name="bloodPressure"
               value={bloodPressure}
-              onChange={handleChange}
-              className="w-full border border-gray-300 px-3 py-2 rounded-lg"
+              onChange={(e) => setBloodPressure(e.target.value)}
+              className="border border-gray-300 px-4 py-2 rounded-lg w-full"
             />
           </div>
           <div className="mb-4">
@@ -364,12 +362,27 @@ const EditVisitForm = ({ visitId, onUpdateVisit, onClose }) => {
             >
               Immunizations
             </label>
-            <textarea
+            <input
+              type="text"
               id="immunizations"
-              name="immunizations"
               value={immunizations}
-              onChange={handleChange}
-              className="w-full border border-gray-300 px-3 py-2 rounded-lg"
+              onChange={(e) => setImmunizations(e.target.value)}
+              className="border border-gray-300 px-4 py-2 rounded-lg w-full"
+            />
+          </div>
+          <div className="mb-4">
+            <label
+              className="block text-sm font-medium mb-2"
+              htmlFor="insurance"
+            >
+              Insurance
+            </label>
+            <input
+              type="text"
+              id="insurance"
+              value={insurance}
+              onChange={(e) => setInsurance(e.target.value)}
+              className="border border-gray-300 px-4 py-2 rounded-lg w-full"
             />
           </div>
           <div className="mb-4">
@@ -381,26 +394,24 @@ const EditVisitForm = ({ visitId, onUpdateVisit, onClose }) => {
             </label>
             <textarea
               id="socialHistory"
-              name="socialHistory"
               value={socialHistory}
-              onChange={handleChange}
-              className="w-full border border-gray-300 px-3 py-2 rounded-lg"
+              onChange={(e) => setSocialHistory(e.target.value)}
+              className="border border-gray-300 px-4 py-2 rounded-lg w-full"
             />
           </div>
           <div className="mb-4">
             <label
               className="block text-sm font-medium mb-2"
-              htmlFor="medications"
+              htmlFor="medication"
             >
-              Medications
+              Medication
             </label>
             <input
               type="text"
-              id="medications"
-              name="medications"
+              id="medication"
               value={medication}
-              onChange={handleChange}
-              className="w-full border border-gray-300 px-3 py-2 rounded-lg"
+              onChange={(e) => setMedication(e.target.value)}
+              className="border border-gray-300 px-4 py-2 rounded-lg w-full"
             />
           </div>
           <div className="mb-4">
@@ -412,45 +423,65 @@ const EditVisitForm = ({ visitId, onUpdateVisit, onClose }) => {
               id="images"
               multiple
               onChange={handleImageChange}
-              className="w-full border border-gray-300 px-3 py-2 rounded-lg"
+              className="border border-gray-300 px-4 py-2 rounded-lg w-full"
             />
+            {images.map((img, index) => (
+              <div key={index} className="mt-2">
+                <img
+                  src={img.url}
+                  alt={`Preview ${index}`}
+                  className="w-20 h-20 object-cover"
+                />
+              </div>
+            ))}
           </div>
-          <div className="flex justify-between">
+          <div className="mb-4">
             <button
               type="button"
-              onClick={handleUpdate}
+              onClick={handleInProgress}
+              className="bg-yellow-500 text-white px-4 py-2 rounded-lg mr-2"
+            >
+              Save as In Progress
+            </button>
+            <button
+              type="button"
+              onClick={handleDone}
               className="bg-blue-500 text-white px-4 py-2 rounded-lg"
             >
-              Save
-            </button>
-            <button
-              type="button"
-              onClick={onClose}
-              className="bg-gray-500 text-white px-4 py-2 rounded-lg"
-            >
-              Cancel
+              Done
             </button>
           </div>
+          <button
+            type="button"
+            onClick={onClose}
+            className="bg-gray-500 text-white px-4 py-2 rounded-lg"
+          >
+            Cancel
+          </button>
         </form>
+
         {showServicePopup && (
           <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-            <div className="bg-white p-6 rounded-lg shadow-lg max-w-lg w-full">
-              <h3 className="text-lg font-semibold mb-4">Select Services</h3>
-              {servicesList.map((service) => (
-                <div key={service} className="mb-2">
+            <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-lg">
+              <h3 className="text-2xl font-bold mb-4">Select Services</h3>
+              {servicesList.map((service, index) => (
+                <div key={index} className="mb-2">
                   <input
                     type="checkbox"
+                    id={`service-${index}`}
                     checked={selectedServices.includes(service)}
                     onChange={() => handleServiceChange(service)}
                   />
-                  <label className="ml-2">{service}</label>
+                  <label htmlFor={`service-${index}`} className="ml-2">
+                    {service}
+                  </label>
                 </div>
               ))}
-              <div className="flex justify-between mt-4">
+              <div className="mt-4">
                 <button
                   type="button"
                   onClick={handleConfirmServices}
-                  className="bg-blue-500 text-white px-4 py-2 rounded-lg"
+                  className="bg-blue-500 text-white px-4 py-2 rounded-lg mr-2"
                 >
                   Confirm
                 </button>
@@ -459,7 +490,7 @@ const EditVisitForm = ({ visitId, onUpdateVisit, onClose }) => {
                   onClick={handleServicePopupClose}
                   className="bg-gray-500 text-white px-4 py-2 rounded-lg"
                 >
-                  Close
+                  Cancel
                 </button>
               </div>
             </div>
@@ -468,12 +499,6 @@ const EditVisitForm = ({ visitId, onUpdateVisit, onClose }) => {
       </div>
     </div>
   );
-};
-
-EditVisitForm.propTypes = {
-  visitId: PropTypes.string.isRequired,
-  onUpdateVisit: PropTypes.func.isRequired,
-  onClose: PropTypes.func.isRequired,
 };
 
 export default EditVisitForm;
