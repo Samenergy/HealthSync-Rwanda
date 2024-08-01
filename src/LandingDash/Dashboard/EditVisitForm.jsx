@@ -34,7 +34,7 @@ const EditVisitForm = ({ recordId, onUpdateVisit, onClose }) => {
       const fetchRecordDetails = async () => {
         try {
           const response = await axios.get(
-            `http://localhost:5000/api/records/${recordId}`,
+            `https://healthsync.up.railway.app/api/records/${recordId}`,
             {
               headers: {
                 Authorization: `Bearer ${token}`,
@@ -67,7 +67,7 @@ const EditVisitForm = ({ recordId, onUpdateVisit, onClose }) => {
 
           // Fetch user data
           const userResponse = await axios.get(
-            "http://localhost:5000/api/user/data",
+            "https://healthsync.up.railway.app/api/user/data",
             {
               headers: {
                 Authorization: `Bearer ${token}`,
@@ -120,7 +120,7 @@ const EditVisitForm = ({ recordId, onUpdateVisit, onClose }) => {
 
     try {
       await axios.put(
-        `http://localhost:5000/api/records/${recordId}`,
+        `https://healthsync.up.railway.app/api/records/${recordId}`,
         updatedRecord,
         {
           headers: {
@@ -157,7 +157,7 @@ const EditVisitForm = ({ recordId, onUpdateVisit, onClose }) => {
 
     try {
       await axios.put(
-        `http://localhost:5000/api/records/${recordId}`,
+        `https://healthsync.up.railway.app/api/records/${recordId}`,
         updatedRecord,
         {
           headers: {
