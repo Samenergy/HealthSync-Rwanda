@@ -278,13 +278,13 @@ function Receptionpatienttable() {
             </label>
 
             <label className="block mt-4">
-              <span>Select Assurance:</span>
+              <span>Select Insurance:</span>
               <select
                 value={selectedAssurance}
                 onChange={(e) => setSelectedAssurance(e.target.value)}
                 className="border border-red-950 rounded-md p-2 mt-1 w-full"
               >
-                <option value="">Select Assurance</option>
+                <option value="">Select Insurance</option>
                 <option value="None">None</option>
                 <option value="UAP">UAP</option>
                 <option value="RADIANT">RADIANT</option>
