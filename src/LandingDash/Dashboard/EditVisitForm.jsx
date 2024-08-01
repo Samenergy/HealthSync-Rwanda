@@ -42,31 +42,28 @@ const EditVisitForm = ({ recordId, onUpdateVisit, onClose }) => {
             }
           );
           const record = response.data;
-          setFormState({
-            date: record.date,
-            description: record.description,
-            disease: record.disease,
-            details: record.details,
-            notes: record.notes,
-            height: record.height,
-            weight: record.weight,
-            bmi: record.bmi,
-            bloodPressure: record.bloodPressure,
-            immunizations: record.immunizations,
-            insurance: record.insurance,
-            socialHistory: record.socialHistory,
+          setFormState((prevState) => ({
+            ...prevState,
+            date: record.date || "",
+            description: record.description || "",
+            disease: record.disease || "",
+            details: record.details || "",
+            notes: record.notes || "",
+            height: record.height || "",
+            weight: record.weight || "",
+            bmi: record.bmi || "",
+            bloodPressure: record.bloodPressure || "",
+            immunizations: record.immunizations || "",
+            insurance: record.insurance || "",
+            socialHistory: record.socialHistory || "",
             medication: record.medications
-              .map((med) => med.medication)
-              .join(", "),
-            images: record.images.map((img) => ({
-              ...img,
-              url: img.url, // Assuming img.url is a valid URL
-            })),
-            selectedServices: record.services,
-            doctorId: "", // Default values will be set after fetching user data
-            doctorName: "",
-            hospitalName: "",
-          });
+              ? record.medications.map((med) => med.medication).join(", ")
+              : "",
+            images: record.images
+              ? record.images.map((img) => ({ ...img, url: img.url }))
+              : [],
+            selectedServices: record.services || [],
+          }));
 
           // Fetch user data
           const userResponse = await axios.get(
@@ -77,11 +74,12 @@ const EditVisitForm = ({ recordId, onUpdateVisit, onClose }) => {
               },
             }
           );
+          const userData = userResponse.data;
           setFormState((prevState) => ({
             ...prevState,
-            doctorId: userResponse.data.user.id,
-            doctorName: userResponse.data.user.name,
-            hospitalName: userResponse.data.hospital.name,
+            doctorId: userData?.user?.id || "",
+            doctorName: userData?.user?.name || "",
+            hospitalName: userData?.hospital?.name || "",
           }));
         } catch (error) {
           console.error("Error fetching record details:", error);
