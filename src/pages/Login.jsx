@@ -44,6 +44,21 @@ export default function Login() {
     }
   };
 
+  const fillAdminCredentials = () => {
+    setEmail("jean.nshimiyimana@gmail.com");
+    setPassword("jean.nshimiyimana@gmail.com");
+  };
+
+  const fillDoctorCredentials = () => {
+    setEmail("alice.uwase@gmail.com");
+    setPassword("alice.uwase@gmail.com");
+  };
+
+  const fillReceptionistCredentials = () => {
+    setEmail("eric.niyonzima@gmail.com");
+    setPassword("eric.niyonzima@gmail.com");
+  };
+
   return (
     <div className="flex min-h-screen flex-col justify-start px-6 py-12 lg:py-24 lg:px-8 bg-[#011c36]">
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
@@ -113,6 +128,30 @@ export default function Login() {
                 className="block w-full px-4 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
               />
             </div>
+          </div>
+
+          <div className="flex space-x-2">
+            <button
+              type="button"
+              onClick={fillAdminCredentials}
+              className="flex-1 justify-center rounded-md bg-[#00aeef] px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-[#36799e] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+            >
+              Admin
+            </button>
+            <button
+              type="button"
+              onClick={fillDoctorCredentials}
+              className="flex-1 justify-center rounded-md bg-[#00aeef] px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-[#36799e] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+            >
+              Doctor
+            </button>
+            <button
+              type="button"
+              onClick={fillReceptionistCredentials}
+              className="flex-1 justify-center rounded-md bg-[#00aeef] px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-[#36799e] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+            >
+              Receptionist
+            </button>
           </div>
 
           <div>
